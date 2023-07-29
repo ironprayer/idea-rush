@@ -30,6 +30,17 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+processResources.dependsOn('securityInfo')
+
+task securityInfo() {
+	copy {
+		from './idea-rush-security/application.yaml'
+		include '*.yaml'
+		into './src/main/resources'
+	}
+}
+
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
