@@ -1,0 +1,3 @@
+[submodule "idea-rush-security"]
+	path = idea-rush-security
+	url = https://github.com/final-idea-rush/idea-rush-security.git
