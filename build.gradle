@@ -42,7 +42,7 @@ task securityInfo() {
 }
 
 bootJar{
-	archiveFileName = 'idea-rush-'+version+'.jar'
+	archiveFileName = 'app.jar'
 }
 
 jar{
