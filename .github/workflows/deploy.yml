@@ -54,17 +54,13 @@ jobs:
 #          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Execute Server Init Script
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: idea-rush
-          IMAGE_TAG: latest
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.WAS_HOST }}
           username: ${{ secrets.WAS_USER }}
           key: ${{ secrets.WAS_PASSWORD }}
           script: |
-            docker stop $(docker ps -a -q) 
-            docker rm $(docker ps -a -q) 
-            docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-            docker run -d -p 8080:8080 $ECR_REGISTRY/$ECR_REPOSITORY
+            docker stop ${{ env.ECR_REPOSITORY }}
+            docker rm ${{ env.ECR_REPOSITORY }} 
+            docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+            docker run -d -p 8080:8080 --name idea-rush ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
