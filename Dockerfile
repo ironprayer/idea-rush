@@ -1,5 +1,5 @@
 FROM openjdk:17
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} ./app.jar
+ARG VERSION
+COPY build/libs/idea-rush-${VERSION}.jar ./app.jar
 ENV TZ=Asia/Seoul
 ENTRYPOINT ["java","-jar","./app.jar"]
