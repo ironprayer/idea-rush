@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.bid'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
 	sourceCompatibility = '17'
@@ -41,6 +41,13 @@ task securityInfo() {
 	}
 }
 
+bootJar{
+	archiveFileName = 'idea-rush-'+version+'.jar'
+}
+
+jar{
+	enabled=false
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
