@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.ACTION_TOKEN }}
+          submodules: true
 
       - name: Login to AWS ECR
         id: login-ecr
@@ -27,7 +30,7 @@ jobs:
 
       - name: Build and Push Docker image
         env:
-          ECR_REGISTRY: $ECR_REGISTRY
+          ECR_REGISTRY: ap-northeast-2
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/my-container-app:$IMAGE_TAG .
