@@ -1,14 +1,20 @@
-package com.bid.idearush.domain.idea.model;
+package com.bid.idearush.domain.idea.model.entity;
 
+import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.domain.user.model.entity.User;
+import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Idea extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,5 +45,14 @@ public class Idea extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User user;
+    Users users;
+
+    public void updateOf(IdeaRequest ideaRequest, String imageName) {
+        this.title = ideaRequest.title();
+        this.content = ideaRequest.content();
+        this.category = ideaRequest.category();
+        this.imageName = imageName;
+        this.auctionStartTime = ideaRequest.auctionStartTime();
+        this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
+    }
 }
