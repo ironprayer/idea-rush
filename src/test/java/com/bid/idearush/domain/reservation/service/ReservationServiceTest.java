@@ -8,6 +8,7 @@ import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.IdeaNotFoundException;
 import com.bid.idearush.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,41 +39,45 @@ class ReservationServiceTest {
     private Long userId = 1L;
     private Long ideaId = 1L;
 
-    @Test
+    @Nested
     @DisplayName("경매 예약")
-    void testIdeaBidReservation_Success() {
-        Users user = Users.builder().build();
-        Idea idea = Idea.builder().build();
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(ideaRepository.findById(ideaId)).thenReturn(Optional.of(idea));
+    class IdeaBidReservation {
+        @Test
+        @DisplayName("경매 예약 성공")
+        void testIdeaBidReservationSuccess() {
+            Users user = Users.builder().build();
+            Idea idea = Idea.builder().build();
+            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+            when(ideaRepository.findById(ideaId)).thenReturn(Optional.of(idea));
 
-        reservationService.ideaBidReservation(ideaId,userId);
-
-    }
-
-    @Test
-    @DisplayName("비회원 경매 예약")
-    void testIdeaBidReservation_UserNotFound() {
-        Idea idea = Idea.builder().build();
-        when(ideaRepository.findById(ideaId)).thenReturn(Optional.of(idea));
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> {
             reservationService.ideaBidReservation(ideaId, userId);
-        });
 
-        assertEquals("로그인이 필요합니다.", ex.getMessage());
-    }
+        }
 
-    @Test
-    @DisplayName("삭제된 게시물 예약")
-    void testIdeaBidReservation_IdeaNotFound() {
-        when(ideaRepository.findById(ideaId)).thenReturn(Optional.empty());
+        @Test
+        @DisplayName("비회원 경매 예약")
+        void testIdeaBidReservationUserNotFoundFail() {
+            Idea idea = Idea.builder().build();
+            when(ideaRepository.findById(ideaId)).thenReturn(Optional.of(idea));
+            when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        IdeaNotFoundException ex = assertThrows(IdeaNotFoundException.class, () -> {
-            reservationService.ideaBidReservation(ideaId, userId);
-        });
+            UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> {
+                reservationService.ideaBidReservation(ideaId, userId);
+            });
 
-        assertEquals("게시글을 찾을 수 없습니다.", ex.getMessage());
+            assertEquals("로그인이 필요합니다.", ex.getMessage());
+        }
+
+        @Test
+        @DisplayName("삭제된 게시물 예약")
+        void testIdeaBidReservationIdeaNotFoundFail() {
+            when(ideaRepository.findById(ideaId)).thenReturn(Optional.empty());
+
+            IdeaNotFoundException ex = assertThrows(IdeaNotFoundException.class, () -> {
+                reservationService.ideaBidReservation(ideaId, userId);
+            });
+
+            assertEquals("게시글을 찾을 수 없습니다.", ex.getMessage());
+        }
     }
 }
