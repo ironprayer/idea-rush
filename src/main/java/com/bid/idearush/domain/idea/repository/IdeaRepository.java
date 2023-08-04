@@ -11,7 +11,6 @@ import java.util.List;
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
 
     List<Idea> findAllByCategory(Category category, Sort sort);
-
     List<Idea> findAllByTitleContaining(String keyword, Sort sort);
 
 }

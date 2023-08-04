@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j(topic = "아이디어 조회")
@@ -25,7 +26,7 @@ public class IdeaFindService {
     private final IdeaRepository ideaRepository;
 
     @Transactional(readOnly = true)
-    public IdeaResponse findOne(Long ideaId) {
+    public IdeaResponse findOneIdea(Long ideaId) {
 
         Idea findIdea = ideaRepository.findById(ideaId)
                 .orElseThrow(() -> {
@@ -36,32 +37,27 @@ public class IdeaFindService {
     }
 
     @Transactional(readOnly = true)
-    public List<IdeaResponse> findAll(String keyword, String category) {
+    public List<IdeaResponse> findAllIdea(String keyword, Category category) {
 
-        if (StringUtils.hasText(keyword) && StringUtils.hasText(category)) {
+        if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
             throw new IdeaFindExceptionCustom(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
         }
 
-        String sortColumn = "createdAt";
-        Sort sort = Sort.by(Sort.Direction.ASC, sortColumn);
+        Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
 
-        List<IdeaResponse> findList = new ArrayList<>();
+        List<IdeaResponse> findList;
 
         if (StringUtils.hasText(keyword)) {
             findList = ideaRepository.findAllByTitleContaining(keyword, sort).stream()
-                    .map(idea -> IdeaResponse.from(idea))
+                    .map(IdeaResponse::from)
                     .collect(Collectors.toList());
-        }
-
-        if (StringUtils.hasText(category)) {
-            findList = ideaRepository.findAllByCategory(parseStringToCategory(category), sort).stream()
-                    .map(idea -> IdeaResponse.from(idea))
+        }else if (!Objects.isNull(category)) {
+            findList = ideaRepository.findAllByCategory(category, sort).stream()
+                    .map(IdeaResponse::from)
                     .collect(Collectors.toList());
-        }
-
-        if (!StringUtils.hasText(keyword) && !StringUtils.hasText(category)) {
+        }else {
             findList = ideaRepository.findAll(sort).stream()
-                    .map(idea -> IdeaResponse.from(idea))
+                    .map(IdeaResponse::from)
                     .collect(Collectors.toList());
         }
 
@@ -69,13 +65,5 @@ public class IdeaFindService {
         return findList;
     }
 
-    private Category parseStringToCategory(String category) {
-        return switch (category) {
-            case "삶" -> Category.LIFE;
-            case "영화" -> Category.MOVIE;
-            case "음악" -> Category.MUSIC;
-            default -> null; //TODO: 예외 처리 해야 함.
-        };
-    }
 
 }

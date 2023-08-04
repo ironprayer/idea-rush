@@ -2,6 +2,7 @@ package com.bid.idearush.domain.idea.controller;
 
 import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.service.IdeaFindService;
+import com.bid.idearush.domain.idea.type.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,18 +16,18 @@ public class IdeaFindController {
     private final IdeaFindService ideaFindService;
 
     @GetMapping
-    public List<IdeaResponse> findAllQuery(
+    public List<IdeaResponse> findAllIdea(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String category
+            @RequestParam(required = false) Category category
     ) {
-        return ideaFindService.findAll(keyword, category);
+        return ideaFindService.findAllIdea(keyword, category);
     }
 
     @GetMapping("/{id}")
     public IdeaResponse findOneQuery(
             @PathVariable Long id
     ) {
-        return ideaFindService.findOne(id);
+        return ideaFindService.findOneIdea(id);
     }
 
 }

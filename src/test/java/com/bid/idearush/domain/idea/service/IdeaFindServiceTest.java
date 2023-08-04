@@ -9,8 +9,10 @@ import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.exception.IdeaFindExceptionCustom;
 import com.bid.idearush.global.exception.errortype.IdeaFindErrorCode;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
@@ -30,110 +32,102 @@ class IdeaFindServiceTest {
 
     @Mock
     private IdeaRepository ideaRepository;
-
-
+    @InjectMocks
+    private IdeaFindService ideaFindService;
     private Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
+    private Category category = Category.LIFE;
+    private String keyword = "expectedKeyword";
 
-    @Test
-    @DisplayName("카테고리와 키워드를 에러를 발생시킨다.")
-    void categoryAndKeywordFindThrowsException() {
-        String category = "expectedCategory";
-        String keyword = "expectedKeyword";
+    @Nested
+    @DisplayName("아이디어 전체조회 테스트")
+    class IdeaFindAllTest {
 
-        IdeaFindExceptionCustom exception = assertThrows(IdeaFindExceptionCustom.class, () -> ideaFindService().findAll(keyword, category));
-        assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getStatus(), exception.getHttpStatus());
-        assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getMsg(), exception.getMsg());
+        @Test
+        @DisplayName("카테고리와 키워드를 에러를 발생시킨다.")
+        void categoryAndKeywordFindThrowsExceptionFailTest() {
+            IdeaFindExceptionCustom exception = assertThrows(IdeaFindExceptionCustom.class, () -> ideaFindService.findAllIdea(keyword, category));
+
+            assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getStatus(), exception.getHttpStatus());
+            assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getMsg(), exception.getMsg());
+        }
+
+        @Test
+        @DisplayName("카테고리별 리스트를 반환한다.")
+        void categoryFindSuccessTest() {
+            List<Idea> mockIdeaList = Collections.singletonList(createTitleTestIdea());
+            given(ideaRepository.findAllByCategory(category, sort)).willReturn(mockIdeaList);
+            List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
+                    .map(IdeaResponse::from)
+                    .collect(Collectors.toList());
+
+            List<IdeaResponse> actualIdeaResponseList = ideaFindService.findAllIdea(null, category);
+
+            assertThat(actualIdeaResponseList).hasSize(1);
+            assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
+        }
+
+        @Test
+        @DisplayName("검색어를 통해 리스트를 반환한다.")
+        void titleFindSuccessTest() {
+            List<Idea> mockIdeaList = Collections.singletonList(createTitleTestIdea());
+            given(ideaRepository.findAllByTitleContaining(keyword, sort)).willReturn(mockIdeaList);
+            List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
+                    .map(IdeaResponse::from)
+                    .collect(Collectors.toList());
+
+            List<IdeaResponse> actualIdeaResponseList = ideaFindService.findAllIdea(keyword, null);
+
+            assertThat(actualIdeaResponseList).hasSize(1);
+            assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
+        }
+
+        @Test
+        @DisplayName("일반 리스트를 반환한다.")
+        void FindAllSuccessTest() {
+            List<Idea> mockIdeaList = Collections.singletonList(createTitleTestIdea());
+            given(ideaRepository.findAll(sort)).willReturn(mockIdeaList);
+            List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
+                    .map(IdeaResponse::from)
+                    .collect(Collectors.toList());
+
+            List<IdeaResponse> actualIdeaResponseList = ideaFindService.findAllIdea(null, null);
+
+            assertThat(actualIdeaResponseList).hasSize(1);
+            assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
+        }
     }
 
-    @Test
-    void categoryFindTest() {
-        String categoryParamString = "삶";
-        Category expectedCategory = Category.LIFE;
-        Idea testIdea = createCategoryTestIdea(expectedCategory);
-        List<Idea> mockIdeaList = Collections.singletonList(testIdea);
-        given(ideaRepository.findAllByCategory(expectedCategory, sort)).willReturn(mockIdeaList);
-        List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
-                .map(IdeaResponse::from)
-                .collect(Collectors.toList());
+    @Nested
+    @DisplayName("아이디어 상세 조회 테스트")
+    class IdeaFindOneTest {
 
-        List<IdeaResponse> actualIdeaResponseList = ideaFindService().findAll(null, categoryParamString);
+        @Test
+        @DisplayName("아이디어 상세 조회하는데 해당 아이디어가 없을 경우")
+        void testFindOneThrowsExceptionFailTest() {
+            Long testIdeaId = 1L;
+            given(ideaRepository.findById(testIdeaId)).willReturn(Optional.empty());
 
-        assertThat(actualIdeaResponseList).hasSize(1);
-        assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
+            assertThrows(IdeaFindExceptionCustom.class, () -> ideaFindService.findOneIdea(testIdeaId));
+        }
+
+        @Test
+        @DisplayName("아이디어 상세 조회하는데 해당 아이디어를 반환한다.")
+        void testFindOneSuccessTest() {
+            Long testIdeaId = 1L;
+            Idea expectedIdea = createTitleTestIdea();
+            given(ideaRepository.findById(testIdeaId)).willReturn(Optional.of(expectedIdea));
+
+            IdeaResponse actualIdeaResponse = ideaFindService.findOneIdea(testIdeaId);
+
+            assertThat(actualIdeaResponse).isEqualTo(IdeaResponse.from(expectedIdea));
+        }
+
     }
 
-    @Test
-    void TitleFindTest() {
-        String keyword = "expectedCategory";
-        Idea testIdea = createTitleTestIdea(keyword);
-        List<Idea> mockIdeaList = Collections.singletonList(testIdea);
-        given(ideaRepository.findAllByTitleContaining(keyword, sort)).willReturn(mockIdeaList);
-        List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
-                .map(IdeaResponse::from)
-                .collect(Collectors.toList());
-
-        List<IdeaResponse> actualIdeaResponseList = ideaFindService().findAll(keyword, null);
-
-        assertThat(actualIdeaResponseList).hasSize(1);
-        assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
-    }
-
-    @Test
-    void testFindOneThrowsException() {
-        Long testIdeaId = 1L;
-        given(ideaRepository.findById(testIdeaId)).willReturn(Optional.empty());
-
-        assertThrows(IdeaFindExceptionCustom.class, () -> ideaFindService().findOne(testIdeaId));
-    }
-
-    @Test
-    void testFindOne() {
-        Long testIdeaId = 1L;
-        Idea expectedIdea = createTestIdea();
-        given(ideaRepository.findById(testIdeaId)).willReturn(Optional.of(expectedIdea));
-
-        IdeaResponse actualIdeaResponse = ideaFindService().findOne(testIdeaId);
-
-        assertThat(actualIdeaResponse).isEqualTo(IdeaResponse.from(expectedIdea));
-    }
-
-    private IdeaFindService ideaFindService() {
-        return new IdeaFindService(ideaRepository);
-    }
-
-    private Idea createTitleTestIdea(String title) {
-
-        return Idea.builder()
-                .category(Category.LIFE)
-                .title(title)
-                .content("content")
-                .imageName("imageName")
-                .minimumStartingPrice(0L)
-                .auctionStartTime(LocalDateTime.now())
-                .auctionStatus(AuctionStatus.PREPARE)
-                .users(new Users())
-                .build();
-    }
-
-    private Idea createCategoryTestIdea(Category category) {
-
+    private Idea createTitleTestIdea() {
         return Idea.builder()
                 .category(category)
-                .title("title")
-                .content("content")
-                .imageName("imageName")
-                .minimumStartingPrice(0L)
-                .auctionStartTime(LocalDateTime.now())
-                .auctionStatus(AuctionStatus.PREPARE)
-                .users(new Users())
-                .build();
-    }
-
-    private Idea createTestIdea(){
-
-        return Idea.builder()
-                .category(Category.LIFE)
-                .title("title")
+                .title(keyword)
                 .content("content")
                 .imageName("imageName")
                 .minimumStartingPrice(0L)
