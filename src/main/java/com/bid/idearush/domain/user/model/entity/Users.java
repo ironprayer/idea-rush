@@ -7,8 +7,8 @@ import lombok.*;
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Users extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +22,5 @@ public class Users extends BaseTime {
 
     @Column(length = 32, nullable = false)
     private String password;
+
 }
