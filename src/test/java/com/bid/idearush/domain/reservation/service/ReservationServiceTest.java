@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,7 +58,7 @@ class ReservationServiceTest {
             given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().build()));
             given(userRepository.findById(userId)).willReturn(Optional.empty());
 
-            UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> {
+            NoSuchElementException ex = assertThrows(NoSuchElementException.class, () -> {
                 reservationService.ideaBidReservation(ideaId, userId);
             });
 
@@ -69,7 +70,7 @@ class ReservationServiceTest {
         void ideaBidReservationIdeaNotFoundFailTest() {
             given(ideaRepository.findById(ideaId)).willReturn(Optional.empty());
 
-            IdeaNotFoundException ex = assertThrows(IdeaNotFoundException.class, () -> {
+            NoSuchElementException ex = assertThrows(NoSuchElementException.class, () -> {
                 reservationService.ideaBidReservation(ideaId, userId);
             });
 

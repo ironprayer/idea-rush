@@ -9,6 +9,8 @@ import com.bid.idearush.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
@@ -19,9 +21,9 @@ public class ReservationService {
 
     public void ideaBidReservation(Long ideaId, Long userId) {
         Idea idea = ideaRepository.findById(ideaId).orElseThrow(() ->
-                new IdeaNotFoundException("게시글을 찾을 수 없습니다."));
+                new NoSuchElementException("게시글을 찾을 수 없습니다."));
         Users user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException("로그인이 필요합니다."));
+                new NoSuchElementException("로그인이 필요합니다."));
 
         BidReservation bidReservation = BidReservation.builder()
                                             .users(user)
