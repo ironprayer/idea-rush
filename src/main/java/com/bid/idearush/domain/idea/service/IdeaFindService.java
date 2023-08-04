@@ -4,7 +4,7 @@ import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.global.exception.IdeaFindExceptionCustom;
+import com.bid.idearush.global.exception.IdeaFindException;
 import com.bid.idearush.global.exception.errortype.IdeaFindErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,7 +29,7 @@ public class IdeaFindService {
 
         Idea findIdea = ideaRepository.findById(ideaId)
                 .orElseThrow(() -> {
-                    throw new IdeaFindExceptionCustom(IdeaFindErrorCode.IDEA_EMPTY);
+                    throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
                 });
 
         return IdeaResponse.from(findIdea);
@@ -40,7 +39,7 @@ public class IdeaFindService {
     public List<IdeaResponse> findAllIdea(String keyword, Category category) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
-            throw new IdeaFindExceptionCustom(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
+            throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
         }
 
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");

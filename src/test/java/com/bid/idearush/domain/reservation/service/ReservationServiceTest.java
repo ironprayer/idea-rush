@@ -5,8 +5,6 @@ import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.reservation.repository.ReservationRepository;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
-import com.bid.idearush.global.exception.IdeaNotFoundException;
-import com.bid.idearush.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

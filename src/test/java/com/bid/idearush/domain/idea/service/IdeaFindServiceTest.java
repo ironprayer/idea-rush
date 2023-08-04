@@ -6,7 +6,7 @@ import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.Users;
-import com.bid.idearush.global.exception.IdeaFindExceptionCustom;
+import com.bid.idearush.global.exception.IdeaFindException;
 import com.bid.idearush.global.exception.errortype.IdeaFindErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -45,7 +45,7 @@ class IdeaFindServiceTest {
         @Test
         @DisplayName("카테고리와 키워드를 에러를 발생시킨다.")
         void categoryAndKeywordFindThrowsExceptionFailTest() {
-            IdeaFindExceptionCustom exception = assertThrows(IdeaFindExceptionCustom.class, () -> ideaFindService.findAllIdea(keyword, category));
+            IdeaFindException exception = assertThrows(IdeaFindException.class, () -> ideaFindService.findAllIdea(keyword, category));
 
             assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getStatus(), exception.getHttpStatus());
             assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getMsg(), exception.getMsg());
@@ -107,7 +107,7 @@ class IdeaFindServiceTest {
             Long testIdeaId = 1L;
             given(ideaRepository.findById(testIdeaId)).willReturn(Optional.empty());
 
-            assertThrows(IdeaFindExceptionCustom.class, () -> ideaFindService.findOneIdea(testIdeaId));
+            assertThrows(IdeaFindException.class, () -> ideaFindService.findOneIdea(testIdeaId));
         }
 
         @Test
@@ -133,7 +133,7 @@ class IdeaFindServiceTest {
                 .minimumStartingPrice(0L)
                 .auctionStartTime(LocalDateTime.now())
                 .auctionStatus(AuctionStatus.PREPARE)
-                .users(new Users())
+                .users(Users.builder().build())
                 .build();
     }
 

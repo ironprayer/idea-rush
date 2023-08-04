@@ -6,8 +6,6 @@ import com.bid.idearush.domain.reservation.model.entity.BidReservation;
 import com.bid.idearush.domain.reservation.repository.ReservationRepository;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
-import com.bid.idearush.global.exception.IdeaNotFoundException;
-import com.bid.idearush.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
