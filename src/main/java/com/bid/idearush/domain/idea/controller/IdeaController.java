@@ -19,7 +19,7 @@ public class IdeaController {
                     @RequestPart MultipartFile image){
         Long dummyUserId = 1L;
 
-        ideaService.update(ideaId, dummyUserId, ideaRequest, image);
+        ideaService.update(dummyUserId, ideaId, ideaRequest, image);
 
     }
 }

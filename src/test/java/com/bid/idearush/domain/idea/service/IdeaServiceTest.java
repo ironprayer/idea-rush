@@ -27,6 +27,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class IdeaServiceTest {
@@ -60,8 +62,7 @@ class IdeaServiceTest {
         @DisplayName("유저가 존재하지 않아 실패하는 케이스")
         void updateNotUserFailTest() {
             IdeaService ideaService = new IdeaService(ideaRepository, userRepository, s3Service);
-            given(userRepository.findById(anyLong())).
-                    willThrow(new IllegalArgumentException("유저가 존재하지 않습니다."));
+            given(userRepository.findById(anyLong())).willReturn(Optional.empty());
 
             Exception ex = assertThrows(IllegalArgumentException.class,
                     () -> ideaService.update(1L, 1L, ideaRequest, multipartFile));

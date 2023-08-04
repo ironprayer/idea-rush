@@ -21,8 +21,11 @@ public class IdeaService {
 
     @Transactional
     public void update(Long userId, Long ideaId, IdeaRequest ideaRequest, MultipartFile image) {
-        Users user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+        boolean isUser = userRepository.findById(userId).isPresent();
+
+        if(!isUser) {
+            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
+        }
 
         Idea idea = ideaRepository.findById(ideaId).orElseThrow(
                 () -> new IllegalArgumentException("아이디어가 존재하지 않습니다."));
