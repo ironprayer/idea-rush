@@ -1,5 +1,6 @@
 package com.bid.idearush.domain.idea.model.entity;
 
+import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.bid.model.entity.Bid;
 import com.bid.idearush.domain.bid.model.entity.BidWin;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
@@ -7,6 +8,7 @@ import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
+import lombok.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,5 +59,14 @@ public class Idea extends BaseTime {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "idea")
     private BidWin bidWin;
-  
+
+    public void updateOf(IdeaRequest ideaRequest, String imageName) {
+        this.title = ideaRequest.title();
+        this.content = ideaRequest.content();
+        this.category = ideaRequest.category();
+        this.imageName = imageName;
+        this.auctionStartTime = ideaRequest.auctionStartTime();
+        this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
+    }
+
 }
