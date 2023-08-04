@@ -1,14 +1,19 @@
-package com.bid.idearush.domain.idea.model;
+package com.bid.idearush.domain.idea.model.entity;
 
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.domain.user.model.entity.User;
+import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Idea extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,5 +44,6 @@ public class Idea extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User user;
+    Users users;
+
 }
