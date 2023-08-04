@@ -10,16 +10,15 @@ import com.bid.idearush.global.exception.IdeaNotFoundException;
 import com.bid.idearush.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
+
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final IdeaRepository ideaRepository;
 
-    @Transactional
     public void ideaBidReservation(Long ideaId, Long userId) {
         Idea idea = ideaRepository.findById(ideaId).orElseThrow(() ->
                 new IdeaNotFoundException("게시글을 찾을 수 없습니다."));
@@ -32,4 +31,5 @@ public class ReservationService {
                                             .build();
         reservationRepository.save(bidReservation);
     }
+
 }

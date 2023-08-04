@@ -15,6 +15,7 @@ import java.util.Random;
 @RequestMapping("/api/ideas")
 @RequiredArgsConstructor
 public class ReservationController {
+
     private final ReservationService reservationService;
 
     // 현재는 header에 토큰값이 없기 때문에 dummydata로 대체. 추후에 시큐리티로 추가됐을 때, 수정 필요
@@ -25,10 +26,10 @@ public class ReservationController {
     // Repository에 findByUserNickname 추가 후, ReservationService에 findByUserNickname 으로 수정
 
     @PostMapping("/{id}/reservation")
-    public ResponseEntity<String> ideaBidReservation(@PathVariable Long id) {
+    public void ideaBidReservation(@PathVariable(name = "id") Long postId) {
         Random random = new Random();
         Long dummyUserId = 1L + random.nextInt(20);
-        reservationService.ideaBidReservation(id,dummyUserId);
-        return new ResponseEntity<>("예약이 완료 되었습니다.", HttpStatus.OK);
+        reservationService.ideaBidReservation(postId,dummyUserId);
     }
+
 }
