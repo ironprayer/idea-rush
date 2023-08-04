@@ -1,10 +1,12 @@
 package com.bid.idearush.domain.bid.model.entity;
 
-import com.bid.idearush.domain.idea.model.Idea;
+import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class BidWin extends BaseTime {
     @Id
@@ -18,7 +20,7 @@ public class BidWin extends BaseTime {
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idea_id")
     private Idea idea;
 }
