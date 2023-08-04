@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -44,22 +44,20 @@ class ReservationServiceTest {
     class IdeaBidReservation {
         @Test
         @DisplayName("경매 예약 성공")
-        void testIdeaBidReservationSuccess() {
+        void ideaBidReservationSuccessTest() {
             Users user = Users.builder().build();
             Idea idea = Idea.builder().build();
-            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-            when(ideaRepository.findById(ideaId)).thenReturn(Optional.of(idea));
+            given(userRepository.findById(userId)).willReturn(Optional.of(user));
+            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(idea));
 
             reservationService.ideaBidReservation(ideaId, userId);
-
         }
 
         @Test
-        @DisplayName("비회원 경매 예약")
-        void testIdeaBidReservationUserNotFoundFail() {
-            Idea idea = Idea.builder().build();
-            when(ideaRepository.findById(ideaId)).thenReturn(Optional.of(idea));
-            when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        @DisplayName("예외 상황: 비회원이 경매를 예약할 경우")
+        void ideaBidReservationUserNotFoundFailTest() {
+            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().build()));
+            given(userRepository.findById(userId)).willReturn(Optional.empty());
 
             UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> {
                 reservationService.ideaBidReservation(ideaId, userId);
@@ -69,9 +67,9 @@ class ReservationServiceTest {
         }
 
         @Test
-        @DisplayName("삭제된 게시물 예약")
-        void testIdeaBidReservationIdeaNotFoundFail() {
-            when(ideaRepository.findById(ideaId)).thenReturn(Optional.empty());
+        @DisplayName("예외 상황: 삭제된 경매 게시글을 예약할 경우")
+        void ideaBidReservationIdeaNotFoundFailTest() {
+            given(ideaRepository.findById(ideaId)).willReturn(Optional.empty());
 
             IdeaNotFoundException ex = assertThrows(IdeaNotFoundException.class, () -> {
                 reservationService.ideaBidReservation(ideaId, userId);
@@ -80,4 +78,5 @@ class ReservationServiceTest {
             assertEquals("게시글을 찾을 수 없습니다.", ex.getMessage());
         }
     }
+
 }
