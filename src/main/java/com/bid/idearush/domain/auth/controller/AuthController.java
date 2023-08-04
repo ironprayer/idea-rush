@@ -1,6 +1,6 @@
 package com.bid.idearush.domain.auth.controller;
 
-import com.bid.idearush.domain.auth.model.request.SignupRequestDto;
+import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public void signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
-        authService.signup(signupRequestDto);
+    public void signup(@Valid @RequestBody SignupRequest signupRequest) {
+        authService.signup(signupRequest);
     }
+
 }
