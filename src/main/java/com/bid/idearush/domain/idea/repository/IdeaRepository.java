@@ -1,6 +1,7 @@
 package com.bid.idearush.domain.idea.repository;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
+
 import com.bid.idearush.domain.idea.type.Category;
 import jakarta.persistence.Id;
 import org.springframework.data.domain.Sort;

@@ -7,6 +7,7 @@ import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,10 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Idea extends BaseTime {
 
     @Id
@@ -56,4 +57,5 @@ public class Idea extends BaseTime {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "idea")
     private BidWin bidWin;
+  
 }

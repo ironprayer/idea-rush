@@ -2,10 +2,13 @@ package com.bid.idearush.domain.user.model.entity;
 
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Users extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
