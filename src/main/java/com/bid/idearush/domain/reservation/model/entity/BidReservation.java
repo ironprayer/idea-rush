@@ -18,11 +18,7 @@ public class BidReservation extends BaseTime {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-<<<<<<< HEAD
-    @JoinColumn(name = "user_id")
-=======
     @JoinColumn(name = "user_id", nullable = false)
->>>>>>> develop
     private Users users;
 
     @ManyToOne(fetch = FetchType.LAZY)
