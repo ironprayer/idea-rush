@@ -16,10 +16,11 @@ public class IdeaController {
     @PutMapping("{id}")
     void updateIdea(@PathVariable(name = "id") Long ideaId,
                     @RequestPart(name = "idea") IdeaRequest ideaRequest,
-                    @RequestPart MultipartFile image){
+                    @RequestPart(required = false) MultipartFile image){
         Long dummyUserId = 1L;
 
         ideaService.update(dummyUserId, ideaId, ideaRequest, image);
 
     }
+
 }

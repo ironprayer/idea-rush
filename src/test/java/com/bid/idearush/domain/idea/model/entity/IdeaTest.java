@@ -28,4 +28,5 @@ class IdeaTest {
         assertEquals(ideaRequest.auctionStartTime(), idea.getAuctionStartTime());
         assertEquals(imageName, idea.getImageName());
     }
+
 }

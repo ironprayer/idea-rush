@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Idea extends BaseTime {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,4 +56,5 @@ public class Idea extends BaseTime {
         this.auctionStartTime = ideaRequest.auctionStartTime();
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
     }
+
 }
