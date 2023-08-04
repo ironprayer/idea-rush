@@ -3,11 +3,9 @@ package com.bid.idearush.domain.idea.service;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
-import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +22,10 @@ public class IdeaService {
 
     @Transactional
     public void update(Long userId, Long ideaId, IdeaRequest ideaRequest, MultipartFile image) {
+        if(!validateImage(image)) {
+            throw new IllegalArgumentException("이미지 파일이 아닙니다.");
+        }
+
         boolean isUser = userRepository.findById(userId).isPresent();
 
         if(!isUser) {
@@ -35,10 +37,6 @@ public class IdeaService {
 
         if(userId != idea.getUsers().getId()){
             throw new IllegalArgumentException("아이디어에 권한이 없습니다.");
-        }
-
-        if(validateImage(image)) {
-            throw new IllegalArgumentException("이미지 파일이 아닙니다.");
         }
 
         String imageName = (!image.isEmpty() && image != null) ? idea.getImageName() : image.getOriginalFilename();
@@ -53,4 +51,5 @@ public class IdeaService {
 
         return imageExtensions.contains(image.getContentType());
     }
+
 }

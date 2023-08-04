@@ -41,7 +41,7 @@ class IdeaServiceTest {
         IdeaRequest ideaRequest =
                 new IdeaRequest("title", "content" , Category.values()[0], 1000L, LocalDateTime.now());
         MockMultipartFile multipartFile =
-                new MockMultipartFile("name", "originalFilename", "contentType", new byte[0]);
+                new MockMultipartFile("name", "originalFilename", "image/jpeg", new byte[0]);
 
         @Test
         @DisplayName("업데이트 성공 케이스")
@@ -51,6 +51,18 @@ class IdeaServiceTest {
                     willReturn(Optional.of(Idea.builder().users(Users.builder().id(1L).build()).build()));
 
             assertDoesNotThrow(() -> ideaService.update(1L, 1L, ideaRequest, multipartFile));
+        }
+
+        @Test
+        @DisplayName("이미지 파일이 아니어서 실패하는 케이스")
+        void updateNotImageExtensionFailTest() {
+            MockMultipartFile multipartFile =
+                    new MockMultipartFile("name", "originalFilename", "exe", new byte[0]);
+
+            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                    () -> ideaService.update(1L, 1L, ideaRequest, multipartFile));
+
+            assertEquals("이미지 파일이 아닙니다.", ex.getMessage());
         }
 
         @Test
