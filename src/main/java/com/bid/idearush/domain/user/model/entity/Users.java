@@ -2,9 +2,11 @@ package com.bid.idearush.domain.user.model.entity;
 
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
-public class User extends BaseTime {
+@Getter
+public class Users extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,4 +19,5 @@ public class User extends BaseTime {
 
     @Column(length = 32, nullable = false)
     private String password;
+
 }
