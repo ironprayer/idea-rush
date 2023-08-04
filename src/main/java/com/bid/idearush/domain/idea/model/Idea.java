@@ -2,7 +2,7 @@ package com.bid.idearush.domain.idea.model;
 
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.domain.user.model.entity.User;
+import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 
@@ -39,5 +39,5 @@ public class Idea extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User user;
+    Users users;
 }
