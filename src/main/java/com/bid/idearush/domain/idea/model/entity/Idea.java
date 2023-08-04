@@ -1,13 +1,21 @@
 package com.bid.idearush.domain.idea.model.entity;
 
+import com.bid.idearush.domain.bid.model.entity.Bid;
+import com.bid.idearush.domain.bid.model.entity.BidWin;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,6 +53,9 @@ public class Idea extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    Users users;
+    private Users users;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "idea")
+    private BidWin bidWin;
+  
 }
