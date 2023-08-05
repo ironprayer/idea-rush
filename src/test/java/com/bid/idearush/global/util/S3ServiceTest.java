@@ -1,5 +1,6 @@
 package com.bid.idearush.global.util;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.bid.idearush.global.exception.FileWriteException;
 import com.bid.idearush.global.exception.errortype.FileWriteErrorCode;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class S3ServiceTest {
@@ -26,7 +28,6 @@ class S3ServiceTest {
     AmazonS3Client amazonS3Client;
     @Mock
     MultipartFile multipartFile;
-
 
     @Test
     @DisplayName("S3 업로드 실패 테스트")
@@ -46,6 +47,24 @@ class S3ServiceTest {
         given(multipartFile.getInputStream()).willReturn(InputStream.nullInputStream());
 
         assertDoesNotThrow(() -> s3Service.upload("basePath", "fileName", multipartFile));
+    }
+
+    @Test
+    @DisplayName("S3 삭제 실패 테스트")
+    void deleteInS3FailTest() throws IOException {
+        doThrow(SdkClientException.class).when(amazonS3Client).deleteObject("bucket", "filePath");
+
+        FileWriteException ex = assertThrows(FileWriteException.class,
+                () -> s3Service.delete("filePath"));
+
+        assertEquals(FileWriteErrorCode.S3_NOT_DELETE.getStatus(), ex.getStatusCode());
+        assertEquals(FileWriteErrorCode.S3_NOT_DELETE.getMsg(), ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("S3 삭제 성공 테스트")
+    void deleteInS3SuccessTest() throws IOException {
+        assertDoesNotThrow(() -> s3Service.delete("filePath"));
     }
 
 }
