@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @Service
 @RequiredArgsConstructor
 public class S3Service {
@@ -19,13 +17,21 @@ public class S3Service {
     private String bucket;
     private final AmazonS3Client amazonS3Client;
 
+    public void delete(String filePath) {
+        try {
+            amazonS3Client.deleteObject(bucket, filePath);
+        } catch (Exception ex) {
+            throw new FileWriteException(FileWriteErrorCode.S3_NOT_DELETE);
+        }
+    }
+
     public void upload(String basePath, String fileName, MultipartFile multipartFile) {
         ObjectMetadata metadata= getObjectMetadataOf(multipartFile);
         String savePath = basePath + "/" + fileName;
 
         try {
             amazonS3Client.putObject(bucket, savePath, multipartFile.getInputStream(), metadata);
-        } catch (IOException ex){
+        } catch (Exception ex){
             throw new FileWriteException(FileWriteErrorCode.S3_NOT_WRITE);
         }
     }
