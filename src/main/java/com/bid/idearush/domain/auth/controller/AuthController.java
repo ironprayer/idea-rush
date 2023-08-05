@@ -1,5 +1,7 @@
 package com.bid.idearush.domain.auth.controller;
 
+import com.bid.idearush.domain.auth.model.reponse.TokenResponse;
+import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -19,6 +21,11 @@ public class AuthController {
     @PostMapping("/signup")
     public void signup(@Valid @RequestBody SignupRequest signupRequest) {
         authService.signup(signupRequest);
+    }
+
+    @PostMapping("/login")
+    public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest){
+        return authService.login(loginRequest);
     }
 
 }
