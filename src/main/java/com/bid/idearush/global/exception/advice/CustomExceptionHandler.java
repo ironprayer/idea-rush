@@ -8,7 +8,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j(topic = "에러 처리")
 @RestControllerAdvice
-public class CustomExceptionHandler {
+public class CustomExceptionHandler{
 
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity errorHandler(HttpStatusCodeException e) {
