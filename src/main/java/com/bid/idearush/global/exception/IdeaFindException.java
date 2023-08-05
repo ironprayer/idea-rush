@@ -1,22 +1,12 @@
 package com.bid.idearush.global.exception;
 
 import com.bid.idearush.global.exception.errortype.IdeaFindErrorCode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpStatusCodeException;
 
-@RequiredArgsConstructor
-public class IdeaFindException extends CustomRuntimeException {
+public class IdeaFindException extends HttpStatusCodeException {
 
-    private final IdeaFindErrorCode ideaFindErrorCode;
-
-    @Override
-    public HttpStatus getHttpStatus() {
-        return ideaFindErrorCode.getStatus();
-    }
-
-    @Override
-    public String getMsg() {
-        return ideaFindErrorCode.getMsg();
+    public IdeaFindException(IdeaFindErrorCode ideaFindErrorCode){
+        super(ideaFindErrorCode.getMsg(), ideaFindErrorCode.getStatus(), "", null, null, null);
     }
 
 }
