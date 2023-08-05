@@ -42,7 +42,7 @@ public class Idea extends BaseTime {
     private Long minimumStartingPrice;
 
     @Column
-    private Long bid_win_price;
+    private Long bidWinPrice;
 
     @Column(nullable = false)
     private LocalDateTime auctionStartTime;

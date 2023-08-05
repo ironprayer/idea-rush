@@ -22,7 +22,7 @@ public record IdeaResponse(
                 ServerIpAddress.s3Address+idea.getImageName(),
                 idea.getAuctionStatus(),
                 idea.getMinimumStartingPrice(),
-                idea.getBid_win_price()
+                idea.getBidWinPrice()
         );
     }
 }
