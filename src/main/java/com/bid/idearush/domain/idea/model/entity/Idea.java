@@ -8,7 +8,10 @@ import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
@@ -66,5 +69,4 @@ public class Idea extends BaseTime {
         this.auctionStartTime = ideaRequest.auctionStartTime();
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
     }
-
 }
