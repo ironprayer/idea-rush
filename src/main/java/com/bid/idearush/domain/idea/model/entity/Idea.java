@@ -1,6 +1,5 @@
 package com.bid.idearush.domain.idea.model.entity;
 
-import com.bid.idearush.domain.bid.model.entity.BidWin;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
@@ -49,9 +48,7 @@ public class Idea extends BaseTime {
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "idea")
-    private BidWin bidWin;
-
+    
     public void updateOf(IdeaRequest ideaRequest, String imageName) {
         this.title = ideaRequest.title();
         this.content = ideaRequest.content();
