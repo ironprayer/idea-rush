@@ -30,12 +30,14 @@ public class IdeaFindService {
         Idea findIdea = ideaRepository.findById(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
+
                 });
 
         return IdeaResponse.from(findIdea);
     }
 
     @Transactional(readOnly = true)
+
     public List<IdeaResponse> findAllIdea(String keyword, Category category) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
@@ -50,19 +52,17 @@ public class IdeaFindService {
             findList = ideaRepository.findAllByTitleContaining(keyword, sort).stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
-        }else if (!Objects.isNull(category)) {
+        } else if (!Objects.isNull(category)) {
             findList = ideaRepository.findAllByCategory(category, sort).stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
-        }else {
+        } else {
             findList = ideaRepository.findAll(sort).stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
         }
 
-
         return findList;
     }
-
 
 }
