@@ -47,8 +47,8 @@ class IdeaFindServiceTest {
         void categoryAndKeywordFindThrowsExceptionFailTest() {
             IdeaFindException exception = assertThrows(IdeaFindException.class, () -> ideaFindService.findAllIdea(keyword, category));
 
-            assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getStatus(), exception.getHttpStatus());
-            assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getMsg(), exception.getMsg());
+            assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getStatus(), exception.getStatusCode());
+            assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getMsg(), exception.getMessage());
         }
 
         @Test
