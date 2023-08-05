@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
-public class IdeaFindExceptionCustom extends ErrorCustomRuntimeException {
+public class IdeaFindException extends CustomRuntimeException {
 
     private final IdeaFindErrorCode ideaFindErrorCode;
 
