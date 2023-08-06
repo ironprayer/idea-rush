@@ -34,7 +34,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public String login(LoginRequest loginRequest) {
         Users user = userRepository.findByUserAccountId(loginRequest.userAccountId()).orElseThrow(
-                () -> new IllegalArgumentException("아이디를 다시 확인해 주세요."));
+                () -> new IllegalArgumentException("입력하신 아이디가 존재하지 않습니다."));
 
         if(!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");

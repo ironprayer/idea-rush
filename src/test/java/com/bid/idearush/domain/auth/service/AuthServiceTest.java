@@ -1,5 +1,6 @@
 package com.bid.idearush.domain.auth.service;
 
+import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
@@ -10,12 +11,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -75,6 +76,51 @@ class AuthServiceTest {
                     authService.signup(signupRequest));
 
             assertEquals("닉네임이 중복됩니다.", ex.getMessage());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("로그인 테스트")
+    class Login {
+
+        LoginRequest loginRequest = new LoginRequest("a123", "1234");
+
+        @Test
+        @DisplayName("로그인 성공 테스트")
+        void loginSuccessTest() {
+            Users user = Users.builder().id(1L).build();
+            given(userRepository.findByUserAccountId(loginRequest.userAccountId()))
+                    .willReturn(Optional.of(user));
+            given(passwordEncoder.matches(loginRequest.password(), user.getPassword())).willReturn(true);
+
+            String accessToken = authService.login(loginRequest);
+
+            assertNotNull(accessToken);
+        }
+
+        @Test
+        @DisplayName("로그인 시 유저 아이디가 존재하지 않은 경우 테스트")
+        void loginNotUserAccountIdTest() {
+            given(userRepository.findByUserAccountId(loginRequest.userAccountId())).willReturn(Optional.empty());
+
+            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+                    authService.login(loginRequest));
+
+            assertEquals(ex.getMessage(), "입력하신 아이디가 존재하지 않습니다.");
+        }
+
+        @Test
+        @DisplayName("로그인 시 비밀번호가 유효하지 않은 경우 테스트")
+        void loginInvalidPasswordTest() {
+            Users user = Users.builder().build();
+            given(userRepository.findByUserAccountId(loginRequest.userAccountId())).willReturn(Optional.of(user));
+            given(passwordEncoder.matches(loginRequest.password(), user.getPassword())).willReturn(false);
+
+            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+                    authService.login(loginRequest));
+
+            assertEquals(ex.getMessage(), "비밀번호가 맞지 않습니다.");
         }
 
     }
