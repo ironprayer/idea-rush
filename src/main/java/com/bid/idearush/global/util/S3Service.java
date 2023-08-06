@@ -1,5 +1,6 @@
 package com.bid.idearush.global.util;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.bid.idearush.global.exception.FileWriteException;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,7 @@ public class S3Service {
     public void delete(String filePath) {
         try {
             amazonS3Client.deleteObject(bucket, filePath);
-        } catch (Exception ex) {
+        } catch (SdkClientException  ex) {
             throw new FileWriteException(FileWriteErrorCode.S3_NOT_DELETE);
         }
     }
@@ -31,7 +34,7 @@ public class S3Service {
 
         try {
             amazonS3Client.putObject(bucket, savePath, multipartFile.getInputStream(), metadata);
-        } catch (Exception ex){
+        } catch (IOException | SdkClientException ex){
             throw new FileWriteException(FileWriteErrorCode.S3_NOT_WRITE);
         }
     }
