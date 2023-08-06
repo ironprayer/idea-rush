@@ -30,14 +30,12 @@ public class IdeaFindService {
         Idea findIdea = ideaRepository.findById(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
-
                 });
 
         return IdeaResponse.from(findIdea);
     }
 
     @Transactional(readOnly = true)
-
     public List<IdeaResponse> findAllIdea(String keyword, Category category) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
