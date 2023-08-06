@@ -54,7 +54,7 @@ class IdeaFindServiceTest {
         @Test
         @DisplayName("카테고리별 리스트를 반환한다.")
         void categoryFindSuccessTest() {
-            List<Idea> mockIdeaList = Collections.singletonList(createTitleTestIdea());
+            List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
             given(ideaRepository.findAllByCategory(category, sort)).willReturn(mockIdeaList);
             List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
                     .map(IdeaResponse::from)
@@ -69,7 +69,7 @@ class IdeaFindServiceTest {
         @Test
         @DisplayName("검색어를 통해 리스트를 반환한다.")
         void titleFindSuccessTest() {
-            List<Idea> mockIdeaList = Collections.singletonList(createTitleTestIdea());
+            List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
             given(ideaRepository.findAllByTitleContaining(keyword, sort)).willReturn(mockIdeaList);
             List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
                     .map(IdeaResponse::from)
@@ -84,7 +84,7 @@ class IdeaFindServiceTest {
         @Test
         @DisplayName("일반 리스트를 반환한다.")
         void FindAllSuccessTest() {
-            List<Idea> mockIdeaList = Collections.singletonList(createTitleTestIdea());
+            List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
             given(ideaRepository.findAll(sort)).willReturn(mockIdeaList);
             List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
                     .map(IdeaResponse::from)
@@ -114,7 +114,7 @@ class IdeaFindServiceTest {
         @DisplayName("아이디어 상세 조회하는데 해당 아이디어를 반환한다.")
         void testFindOneSuccessTest() {
             Long testIdeaId = 1L;
-            Idea expectedIdea = createTitleTestIdea();
+            Idea expectedIdea = createTestIdea();
             given(ideaRepository.findById(testIdeaId)).willReturn(Optional.of(expectedIdea));
 
             IdeaResponse actualIdeaResponse = ideaFindService.findOneIdea(testIdeaId);
@@ -124,10 +124,11 @@ class IdeaFindServiceTest {
 
     }
 
-    private Idea createTitleTestIdea() {
+
+    private Idea createTestIdea(){
         return Idea.builder()
-                .category(category)
-                .title(keyword)
+                .category(Category.LIFE)
+                .title("title")
                 .content("content")
                 .imageName("imageName")
                 .minimumStartingPrice(0L)
