@@ -1,11 +1,11 @@
 package com.bid.idearush.domain.auth.controller;
 
-import com.bid.idearush.domain.auth.model.reponse.TokenResponse;
 import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +24,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public TokenResponse login(@Valid @RequestBody LoginRequest loginRequest){
-        return authService.login(loginRequest);
+    public HttpHeaders login(@Valid @RequestBody LoginRequest loginRequest){
+        String accessToken = authService.login(loginRequest);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        return headers;
     }
 
 }

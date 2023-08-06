@@ -1,6 +1,5 @@
 package com.bid.idearush.domain.auth.service;
 
-import com.bid.idearush.domain.auth.model.reponse.TokenResponse;
 import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.user.model.entity.Users;
@@ -33,7 +32,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public TokenResponse login(LoginRequest loginRequest) {
+    public String login(LoginRequest loginRequest) {
         Users user = userRepository.findByUserAccountId(loginRequest.userAccountId()).orElseThrow(
                 () -> new IllegalArgumentException("아이디를 다시 확인해 주세요."));
 
@@ -41,7 +40,7 @@ public class AuthService {
             throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
         }
 
-        return JwtUtils.createToken(user.getId());
+        return JwtUtils.generateToken(user.getId());
     }
 
 }
