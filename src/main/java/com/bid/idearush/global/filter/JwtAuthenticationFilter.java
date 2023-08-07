@@ -32,12 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
-                return;
+                request.setAttribute("unauthorization", "유효하지 않은 토큰입니다.");
             }
         } else {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 없습니다.");
-            return;
+            request.setAttribute("unauthorization", "토큰이 없습니다.");
         }
 
         filterChain.doFilter(request, response);
