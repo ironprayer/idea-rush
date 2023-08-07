@@ -13,6 +13,7 @@ import java.util.Random;
 public class BidController {
 
     private final BidService bidService;
+
     @PostMapping
     public void createBid(@PathVariable(name = "id") Long ideaId, @RequestBody BidRequest request) {
         Random random = new Random();

@@ -27,37 +27,33 @@ public class BidService {
 
     @Transactional
     public void createBid(Long ideaId, Long userId, BidRequest request) {
-        Idea idea = ideaRepository.findById(ideaId).orElseThrow(() ->
+        Idea idea = ideaRepository.findByIdWithPessimisticLock(ideaId).orElseThrow(() ->
                 new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
 
         Users user = userRepository.findById(userId).orElseThrow(() ->
                 new UserFindException(UserFindErrorCode.USER_EMPTY));
 
-        bidPriceValidation(idea, request);
+        validateBidPrice(idea, request);
 
-        Bid newBid = Bid.builder()
-                .idea(idea)
-                .users(user)
-                .bidPrice(request.bidPrice())
-                .build();
+        Bid newBid = request.toBid(idea,user);
 
         bidRepository.save(newBid);
     }
 
-    private void bidPriceValidation(Idea idea, BidRequest request) {
-        Bid currentBidPrice = bidRepository.findTopByIdeaOrderByBidPriceDesc(idea)
+    private void validateBidPrice(Idea idea, BidRequest request) {
+        Bid currentBid = bidRepository.findTopByIdeaOrderByBidPriceDesc(idea)
                 .orElse(null);
 
-        if (currentBidPrice != null) {
-            if (request.bidPrice() <= currentBidPrice.getBidPrice()) {
-                throw new BidWriteException(BidWriteErrorCode.BID_PRICE_LOWER_THAN_CURRENT_PRICE);
-            } else if (request.bidPrice() > currentBidPrice.getBidPrice() * 1.1) {
-                throw new BidWriteException(BidWriteErrorCode.BID_PRICE_OVER_THAN_CURRENT_PRICE);
+        Long requestBidPrice = request.bidPrice();
+        Long startingBidPrice = idea.getMinimumStartingPrice();
+
+        if (currentBid != null) {
+            Long currentBidPrice =  currentBid.getBidPrice();
+            if (requestBidPrice <= currentBidPrice || requestBidPrice > currentBidPrice * 1.1) {
+                throw new BidWriteException(BidWriteErrorCode.INVALID_BID_PRICE);
             }
-        } else if (request.bidPrice() < idea.getMinimumStartingPrice()) {
-            throw new BidWriteException(BidWriteErrorCode.BID_PRICE_LOWER_THAN_STARTING_PRICE);
-        } else if (request.bidPrice() > idea.getMinimumStartingPrice() * 1.1) {
-            throw new BidWriteException(BidWriteErrorCode.BID_PRICE_OVER_THAN_STARTING_PRICE);
+        } else if (requestBidPrice < startingBidPrice || requestBidPrice > startingBidPrice * 1.1) {
+            throw new BidWriteException(BidWriteErrorCode.INVALID_BID_PRICE);
         }
     }
 

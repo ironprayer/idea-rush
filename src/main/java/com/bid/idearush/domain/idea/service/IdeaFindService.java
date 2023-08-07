@@ -24,7 +24,7 @@ public class IdeaFindService {
 
     private final IdeaRepository ideaRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public IdeaResponse findOneIdea(Long ideaId) {
 
         Idea findIdea = ideaRepository.findById(ideaId)
