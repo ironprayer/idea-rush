@@ -8,7 +8,6 @@ import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
