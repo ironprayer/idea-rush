@@ -8,7 +8,15 @@ import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
-
+import com.bid.idearush.domain.idea.type.AuctionStatus;
+import com.bid.idearush.domain.idea.type.Category;
+import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.global.model.entity.BaseTime;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
@@ -56,7 +64,6 @@ public class Idea extends BaseTime {
     @JoinColumn(name = "user_id")
     private Users users;
 
-    
     public void updateOf(IdeaRequest ideaRequest, String imageName) {
         this.title = ideaRequest.title();
         this.content = ideaRequest.content();
@@ -65,5 +72,5 @@ public class Idea extends BaseTime {
         this.auctionStartTime = ideaRequest.auctionStartTime();
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
     }
-
+  
 }

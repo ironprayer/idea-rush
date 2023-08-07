@@ -39,9 +39,9 @@ public class IdeaService {
             throw new IllegalArgumentException("아이디어에 권한이 없습니다.");
         }
 
-        String imageName = (!image.isEmpty() && image != null) ? idea.getImageName() : image.getOriginalFilename();
+        String imageName = (!image.isEmpty() && image != null) ?  image.getOriginalFilename() : idea.getImageName();
 
-        s3Service.upload(image);
+        s3Service.upload("idea/image" + idea.getId().toString(), imageName ,image);
         idea.updateOf(ideaRequest, imageName);
     }
 
