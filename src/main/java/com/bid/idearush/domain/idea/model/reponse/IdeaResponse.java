@@ -11,7 +11,7 @@ public record IdeaResponse(
         String imageUrl,
         AuctionStatus status,
         Long minimumStartingPrice,
-        Long bidWinPrice
+        Long BidWinPrice
 ) {
 
     public static IdeaResponse from(Idea idea){

@@ -5,3 +5,4 @@ public enum DealStatus {
     BID_WIN, BID_FAIL
 
 }
+
