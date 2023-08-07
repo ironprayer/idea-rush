@@ -8,6 +8,7 @@ import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -19,6 +20,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final IdeaRepository ideaRepository;
 
+    @Transactional
     public void ideaBidReservation(Long ideaId, Long userId) {
         Idea idea = ideaRepository.findById(ideaId).orElseThrow(() ->
                 new NoSuchElementException("게시글을 찾을 수 없습니다."));

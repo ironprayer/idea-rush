@@ -4,9 +4,15 @@ import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Bid extends BaseTime {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,4 +27,5 @@ public class Bid extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idea_id")
     private Idea idea;
+
 }
