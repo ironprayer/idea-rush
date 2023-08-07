@@ -27,7 +27,7 @@ public class IdeaController {
     void deleteIdea(@PathVariable(name = "id") Long ideaId) {
         Long dummyUserId = 1L;
 
-        ideaService.delete(dummyUserId, ideaId);
+        ideaService.deleteIdea(dummyUserId, ideaId);
     }
 
 }

@@ -110,7 +110,7 @@ class IdeaServiceTest {
             given(ideaRepository.findById(anyLong())).
                     willReturn(Optional.of(Idea.builder().users(Users.builder().id(1L).build()).build()));
 
-            assertDoesNotThrow(() -> ideaService.delete(1L, 1L));
+            assertDoesNotThrow(() -> ideaService.deleteIdea(1L, 1L));
         }
 
 
@@ -122,7 +122,7 @@ class IdeaServiceTest {
                     willReturn(Optional.of(Idea.builder().users(Users.builder().id(2L).build()).build()));
 
             UserFindException ex = assertThrows(UserFindException.class,
-                    () -> ideaService.delete(1L, 1L));
+                    () -> ideaService.deleteIdea(1L, 1L));
 
             assertEquals(UserFindErrorCode.USER_EMPTY.getStatus(), ex.getStatusCode());
             assertEquals(UserFindErrorCode.USER_EMPTY.getMsg(), ex.getMessage());
@@ -135,7 +135,7 @@ class IdeaServiceTest {
                     willThrow(new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
 
             IdeaFindException ex = assertThrows(IdeaFindException.class,
-                    () -> ideaService.delete(1L, 1L));
+                    () -> ideaService.deleteIdea(1L, 1L));
 
             assertEquals(IdeaFindErrorCode.IDEA_EMPTY.getStatus(), ex.getStatusCode());
             assertEquals(IdeaFindErrorCode.IDEA_EMPTY.getMsg(), ex.getMessage());
@@ -149,7 +149,7 @@ class IdeaServiceTest {
                     willReturn(Optional.of(Idea.builder().users(Users.builder().id(2L).build()).build()));
 
             IdeaWriteException ex = assertThrows(IdeaWriteException.class,
-                    () ->ideaService.delete(1L, 1L));
+                    () ->ideaService.deleteIdea(1L, 1L));
 
             assertEquals(IdeaWriteErrorCode.IDEA_UNAUTH.getStatus(), ex.getStatusCode());
             assertEquals(IdeaWriteErrorCode.IDEA_UNAUTH.getMsg(), ex.getMessage());

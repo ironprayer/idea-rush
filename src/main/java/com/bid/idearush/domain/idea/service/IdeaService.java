@@ -64,7 +64,7 @@ public class IdeaService {
         return imageExtensions.contains(image.getContentType());
     }
 
-    public void delete(Long userId, Long ideaId) {
+    public void deleteIdea(Long userId, Long ideaId) {
         Idea idea = getIdea(ideaId);
         String filePath = IMAGE_BASE_PATH + "/" + idea.getId() + "/" + idea.getImageName();
 
