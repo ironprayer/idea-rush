@@ -45,14 +45,10 @@ public class BidService {
                 .orElse(null);
 
         Long requestBidPrice = request.bidPrice();
-        Long startingBidPrice = idea.getMinimumStartingPrice();
+        Long minBidPrice = currentBid == null ? idea.getMinimumStartingPrice() : currentBid.getBidPrice();
+        Long maxBidPrice = (long) (minBidPrice * 1.1);
 
-        if (currentBid != null) {
-            Long currentBidPrice =  currentBid.getBidPrice();
-            if (requestBidPrice <= currentBidPrice || requestBidPrice > currentBidPrice * 1.1) {
-                throw new BidWriteException(BidWriteErrorCode.INVALID_BID_PRICE);
-            }
-        } else if (requestBidPrice < startingBidPrice || requestBidPrice > startingBidPrice * 1.1) {
+        if (requestBidPrice <= minBidPrice || requestBidPrice > maxBidPrice) {
             throw new BidWriteException(BidWriteErrorCode.INVALID_BID_PRICE);
         }
     }
