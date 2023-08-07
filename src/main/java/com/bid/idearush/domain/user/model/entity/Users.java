@@ -4,12 +4,15 @@ import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Users extends BaseTime {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,5 +25,8 @@ public class Users extends BaseTime {
 
     @Column(length = 64, nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "users")
+    private List<ChatLog> chatLogs;
 
 }
