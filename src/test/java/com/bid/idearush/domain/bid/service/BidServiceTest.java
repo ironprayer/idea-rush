@@ -54,7 +54,7 @@ class BidServiceTest {
 
         @Test
         @DisplayName("입찰 성공")
-        void BidSuccessTest() {
+        void bidSuccessTest() {
             given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
             given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(950L).build()));
 
