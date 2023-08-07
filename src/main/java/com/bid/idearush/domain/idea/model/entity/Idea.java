@@ -64,8 +64,6 @@ public class Idea extends BaseTime {
     @JoinColumn(name = "user_id")
     private Users users;
 
-
-
     public void updateOf(IdeaRequest ideaRequest, String imageName) {
         this.title = ideaRequest.title();
         this.content = ideaRequest.content();
@@ -74,4 +72,5 @@ public class Idea extends BaseTime {
         this.auctionStartTime = ideaRequest.auctionStartTime();
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
     }
+  
 }
