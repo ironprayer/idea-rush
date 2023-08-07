@@ -56,7 +56,7 @@ class BidServiceTest {
         @DisplayName("입찰 성공")
         void BidSuccessTest() {
             given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
-            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(1000L).build()));
+            given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(950L).build()));
 
             bidService.createBid(ideaId, userId, bidRequest);
         }
@@ -64,7 +64,7 @@ class BidServiceTest {
         @Test
         @DisplayName("예외 상황: 삭제된 경매 게시글에 입찰할 경우")
         void bidIdeaNotFoundFailTest() {
-            given(ideaRepository.findById(ideaId)).willReturn(Optional.empty());
+            given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.empty());
 
             IdeaFindException ex = assertThrows(IdeaFindException.class, () -> {
                 bidService.createBid(ideaId, userId, bidRequest);
@@ -77,7 +77,7 @@ class BidServiceTest {
         @Test
         @DisplayName("예외 상황: 비회원이 입찰할 경우")
         void bidUserNotFoundFailTest() {
-            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().build()));
+            given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().build()));
             given(userRepository.findById(userId)).willReturn(Optional.empty());
 
             UserFindException ex = assertThrows(UserFindException.class, () -> {
@@ -92,21 +92,7 @@ class BidServiceTest {
         @DisplayName("예외 상황: 현재 입찰가보다 낮게 입찰할 경우")
         void bidPriceLowerThanCurrentPriceFailTest() {
             given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
-            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(1200L).build()));
-
-            BidWriteException ex = assertThrows(BidWriteException.class, () -> {
-                bidService.createBid(ideaId, userId, bidRequest);
-            });
-
-            assertEquals(BidWriteErrorCode.BID_PRICE_LOWER_THAN_STARTING_PRICE.getStatus(), ex.getStatusCode());
-            assertEquals(BidWriteErrorCode.BID_PRICE_LOWER_THAN_STARTING_PRICE.getMsg(), ex.getMessage());
-        }
-
-        @Test
-        @DisplayName("예외 상황: 현재 입찰가보다 10% 초과하여 입찰할 경우")
-        void bidPriceOverFailTest() {
-            given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
-            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(800L).build()));
+            given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(1200L).build()));
             given(bidRepository.findTopByIdeaOrderByBidPriceDesc(any(Idea.class)))
                     .willReturn(Optional.of(Bid.builder().bidPrice(800L).build()));
 
@@ -114,36 +100,56 @@ class BidServiceTest {
                 bidService.createBid(ideaId, userId, bidRequest);
             });
 
-            assertEquals(BidWriteErrorCode.BID_PRICE_OVER_THAN_CURRENT_PRICE.getStatus(), ex.getStatusCode());
-            assertEquals(BidWriteErrorCode.BID_PRICE_OVER_THAN_CURRENT_PRICE.getMsg(), ex.getMessage());
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getStatus(), ex.getStatusCode());
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getMsg(), ex.getMessage());
+        }
+
+        @Test
+        @DisplayName("예외 상황: 현재 입찰가보다 10% 초과하여 입찰할 경우")
+        void bidPriceOverFailTest() {
+            given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
+            given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(800L).build()));
+            given(bidRepository.findTopByIdeaOrderByBidPriceDesc(any(Idea.class)))
+                    .willReturn(Optional.of(Bid.builder().bidPrice(800L).build()));
+
+            BidWriteException ex = assertThrows(BidWriteException.class, () -> {
+                bidService.createBid(ideaId, userId, bidRequest);
+            });
+
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getStatus(), ex.getStatusCode());
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getMsg(), ex.getMessage());
         }
 
         @Test
         @DisplayName("예외 상황: 경매 시작가보다 낮게 입찰할 경우")
         void bidPriceLowerThanStartingPriceFailTest() {
             given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
-            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(1200L).build()));
+            given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(1200L).build()));
+            given(bidRepository.findTopByIdeaOrderByBidPriceDesc(any(Idea.class)))
+                    .willReturn(Optional.of(Bid.builder().bidPrice(800L).build()));
 
             BidWriteException ex = assertThrows(BidWriteException.class, () -> {
                 bidService.createBid(ideaId, userId, bidRequest);
             });
 
-            assertEquals(BidWriteErrorCode.BID_PRICE_LOWER_THAN_STARTING_PRICE.getStatus(), ex.getStatusCode());
-            assertEquals(BidWriteErrorCode.BID_PRICE_LOWER_THAN_STARTING_PRICE.getMsg(), ex.getMessage());
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getStatus(), ex.getStatusCode());
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getMsg(), ex.getMessage());
         }
 
         @Test
         @DisplayName("예외 상황: 경매 시작가보다 10% 초과하여 입찰할 경우")
         void bidPriceOverStartingPriceFailTest() {
             given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
-            given(ideaRepository.findById(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(800L).build()));
+            given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(800L).build()));
+            given(bidRepository.findTopByIdeaOrderByBidPriceDesc(any(Idea.class)))
+                    .willReturn(Optional.of(Bid.builder().bidPrice(900L).build()));
 
             BidWriteException ex = assertThrows(BidWriteException.class, () -> {
                 bidService.createBid(ideaId, userId, bidRequest);
             });
 
-            assertEquals(BidWriteErrorCode.BID_PRICE_OVER_THAN_STARTING_PRICE.getStatus(), ex.getStatusCode());
-            assertEquals(BidWriteErrorCode.BID_PRICE_OVER_THAN_STARTING_PRICE.getMsg(), ex.getMessage());
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getStatus(), ex.getStatusCode());
+            assertEquals(BidWriteErrorCode.INVALID_BID_PRICE.getMsg(), ex.getMessage());
         }
 
     }
