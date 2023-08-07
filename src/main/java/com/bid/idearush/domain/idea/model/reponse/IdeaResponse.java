@@ -11,7 +11,7 @@ public record IdeaResponse(
         String imageUrl,
         AuctionStatus status,
         Long minimumStartingPrice,
-        Long bidWinPrice
+        Long BidWinPrice
 ) {
 
     public static IdeaResponse from(Idea idea){
@@ -22,7 +22,7 @@ public record IdeaResponse(
                 ServerIpAddress.s3Address+idea.getImageName(),
                 idea.getAuctionStatus(),
                 idea.getMinimumStartingPrice(),
-                idea.getBidWin().getBidWinPrice()
+                idea.getBidWinPrice()
         );
     }
 }

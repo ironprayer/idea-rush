@@ -50,19 +50,17 @@ public class IdeaFindService {
             findList = ideaRepository.findAllByTitleContaining(keyword, sort).stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
-        }else if (!Objects.isNull(category)) {
+        } else if (!Objects.isNull(category)) {
             findList = ideaRepository.findAllByCategory(category, sort).stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
-        }else {
+        } else {
             findList = ideaRepository.findAll(sort).stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
         }
 
-
         return findList;
     }
-
 
 }
