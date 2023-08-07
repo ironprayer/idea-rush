@@ -16,11 +16,18 @@ public class IdeaController {
     @PutMapping("{id}")
     void updateIdea(@PathVariable(name = "id") Long ideaId,
                     @RequestPart(name = "idea") IdeaRequest ideaRequest,
-                    @RequestPart(required = false) MultipartFile image){
+                    @RequestPart(required = false) MultipartFile image) {
         Long dummyUserId = 1L;
 
         ideaService.update(dummyUserId, ideaId, ideaRequest, image);
 
+    }
+
+    @DeleteMapping("{id}")
+    void deleteIdea(@PathVariable(name = "id") Long ideaId) {
+        Long dummyUserId = 1L;
+
+        ideaService.delete(dummyUserId, ideaId);
     }
 
 }

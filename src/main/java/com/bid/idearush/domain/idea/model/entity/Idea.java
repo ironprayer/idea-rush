@@ -61,4 +61,8 @@ public class Idea extends BaseTime {
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
     }
 
+    public boolean isAuthUser(Long userId) {
+        return userId == this.users.getId();
+    }
+
 }
