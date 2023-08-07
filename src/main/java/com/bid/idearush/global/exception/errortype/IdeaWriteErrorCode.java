@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserFindErrorCode {
+public enum IdeaWriteErrorCode {
 
-    USER_EMPTY(HttpStatus.BAD_REQUEST, "유저가 존재하지 않습니다.")
+    IDEA_UNAUTH(HttpStatus.BAD_REQUEST, "아이디어에 권한이 없습니다.")
     ;
 
     private final HttpStatus status;
