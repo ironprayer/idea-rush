@@ -4,6 +4,8 @@ import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
+import com.bid.idearush.global.exception.UserFindException;
+import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
 import com.bid.idearush.global.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,11 +35,13 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public String login(LoginRequest loginRequest) {
-        Users user = userRepository.findByUserAccountId(loginRequest.userAccountId()).orElseThrow(
-                () -> new IllegalArgumentException("입력하신 아이디가 존재하지 않습니다."));
+        Users user = userRepository.findByUserAccountId(loginRequest.userAccountId())
+                .orElseThrow(() -> {
+                    throw new UserFindException(UserFindErrorCode.USER_ACCOUNT_ID_EMPTY);
+                });
 
         if(!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+            throw new UserFindException(UserFindErrorCode.USER_PASSWORD_WRONG);
         }
 
         return JwtUtils.generateToken(user.getId());
