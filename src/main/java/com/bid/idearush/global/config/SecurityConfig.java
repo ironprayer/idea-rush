@@ -33,6 +33,7 @@ public class SecurityConfig {
                         (request) -> request
                                 .requestMatchers(requestUrls).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/ideas/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/ideas/{id}/notice").authenticated()
                                 .anyRequest()
                                 .authenticated()
                 )
