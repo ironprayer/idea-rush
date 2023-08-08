@@ -8,12 +8,5 @@ public record ChatMessageResponse(
         LocalDateTime createdAt
 ) {
 
-    public static ChatMessageResponse from(ChatLog chatLog){
-        return new ChatMessageResponse(
-                chatLog.getUsers().getNickname(),
-                chatLog.getMsg(),
-                chatLog.getCreatedAt()
-        );
-    }
 
 }

@@ -26,7 +26,5 @@ public class Users extends BaseTime {
     @Column(length = 64, nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "users")
-    private List<ChatLog> chatLogs;
 
 }
