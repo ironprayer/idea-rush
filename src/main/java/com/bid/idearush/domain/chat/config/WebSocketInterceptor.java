@@ -1,31 +1,32 @@
 package com.bid.idearush.domain.chat.config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.server.ServerHttpRequest;
-import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.server.HandshakeInterceptor;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class WebSocketInterceptor implements HandshakeInterceptor{
+public class WebSocketInterceptor implements ChannelInterceptor {
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        String authHeader = request.getHeaders().getFirst("Authorization");
+    public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
-        return true;
-    }
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        MessageHeaders header = message.getHeaders();
+        MultiValueMap<String, String> map = header.get(StompHeaderAccessor.NATIVE_HEADERS, MultiValueMap.class);
 
-    @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
-
+        if (StompCommand.CONNECT == accessor.getCommand()) {
+            System.out.println("웹 소켓 접속함." + map.get("Authorization"));
+        }
+        return message;
     }
 
 }

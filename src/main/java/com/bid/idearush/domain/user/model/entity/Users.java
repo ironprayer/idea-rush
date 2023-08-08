@@ -26,5 +26,4 @@ public class Users extends BaseTime {
     @Column(length = 64, nullable = false)
     private String password;
 
-
 }
