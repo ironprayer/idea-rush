@@ -1,14 +1,22 @@
 package com.bid.idearush.domain.idea.model.entity;
 
-import com.bid.idearush.domain.bid.model.entity.BidWin;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
+import com.bid.idearush.domain.idea.type.AuctionStatus;
+import com.bid.idearush.domain.idea.type.Category;
+import com.bid.idearush.domain.idea.type.DealStatus;
+import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.global.model.entity.BaseTime;
+import jakarta.persistence.*;
+import lombok.*;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,19 +46,23 @@ public class Idea extends BaseTime {
     @Column(nullable = false)
     private Long minimumStartingPrice;
 
+    @Column
+    private Long bidWinPrice;
+
     @Column(nullable = false)
     private LocalDateTime auctionStartTime;
 
-    @Column(length = 16, nullable = false)
+    @Column(length = 8, nullable = false)
     @Enumerated(EnumType.STRING)
     private AuctionStatus auctionStatus;
+
+    @Column(length = 8)
+    @Enumerated
+    private DealStatus dealStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users users;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "idea")
-    private BidWin bidWin;
 
     public void updateOf(IdeaRequest ideaRequest, String imageName) {
         this.title = ideaRequest.title();
@@ -61,4 +73,7 @@ public class Idea extends BaseTime {
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
     }
 
+    public boolean isAuthUser(Long userId) {
+        return userId == this.users.getId();
+    }
 }
