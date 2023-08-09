@@ -3,7 +3,6 @@ package com.bid.idearush.domain.auth.controller;
 import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.auth.service.AuthService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
