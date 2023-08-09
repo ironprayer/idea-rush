@@ -4,6 +4,7 @@ import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
+import com.bid.idearush.global.exception.UserFindException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -104,10 +105,10 @@ class AuthServiceTest {
         void loginNotUserAccountIdTest() {
             given(userRepository.findByUserAccountId(loginRequest.userAccountId())).willReturn(Optional.empty());
 
-            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+            UserFindException ex = assertThrows(UserFindException.class, () ->
                     authService.login(loginRequest));
 
-            assertEquals(ex.getMessage(), "입력하신 아이디가 존재하지 않습니다.");
+            assertEquals(ex.getMessage(), "유저 아이디가 존재하지 않습니다.");
         }
 
         @Test
@@ -117,10 +118,10 @@ class AuthServiceTest {
             given(userRepository.findByUserAccountId(loginRequest.userAccountId())).willReturn(Optional.of(user));
             given(passwordEncoder.matches(loginRequest.password(), user.getPassword())).willReturn(false);
 
-            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+            UserFindException ex = assertThrows(UserFindException.class, () ->
                     authService.login(loginRequest));
 
-            assertEquals(ex.getMessage(), "비밀번호가 맞지 않습니다.");
+            assertEquals(ex.getMessage(), "잘못된 비밀번호입니다.");
         }
 
     }
