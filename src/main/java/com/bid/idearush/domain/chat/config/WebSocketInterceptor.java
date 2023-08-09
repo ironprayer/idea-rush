@@ -1,6 +1,7 @@
 package com.bid.idearush.domain.chat.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHeaders;
@@ -12,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
+@Slf4j(topic = "채팅 로그")
 @Component
 @RequiredArgsConstructor
 public class WebSocketInterceptor implements ChannelInterceptor {
@@ -24,7 +26,8 @@ public class WebSocketInterceptor implements ChannelInterceptor {
         MultiValueMap<String, String> map = header.get(StompHeaderAccessor.NATIVE_HEADERS, MultiValueMap.class);
 
         if (StompCommand.CONNECT == accessor.getCommand()) {
-            System.out.println("웹 소켓 접속함." + map.get("Authorization"));
+            log.info("웹 소켓 접속함." + map.get("Authorization"));
+            //TODO: JWT 토큰 검증 처리.
         }
         return message;
     }
