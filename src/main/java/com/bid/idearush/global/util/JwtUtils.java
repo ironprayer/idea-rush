@@ -2,8 +2,10 @@ package com.bid.idearush.global.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,13 +14,13 @@ import java.security.Key;
 import java.time.Instant;
 import java.util.Map;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtUtils {
 
     private static final String secretKey = "IdeaRushdkfdifekdihgakdhjifekfdjkfjejdfkdfjeikd";
     private static final Key SIGNING_KEY = getSigningKey();
     private static final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60;
-    public static final Logger logger = LoggerFactory.getLogger("JWT 관련 로그");
 
     public static String generateToken(Long userId) {
         Instant now = Instant.now();
@@ -44,14 +46,14 @@ public class JwtUtils {
         try {
             Jwts.parserBuilder().setSigningKey(SIGNING_KEY).build().parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            logger.error("Invalid JWT Token");
+        } catch (SecurityException | MalformedJwtException e) {
+            log.error("Invalid JWT Token");
         } catch (ExpiredJwtException e) {
-            logger.error("Expired JWT Token");
+            log.error("Expired JWT Token");
         } catch (UnsupportedJwtException e) {
-            logger.error("Unsupported JWT Token");
+            log.error("Unsupported JWT Token");
         } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty.");
         }
         return false;
     }
