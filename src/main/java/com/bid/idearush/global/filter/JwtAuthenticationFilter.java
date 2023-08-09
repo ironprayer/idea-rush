@@ -1,7 +1,6 @@
 package com.bid.idearush.global.filter;
 
 import com.bid.idearush.global.security.UserAuthentication;
-import com.bid.idearush.global.util.HttpUtils;
 import com.bid.idearush.global.util.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.RequestDispatcher;
@@ -25,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String jwt = HttpUtils.getJwtFromRequest(request);
+        String jwt = getJwtFromRequest(request);
 
         if (StringUtils.hasText(jwt)) {
             if (JwtUtils.validateToken(jwt)) {
@@ -43,6 +42,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring("Bearer ".length());
+        }
+        return null;
     }
 
 }
