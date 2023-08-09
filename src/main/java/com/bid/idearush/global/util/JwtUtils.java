@@ -3,11 +3,12 @@ package com.bid.idearush.global.util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -15,12 +16,19 @@ import java.time.Instant;
 import java.util.Map;
 
 @Slf4j
+@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtUtils {
 
-    private static final String secretKey = "IdeaRushdkfdifekdihgakdhjifekfdjkfjejdfkdfjeikd";
-    private static final Key SIGNING_KEY = getSigningKey();
+    @Value("${jwt.secret.key}")
+    private String secretKey;
+    private static Key SIGNING_KEY;
     private static final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60;
+
+    @PostConstruct
+    private void init() {
+        SIGNING_KEY = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
 
     public static String generateToken(Long userId) {
         Instant now = Instant.now();
@@ -35,11 +43,8 @@ public class JwtUtils {
                 .signWith(SIGNING_KEY, SignatureAlgorithm.HS256)
                 .compact();
 
+        System.out.println(accessToken);
         return accessToken;
-    }
-
-    public static Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public static boolean validateToken(String token) {
