@@ -29,7 +29,7 @@ public class AuthController {
     public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest loginRequest){
         String accessToken = authService.login(loginRequest);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+        headers.add(HttpHeaders.AUTHORIZATION, accessToken);
         return ResponseEntity.ok().headers(headers).build();
     }
 
