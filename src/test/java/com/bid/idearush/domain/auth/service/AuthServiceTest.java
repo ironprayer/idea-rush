@@ -5,6 +5,8 @@ import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.UserFindException;
+import com.bid.idearush.global.util.JwtUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,6 +36,12 @@ class AuthServiceTest {
 
     @Mock
     PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void initJwtUtils() {
+        JwtUtils jwtUtils = new JwtUtils();
+        jwtUtils.init();
+    }
 
     @Nested
     @DisplayName("회원가입 테스트")

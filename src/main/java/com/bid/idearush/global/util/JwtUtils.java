@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class JwtUtils {
 
     @Value("${jwt.secret.key}")
@@ -26,7 +26,7 @@ public class JwtUtils {
     private static final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60;
 
     @PostConstruct
-    private void init() {
+    public void init() {
         SIGNING_KEY = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -43,7 +43,6 @@ public class JwtUtils {
                 .signWith(SIGNING_KEY, SignatureAlgorithm.HS256)
                 .compact();
 
-        System.out.println(accessToken);
         return accessToken;
     }
 
