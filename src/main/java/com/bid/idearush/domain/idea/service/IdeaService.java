@@ -14,6 +14,7 @@ import com.bid.idearush.global.exception.errortype.IdeaWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
 import com.bid.idearush.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ public class IdeaService {
     private final IdeaRepository ideaRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public IdeaResponse findOneIdea(Long ideaId) {
@@ -92,6 +94,7 @@ public class IdeaService {
             throw new IllegalArgumentException("아이디어에 권한이 없습니다.");
         }
 
+        // TODO 이이미 파일이 없는 경우 S3 Upload가 되어서는 안됨. (수정 해야 함)
         String imageName = isMultipartFile(image) ?  image.getOriginalFilename() : idea.getImageName();
 
         s3Service.upload(IMAGE_BASE_PATH + "/"  + idea.getId(), imageName ,image);
