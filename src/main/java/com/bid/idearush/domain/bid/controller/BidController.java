@@ -17,7 +17,7 @@ public class BidController {
     @PostMapping
     public void createBid(@PathVariable(name = "id") Long ideaId, @RequestBody BidRequest request) {
         Random random = new Random();
-        Long dummyUserId = 1L + random.nextInt(3);
+        Long dummyUserId = 1L + random.nextInt(20);
 
         bidService.createBid(ideaId, dummyUserId, request);
     }

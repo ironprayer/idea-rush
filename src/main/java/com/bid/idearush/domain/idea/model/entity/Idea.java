@@ -8,7 +8,15 @@ import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
-
+import com.bid.idearush.domain.idea.type.AuctionStatus;
+import com.bid.idearush.domain.idea.type.Category;
+import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.global.model.entity.BaseTime;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
@@ -44,9 +52,6 @@ public class Idea extends BaseTime {
     @Column(nullable = false)
     private LocalDateTime auctionStartTime;
 
-    @Column(nullable = false)
-    private LocalDateTime auctionEndTime;
-
     @Column(length = 8, nullable = false)
     @Enumerated(EnumType.STRING)
     private AuctionStatus auctionStatus;
@@ -66,17 +71,6 @@ public class Idea extends BaseTime {
         this.imageName = imageName;
         this.auctionStartTime = ideaRequest.auctionStartTime();
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
-    }
-
-    public void updateBidSuccess(Long bidWinPrice){
-        this.auctionStatus = AuctionStatus.END;
-        this.dealStatus = DealStatus.BID_WIN;
-        this.bidWinPrice = bidWinPrice;
-    }
-
-    public void updateBidFail(){
-        this.auctionStatus = AuctionStatus.END;
-        this.dealStatus = DealStatus.BID_FAIL;
     }
 
     public boolean isAuthUser(Long userId) {
