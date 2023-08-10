@@ -46,8 +46,8 @@ public class SseService {
             try {
                 sendEmitter.sseEmitter()
                         .send(SseEmitter.event()
-                            .name(event.toString())
-                            .data(data));
+                                .name(event.toString())
+                                .data(data));
             } catch (IOException exception) {
                 currentEmitters.remove(sendEmitter);
                 throw new RuntimeException("연결 오류!");

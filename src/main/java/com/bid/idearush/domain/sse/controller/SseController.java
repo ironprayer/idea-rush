@@ -14,7 +14,6 @@ public class SseController {
     private final SseService sseService;
 
     @GetMapping("/user/{id}")
-    @ResponseBody
     public SseEmitter connectUser(
             @PathVariable(name = "id") Long userId,
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
@@ -22,7 +21,6 @@ public class SseController {
     }
 
     @GetMapping("/idea/{id}")
-    @ResponseBody
     public SseEmitter connectIdea(
             @PathVariable(name = "id") Long ideaId,
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
