@@ -4,15 +4,13 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Map;
 
 @Slf4j
@@ -27,10 +25,11 @@ public class JwtUtils {
 
     @PostConstruct
     public void init() {
-        SIGNING_KEY = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = Base64.getDecoder().decode(secretKey);
+        SIGNING_KEY = Keys.hmacShaKeyFor(bytes);
     }
 
-    public static String generateToken(Long userId) {
+    public String generateToken(Long userId) {
         Instant now = Instant.now();
         Instant expiryDateOfAccessToken = now.plusSeconds(ACCESS_TOKEN_DURATION_SECONDS);
 
