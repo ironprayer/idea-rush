@@ -1,7 +1,11 @@
 package com.bid.idearush.global.util;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -9,6 +13,15 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class JwtUtilsTest {
+
+    private JwtUtils jwtUtils;
+
+    @BeforeEach
+    void setUp() {
+        jwtUtils = new JwtUtils();
+        setField(jwtUtils, "secretKey", "qbUUJ7SZOV1Az2zNzHtRQHSZuMgi9fsSFuwxLPDhSeM=");
+        jwtUtils.init();
+    }
 
     @Test
     @DisplayName("토큰 생성 성공 테스트")
@@ -23,9 +36,9 @@ public class JwtUtilsTest {
     @Test
     @DisplayName("userId parsing 및 가져오기 성공 테스트")
     void parseUserIdGetSuccessTest() {
-        String accessToken = JwtUtils.generateToken(1L);
+        String accessToken = jwtUtils.generateToken(1L);
 
-        Long userId = JwtUtils.parseUserId(accessToken);
+        Long userId = jwtUtils.parseUserId(accessToken);
 
         assertEquals(1L, userId);
     }
@@ -33,9 +46,9 @@ public class JwtUtilsTest {
     @Test
     @DisplayName("accessToken 유효성 검사 성공 테스트")
     void validateAccessTokenSuccessTest() {
-        String accessToken = JwtUtils.generateToken(1L);
+        String accessToken = jwtUtils.generateToken(1L);
 
-        boolean isValidateToken = JwtUtils.validateToken(accessToken);
+        boolean isValidateToken = jwtUtils.validateToken(accessToken);
 
         assertTrue(isValidateToken);
     }
@@ -46,7 +59,7 @@ public class JwtUtilsTest {
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTY5MTQyMDYwOCwiaWF0IjoxNjkxNDE3MDA4fQ." +
                 "Cr6CsoDVGYUoS98S8a-lOWtmi46Wy83P5UrYDCLYojI";
 
-        boolean isValidateToken = JwtUtils.validateToken(accessToken);
+        boolean isValidateInvalidToken = jwtUtils.validateToken(accessToken);
 
         assertFalse(isValidateInvalidToken);
     }
@@ -56,7 +69,7 @@ public class JwtUtilsTest {
     void validateTokenClaimsEmptyFailTest() {
         String accessToken = "";
 
-        boolean isValidateToken = JwtUtils.validateToken(accessToken);
+        boolean isValidateClaimsEmptyToken = jwtUtils.validateToken(accessToken);
 
         assertFalse(isValidateClaimsEmptyToken);
     }
@@ -67,7 +80,7 @@ public class JwtUtilsTest {
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTY5MTQyMDYwOCwiaWF0IjoxNjkxNDE3MDA4fQ." +
                 "Cr6CsoDVGYUoS98S8a-lOWtmi46Wy83P5UrYDCLYojI";
 
-        boolean isValidateToken = JwtUtils.validateToken(accessToken);
+        boolean isValidateExpiredToken = jwtUtils.validateToken(accessToken);
 
         assertFalse(isValidateExpiredToken);
     }

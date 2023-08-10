@@ -20,6 +20,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final JwtUtils jwtUtils;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -33,8 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = getJwtFromRequest(request);
 
         if (StringUtils.hasText(jwt)) {
-            if (JwtUtils.validateToken(jwt)) {
-                Long userId = JwtUtils.parseUserId(jwt);
+            if (jwtUtils.validateToken(jwt)) {
+                Long userId = jwtUtils.parseUserId(jwt);
                 UserAuthentication authentication = new UserAuthentication(userId);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

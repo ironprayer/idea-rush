@@ -18,6 +18,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
     private final String BEARER_PREFIX = "Bearer ";
 
@@ -46,7 +47,7 @@ public class AuthService {
             throw new UserFindException(UserFindErrorCode.USER_PASSWORD_WRONG);
         }
 
-        return BEARER_PREFIX + JwtUtils.generateToken(user.getId());
+        return BEARER_PREFIX + jwtUtils.generateToken(user.getId());
     }
 
 }

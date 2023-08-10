@@ -15,13 +15,12 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@NoArgsConstructor
 public class JwtUtils {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
-    private static Key SIGNING_KEY;
-    private static final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60;
+    private Key SIGNING_KEY;
+    private final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60;
 
     @PostConstruct
     public void init() {
@@ -33,7 +32,7 @@ public class JwtUtils {
         Instant now = Instant.now();
         Instant expiryDateOfAccessToken = now.plusSeconds(ACCESS_TOKEN_DURATION_SECONDS);
 
-        String accessToken = Jwts.builder()
+        return Jwts.builder()
                 .setClaims(Map.of(
                         "userId", userId,
                         "iat", now.getEpochSecond(),
@@ -41,11 +40,9 @@ public class JwtUtils {
                 ))
                 .signWith(SIGNING_KEY, SignatureAlgorithm.HS256)
                 .compact();
-
-        return accessToken;
     }
 
-    public static boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(SIGNING_KEY).build().parseClaimsJws(token);
             return true;
@@ -61,7 +58,7 @@ public class JwtUtils {
         return false;
     }
 
-    public static Long parseUserId(String token) {
+    public Long parseUserId(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SIGNING_KEY)
                 .build()
