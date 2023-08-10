@@ -1,6 +1,8 @@
 package com.bid.idearush.global.config;
 
 import com.bid.idearush.global.filter.JwtAuthenticationFilter;
+import com.bid.idearush.global.util.JwtUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,8 +19,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
+
+    private final JwtUtils jwtUtils;
 
     private final String[] requestUrls = {"/", "/api/auth/**"};
 
@@ -37,7 +42,7 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
