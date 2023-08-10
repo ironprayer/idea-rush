@@ -92,6 +92,7 @@ public class IdeaService {
             throw new IllegalArgumentException("아이디어에 권한이 없습니다.");
         }
 
+        // TODO 이이미 파일이 없는 경우 S3 Upload가 되어서는 안됨. (수정 해야 함)
         String imageName = isMultipartFile(image) ?  image.getOriginalFilename() : idea.getImageName();
 
         s3Service.upload(IMAGE_BASE_PATH + "/"  + idea.getId(), imageName ,image);

@@ -5,6 +5,7 @@ import com.bid.idearush.domain.bid.model.request.BidRequest;
 import com.bid.idearush.domain.bid.repository.BidRepository;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
+import com.bid.idearush.global.util.NoticeService;
 import com.bid.idearush.domain.sse.service.SseService;
 import com.bid.idearush.domain.sse.type.SseConnect;
 import com.bid.idearush.domain.sse.type.SseEvent;
@@ -27,8 +28,8 @@ public class BidService {
     private final IdeaRepository ideaRepository;
     private final UserRepository userRepository;
     private final BidRepository bidRepository;
+    private final NoticeService noticeService;
     private final SseService sseService;
-
 
     @Transactional
     public void createBid(Long ideaId, Long userId, BidRequest request) {
@@ -43,8 +44,9 @@ public class BidService {
         Bid newBid = request.toBid(idea,user);
 
         bidRepository.save(newBid);
-
+      
         sseService.send(SseConnect.BID,SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice());
+        noticeService.noticeBidEvent(userId, idea, request.bidPrice());
     }
 
     private void validateBidPrice(Idea idea, BidRequest request) {
