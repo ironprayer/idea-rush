@@ -23,7 +23,7 @@ public class S3Service {
     public void delete(String filePath) {
         try {
             amazonS3Client.deleteObject(bucket, filePath);
-        } catch (SdkClientException  ex) {
+        } catch (SdkClientException ex) {
             throw new FileWriteException(FileWriteErrorCode.S3_NOT_DELETE);
         }
     }
