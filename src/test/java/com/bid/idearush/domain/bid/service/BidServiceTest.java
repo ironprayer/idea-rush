@@ -5,6 +5,7 @@ import com.bid.idearush.domain.bid.model.request.BidRequest;
 import com.bid.idearush.domain.bid.repository.BidRepository;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
+import com.bid.idearush.domain.sse.service.SseService;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.BidWriteException;
@@ -13,6 +14,7 @@ import com.bid.idearush.global.exception.UserFindException;
 import com.bid.idearush.global.exception.errortype.BidWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.IdeaFindErrorCode;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
+import com.bid.idearush.global.util.NoticeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -44,6 +45,12 @@ class BidServiceTest {
     @Mock
     BidRepository bidRepository;
 
+    @Mock
+    SseService sseService;
+
+    @Mock
+    NoticeService noticeService;
+
     private Long userId = 1L;
     private Long ideaId = 1L;
     private BidRequest bidRequest = new BidRequest(1000L);
@@ -58,7 +65,7 @@ class BidServiceTest {
             given(userRepository.findById(userId)).willReturn(Optional.of(Users.builder().build()));
             given(ideaRepository.findByIdWithPessimisticLock(ideaId)).willReturn(Optional.of(Idea.builder().minimumStartingPrice(950L).build()));
 
-            bidService.createBid(ideaId, userId, bidRequest);
+            assertDoesNotThrow(() -> bidService.createBid(ideaId, userId, bidRequest));
         }
 
         @Test
