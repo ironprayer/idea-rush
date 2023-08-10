@@ -6,7 +6,6 @@ import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.UserFindException;
 import com.bid.idearush.global.util.JwtUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -37,11 +35,8 @@ class AuthServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
-    @BeforeEach
-    void initJwtUtils() {
-        JwtUtils jwtUtils = new JwtUtils();
-        jwtUtils.init();
-    }
+    @Mock
+    JwtUtils jwtUtils;
 
     @Nested
     @DisplayName("회원가입 테스트")
@@ -98,10 +93,9 @@ class AuthServiceTest {
         @Test
         @DisplayName("로그인 성공 테스트")
         void loginSuccessTest() {
-            Users user = Users.builder().id(1L).build();
-            given(userRepository.findByUserAccountId(loginRequest.userAccountId()))
-                    .willReturn(Optional.of(user));
-            given(passwordEncoder.matches(loginRequest.password(), user.getPassword())).willReturn(true);
+            Users user = Users.builder().id(1L).userAccountId("a123").password("1234").build();
+            given(userRepository.findByUserAccountId("a123")).willReturn(Optional.of(user));
+            given(passwordEncoder.matches("1234", "1234")).willReturn(true);
 
             String accessToken = authService.login(loginRequest);
 

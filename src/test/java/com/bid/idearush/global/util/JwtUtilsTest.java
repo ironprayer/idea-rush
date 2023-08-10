@@ -3,9 +3,11 @@ package com.bid.idearush.global.util;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class JwtUtilsTest {
 
     @Test
@@ -13,7 +15,7 @@ public class JwtUtilsTest {
     void generateTokenSuccessTest() {
         Long userId = 1L;
 
-        String accessToken = JwtUtils.generateToken(userId);
+        String accessToken = jwtUtils.generateToken(userId);
 
         assertNotNull(accessToken);
     }
@@ -35,7 +37,7 @@ public class JwtUtilsTest {
 
         boolean isValidateToken = JwtUtils.validateToken(accessToken);
 
-        assertEquals(true, isValidateToken);
+        assertTrue(isValidateToken);
     }
 
     @Test
@@ -46,7 +48,7 @@ public class JwtUtilsTest {
 
         boolean isValidateToken = JwtUtils.validateToken(accessToken);
 
-        assertEquals(false, isValidateToken);
+        assertFalse(isValidateInvalidToken);
     }
 
     @Test
@@ -56,7 +58,7 @@ public class JwtUtilsTest {
 
         boolean isValidateToken = JwtUtils.validateToken(accessToken);
 
-        assertEquals(false, isValidateToken);
+        assertFalse(isValidateClaimsEmptyToken);
     }
 
     @Test
@@ -67,6 +69,7 @@ public class JwtUtilsTest {
 
         boolean isValidateToken = JwtUtils.validateToken(accessToken);
 
-        assertEquals(false, isValidateToken);
+        assertFalse(isValidateExpiredToken);
     }
+
 }
