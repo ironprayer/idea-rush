@@ -7,6 +7,4 @@ public record ChatMessageResponse(
         String msg,
         LocalDateTime createdAt
 ) {
-
-
 }

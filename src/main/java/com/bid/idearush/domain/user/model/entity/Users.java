@@ -4,8 +4,6 @@ import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Builder

@@ -21,13 +21,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final SimpMessageSendingOperations template;
+    private final SimpMessageSendingOperations simpMessageSendingOperations;
 
     @MessageMapping("/sendMessage")
     public void sendMessage(
             @Payload ChatMessageRequest chatMessage
     ) {
-        template.convertAndSend("/sub", new ChatMessageResponse(chatMessage.name(), chatMessage.msg(), LocalDateTime.now()));
+        simpMessageSendingOperations.convertAndSend("/sub", new ChatMessageResponse(chatMessage.name(), chatMessage.msg(), LocalDateTime.now()));
     }
 
 }
