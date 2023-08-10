@@ -41,9 +41,11 @@ public class Schedule {
 
     @Scheduled(cron = "0 * * * * *")
     public void beforeTimeBidOfIdea() {
+        int[] hopeTimes = {10, 20, 30};
         LocalDateTime currentTime =  LocalDateTime.now();
-        noticeService.noticeBeforeEvent(currentTime, 30);
-        noticeService.noticeBeforeEvent(currentTime, 20);
-        noticeService.noticeBeforeEvent(currentTime, 10);
+
+        for(int hopeTime : hopeTimes){
+            noticeService.noticeBeforeEvent(currentTime, hopeTime);
+        }
     }
 }

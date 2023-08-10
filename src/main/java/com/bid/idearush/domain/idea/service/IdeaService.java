@@ -14,7 +14,6 @@ import com.bid.idearush.global.exception.errortype.IdeaWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
 import com.bid.idearush.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,6 @@ public class IdeaService {
     private final IdeaRepository ideaRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public IdeaResponse findOneIdea(Long ideaId) {
