@@ -48,7 +48,7 @@ class IdeaServiceTest {
     @Mock
     S3Service s3Service;
     private Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
-    private Category category = Category.LIFE;
+    private Category category = Category.TECHNOLOGY;
     private String keyword = "expectedKeyword";
 
     @Nested
@@ -255,7 +255,7 @@ class IdeaServiceTest {
 
     private Idea createTestIdea(){
         return Idea.builder()
-                .category(Category.LIFE)
+                .category(Category.TECHNOLOGY)
                 .title("title")
                 .content("content")
                 .imageName("imageName")

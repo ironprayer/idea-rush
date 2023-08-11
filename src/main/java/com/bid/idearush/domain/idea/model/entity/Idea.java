@@ -52,7 +52,7 @@ public class Idea extends BaseTime {
     private AuctionStatus auctionStatus;
 
     @Column(length = 8)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private DealStatus dealStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
