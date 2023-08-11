@@ -5,12 +5,14 @@ import jakarta.validation.constraints.Size;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public record SignupRequest(
+
     @Size(max = 16)
     String userAccountId,
     @Size(max = 16)
     String nickname,
     @Size(max = 32)
     String password
+
 ) {
 
     public Users toUsers(PasswordEncoder passwordEncoder) {
