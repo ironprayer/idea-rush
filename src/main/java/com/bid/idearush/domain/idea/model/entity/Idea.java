@@ -51,7 +51,7 @@ public class Idea extends BaseTime {
     @Enumerated(EnumType.STRING)
     private AuctionStatus auctionStatus;
 
-    @Column(length = 8)
+    @Column(length = 16)
     @Enumerated(EnumType.STRING)
     private DealStatus dealStatus;
 
