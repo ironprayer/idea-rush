@@ -54,7 +54,6 @@ public class IdeaService {
             throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
         }
 
-
         List<IdeaResponse> findList;
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
