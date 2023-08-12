@@ -22,7 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDateTime;
@@ -47,7 +47,7 @@ class IdeaServiceTest {
     UserRepository userRepository;
     @Mock
     S3Service s3Service;
-    private Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
+    Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "createdAt"));
     private Category category = Category.TECHNOLOGY;
     private String keyword = "expectedKeyword";
 
@@ -58,7 +58,7 @@ class IdeaServiceTest {
         @Test
         @DisplayName("카테고리와 키워드를 에러를 발생시킨다.")
         void categoryAndKeywordFindThrowsExceptionFailTest() {
-            IdeaFindException exception = assertThrows(IdeaFindException.class, () -> ideaService.findAllIdea(keyword, category));
+            IdeaFindException exception = assertThrows(IdeaFindException.class, () -> ideaService.findAllIdea(keyword, category, 0));
 
             assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getStatus(), exception.getStatusCode());
             assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getMsg(), exception.getMessage());
@@ -68,12 +68,12 @@ class IdeaServiceTest {
         @DisplayName("카테고리별 리스트를 반환한다.")
         void categoryFindSuccessTest() {
             List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
-            given(ideaRepository.findAllByCategory(category, sort)).willReturn(mockIdeaList);
+            given(ideaRepository.findAllByCategory(category, pageable)).willReturn(mockIdeaList);
             List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
 
-            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, category);
+            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, category, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
             assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
@@ -83,12 +83,12 @@ class IdeaServiceTest {
         @DisplayName("검색어를 통해 리스트를 반환한다.")
         void titleFindSuccessTest() {
             List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
-            given(ideaRepository.findAllByTitleContaining(keyword, sort)).willReturn(mockIdeaList);
+            given(ideaRepository.findAllByTitleContaining(keyword, pageable)).willReturn(mockIdeaList);
             List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
 
-            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(keyword, null);
+            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(keyword, null, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
             assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
@@ -97,13 +97,13 @@ class IdeaServiceTest {
         @Test
         @DisplayName("일반 리스트를 반환한다.")
         void FindAllSuccessTest() {
-            List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
-            given(ideaRepository.findAll(sort)).willReturn(mockIdeaList);
+            Page<Idea> mockIdeaList = new PageImpl<>(Collections.singletonList(createTestIdea()));
+            given(ideaRepository.findAll(pageable)).willReturn(mockIdeaList);
             List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
                     .map(IdeaResponse::from)
                     .collect(Collectors.toList());
 
-            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, null);
+            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, null, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
             assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
@@ -142,7 +142,7 @@ class IdeaServiceTest {
     class IdeaUpdateTest {
 
         IdeaRequest ideaRequest =
-                new IdeaRequest("title", "content" , Category.values()[0], 1000L, LocalDateTime.now());
+                new IdeaRequest("title", "content", Category.values()[0], 1000L, LocalDateTime.now());
         MockMultipartFile multipartFile =
                 new MockMultipartFile("name", "originalFilename", "image/jpeg", new byte[0]);
 
@@ -175,7 +175,7 @@ class IdeaServiceTest {
                     willThrow(new IllegalArgumentException("아이디어가 존재하지 않습니다."));
 
             IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                    () ->ideaService.update(1L, 1L, ideaRequest, multipartFile));
+                    () -> ideaService.update(1L, 1L, ideaRequest, multipartFile));
 
             assertEquals("아이디어가 존재하지 않습니다.", ex.getMessage());
         }
@@ -188,7 +188,7 @@ class IdeaServiceTest {
                     willReturn(Optional.of(Idea.builder().users(Users.builder().id(2L).build()).build()));
 
             IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                    () ->ideaService.update(1L, 1L, ideaRequest, multipartFile));
+                    () -> ideaService.update(1L, 1L, ideaRequest, multipartFile));
 
             assertEquals("아이디어에 권한이 없습니다.", ex.getMessage());
         }
@@ -245,7 +245,7 @@ class IdeaServiceTest {
                     willReturn(Optional.of(Idea.builder().users(Users.builder().id(2L).build()).build()));
 
             IdeaWriteException ex = assertThrows(IdeaWriteException.class,
-                    () ->ideaService.deleteIdea(1L, 1L));
+                    () -> ideaService.deleteIdea(1L, 1L));
 
             assertEquals(IdeaWriteErrorCode.IDEA_UNAUTH.getStatus(), ex.getStatusCode());
             assertEquals(IdeaWriteErrorCode.IDEA_UNAUTH.getMsg(), ex.getMessage());
@@ -253,7 +253,7 @@ class IdeaServiceTest {
 
     }
 
-    private Idea createTestIdea(){
+    private Idea createTestIdea() {
         return Idea.builder()
                 .category(Category.TECHNOLOGY)
                 .title("title")

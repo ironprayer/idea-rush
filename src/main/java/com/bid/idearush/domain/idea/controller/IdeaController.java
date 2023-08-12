@@ -37,9 +37,10 @@ public class IdeaController {
     @GetMapping
     public List<IdeaResponse> findAllIdea(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Category category
+            @RequestParam(required = false) Category category,
+            @RequestParam Integer page
     ) {
-        return ideaService.findAllIdea(keyword, category);
+        return ideaService.findAllIdea(keyword, category,page);
     }
 
     @GetMapping("/{id}")
