@@ -25,7 +25,7 @@ public class JwtUtilsTest {
 
     @Test
     @DisplayName("토큰 생성 성공 테스트")
-    void generateTokenSuccessTest() {
+    void succeedGenerateTokenTest() {
         Long userId = 1L;
 
         String accessToken = jwtUtils.generateToken(userId);
@@ -35,7 +35,7 @@ public class JwtUtilsTest {
 
     @Test
     @DisplayName("userId parsing 및 가져오기 성공 테스트")
-    void parseUserIdGetSuccessTest() {
+    void succeedGetParseUserIdTest() {
         String accessToken = jwtUtils.generateToken(1L);
 
         Long userId = jwtUtils.parseUserId(accessToken);
@@ -45,7 +45,7 @@ public class JwtUtilsTest {
 
     @Test
     @DisplayName("accessToken 유효성 검사 성공 테스트")
-    void validateAccessTokenSuccessTest() {
+    void succeedValidateTokenTest() {
         String accessToken = jwtUtils.generateToken(1L);
 
         boolean isValidateToken = jwtUtils.validateToken(accessToken);
@@ -55,7 +55,7 @@ public class JwtUtilsTest {
 
     @Test
     @DisplayName("유효하지 않은 accessToken으로 인한 유효성 검사 실패 테스트")
-    void validateTokenInvalidFailTest() {
+    void failValidateTokenInvalidTest() {
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTY5MTQyMDYwOCwiaWF0IjoxNjkxNDE3MDA4fQ." +
                 "Cr6CsoDVGYUoS98S8a-lOWtmi46Wy83P5UrYDCLYojI";
 
@@ -66,7 +66,7 @@ public class JwtUtilsTest {
 
     @Test
     @DisplayName("accessToken claims 빈 값으로 인한 유효성 검사 실패 테스트")
-    void validateTokenClaimsEmptyFailTest() {
+    void failValidateTokenClaimsEmptyTest() {
         String accessToken = "";
 
         boolean isValidateClaimsEmptyToken = jwtUtils.validateToken(accessToken);
@@ -76,7 +76,7 @@ public class JwtUtilsTest {
 
     @Test
     @DisplayName("만료된 accessToken 으로 인한 유효성 검사 실패 테스트")
-    void validateTokenExpiredFailTest() {
+    void failValidateTokenExpiredTest() {
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTY5MTQyMDYwOCwiaWF0IjoxNjkxNDE3MDA4fQ." +
                 "Cr6CsoDVGYUoS98S8a-lOWtmi46Wy83P5UrYDCLYojI";
 

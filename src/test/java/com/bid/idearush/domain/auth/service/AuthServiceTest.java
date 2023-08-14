@@ -47,7 +47,7 @@ class AuthServiceTest {
 
         @Test
         @DisplayName("회원가입 성공 테스트")
-        void signupSuccessTest() {
+        void succeedSignupTest() {
             given(userRepository.findByUserAccountId(signupRequest.userAccountId()))
                     .willReturn(Optional.empty());
             given(userRepository.findByNickname(signupRequest.nickname()))
@@ -60,7 +60,7 @@ class AuthServiceTest {
 
         @Test
         @DisplayName("유저 아이디가 중복되어 회원가입에 실패하는 경우 테스트")
-        void UserAccountIdDupSignupFailTest() {
+        void failSignupDupUserAccountIdTest() {
             given(userRepository.findByUserAccountId(signupRequest.userAccountId()))
                     .willReturn(Optional.of(Users.builder().build()));
 
@@ -72,7 +72,7 @@ class AuthServiceTest {
 
         @Test
         @DisplayName("닉네임이 중복되어 회원가입에 실패하는 경우 테스트")
-        void NicknameDupSignupFailTest() {
+        void failSignupDupNicknameTest() {
             given(userRepository.findByNickname(signupRequest.nickname()))
                     .willReturn(Optional.of(Users.builder().build()));
 
@@ -92,7 +92,7 @@ class AuthServiceTest {
 
         @Test
         @DisplayName("로그인 성공 테스트")
-        void loginSuccessTest() {
+        void succeedLoginTest() {
             Users user = Users.builder().id(1L).userAccountId("a123").password("1234").build();
             given(userRepository.findByUserAccountId("a123")).willReturn(Optional.of(user));
             given(passwordEncoder.matches("1234", "1234")).willReturn(true);
@@ -103,8 +103,8 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("로그인 시 유저 아이디가 존재하지 않은 경우 테스트")
-        void loginNotUserAccountIdTest() {
+        @DisplayName("로그인 시 유저 아이디가 존재하지 않아 로그인에 실패한 경우 테스트")
+        void failLoginEmptyUserAccountIdTest() {
             given(userRepository.findByUserAccountId(loginRequest.userAccountId())).willReturn(Optional.empty());
 
             UserFindException ex = assertThrows(UserFindException.class, () ->
@@ -114,8 +114,8 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("로그인 시 비밀번호가 유효하지 않은 경우 테스트")
-        void loginInvalidPasswordTest() {
+        @DisplayName("로그인 시 비밀번호가 유효하지 않아 로그인에 실패한 경우 테스트")
+        void failLoginInvalidPasswordTest() {
             Users user = Users.builder().build();
             given(userRepository.findByUserAccountId(loginRequest.userAccountId())).willReturn(Optional.of(user));
             given(passwordEncoder.matches(loginRequest.password(), user.getPassword())).willReturn(false);

@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public void login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String accessToken = authService.login(loginRequest);
         response.addHeader(HttpHeaders.AUTHORIZATION, accessToken);
     }

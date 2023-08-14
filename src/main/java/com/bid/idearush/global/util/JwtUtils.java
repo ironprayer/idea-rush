@@ -20,7 +20,7 @@ public class JwtUtils {
     @Value("${jwt.secret.key}")
     private String secretKey;
     private Key SIGNING_KEY;
-    private final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60;
+    private final Integer ACCESS_TOKEN_DURATION_SECONDS = 60 * 60 * 5;
 
     @PostConstruct
     public void init() {
