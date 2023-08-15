@@ -50,4 +50,11 @@ public class IdeaController {
         return ideaService.findOneIdea(id);
     }
 
+    @PostMapping
+    public void createIdea(@RequestPart(name = "idea") IdeaRequest ideaRequest,
+                           @RequestPart(required = false) MultipartFile image,
+                           @AuthenticationPrincipal AuthPayload authPayload) {
+        ideaService.createIdea(ideaRequest, image, authPayload.userId());
+    }
+
 }

@@ -8,6 +8,7 @@ import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
+import com.bid.idearush.global.exception.FileWriteException;
 import com.bid.idearush.global.exception.IdeaFindException;
 import com.bid.idearush.global.exception.IdeaWriteException;
 import com.bid.idearush.global.exception.UserFindException;
@@ -24,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -33,8 +35,11 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class IdeaServiceTest {
@@ -253,6 +258,52 @@ class IdeaServiceTest {
 
     }
 
+    @Nested
+    @DisplayName("아이디어 등록 테스트")
+    class CreateIdeaTest {
+
+        Long userId = 1L;
+        IdeaRequest ideaRequest = new IdeaRequest(
+                "testTitle", "testContent", Category.BUSINESS, 1000L, LocalDateTime.now());
+        Users testUser = Users.builder().build();
+
+        @Test
+        @DisplayName("아이디어 등록 성공 테스트")
+        void succeedCreateIdeaTest() {
+            MockMultipartFile multipartFile = new MockMultipartFile(
+                    "testName", "testFile.txt", "testImage/jpeg", new byte[0]);
+            given(userRepository.findById(userId)).willReturn(Optional.of(testUser));
+
+            ideaService.createIdea(ideaRequest, multipartFile, userId);
+
+            verify(ideaRepository, times(1)).save(any(Idea.class));
+        }
+
+        @Test
+        @DisplayName("유저가 존재하지 않아 아이디어 등록에 실패하는 경우 테스트")
+        void failCreateIdeaUserNotFoundTest() {
+            given(userRepository.findById(userId)).willReturn(Optional.empty());
+
+            assertThrows(UserFindException.class, () -> {
+                ideaService.createIdea(ideaRequest, null, userId);
+            });
+        }
+
+        @Test
+        @DisplayName("잘못된 파일 등록으로 아이디어 등록에 실패하는 경우 테스트")
+        void failCreateIdeaNotImageTest() {
+            MockMultipartFile notImageFile = new MockMultipartFile(
+                    "testName", "testFile.txt", "text/txt", "test".getBytes());
+
+            given(userRepository.findById(userId)).willReturn(Optional.of(testUser));
+
+            assertThrows(FileWriteException.class, () -> {
+                ideaService.createIdea(ideaRequest, notImageFile, userId);
+            });
+        }
+
+    }
+
     private Idea createTestIdea() {
         return Idea.builder()
                 .category(Category.TECHNOLOGY)
@@ -265,4 +316,5 @@ class IdeaServiceTest {
                 .users(Users.builder().build())
                 .build();
     }
+
 }

@@ -5,10 +5,13 @@ import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
+import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
+import com.bid.idearush.global.exception.FileWriteException;
 import com.bid.idearush.global.exception.IdeaFindException;
 import com.bid.idearush.global.exception.IdeaWriteException;
 import com.bid.idearush.global.exception.UserFindException;
+import com.bid.idearush.global.exception.errortype.FileWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.IdeaFindErrorCode;
 import com.bid.idearush.global.exception.errortype.IdeaWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
@@ -136,6 +139,28 @@ public class IdeaService {
 
         if (!idea.isAuthUser(userId)) {
             throw new IdeaWriteException(IdeaWriteErrorCode.IDEA_UNAUTH);
+        }
+    }
+
+    @Transactional
+    public void createIdea(IdeaRequest ideaRequest, MultipartFile image, Long userId) {
+        Users user = userRepository.findById(userId).orElseThrow(
+                () -> new UserFindException(UserFindErrorCode.USER_EMPTY));
+
+        String imageName = null;
+        if (isMultipartFile(image)) {
+            if (!validateImage(image)) {
+                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
+            }
+            imageName = image.getOriginalFilename();
+        }
+
+        Idea newIdea = ideaRequest.toIdea(user, imageName);
+        ideaRepository.save(newIdea);
+
+        if (imageName != null) {
+            String uploadPath = IMAGE_BASE_PATH + "/" + newIdea.getId();
+            s3Service.upload(uploadPath, imageName, image);
         }
     }
 
