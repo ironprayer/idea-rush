@@ -17,21 +17,18 @@ public record IdeaRequest (
 ) {
 
     public Idea toIdea(Users user, String imageName) {
-        LocalDateTime auctionEndTime = auctionStartTime().plusMinutes(10);
-
-        Idea idea = Idea.builder()
+        return Idea.builder()
                 .category(category())
                 .title(title())
                 .content(content())
                 .imageName(imageName)
                 .minimumStartingPrice(minimumStartingPrice())
                 .auctionStartTime(auctionStartTime())
-                .auctionEndTime(auctionEndTime)
+                .auctionEndTime(auctionStartTime().plusMinutes(10))
                 .auctionStatus(AuctionStatus.PREPARE)
                 .dealStatus(DealStatus.NO_ACTION)
                 .users(user)
                 .build();
-        return idea;
     }
 
 }
