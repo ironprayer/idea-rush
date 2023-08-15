@@ -2,7 +2,9 @@ package com.bid.idearush.domain.sse.controller;
 
 import com.bid.idearush.domain.sse.service.SseService;
 import com.bid.idearush.domain.sse.type.SseConnect;
+import com.bid.idearush.global.security.AuthPayload;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -13,11 +15,11 @@ public class SseController {
 
     private final SseService sseService;
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/user")
     public SseEmitter connectUser(
-            @PathVariable(name = "id") Long userId,
+            @AuthenticationPrincipal AuthPayload authPayload,
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        return sseService.connect(SseConnect.NOTIFICATION, userId, lastEventId);
+        return sseService.connect(SseConnect.NOTIFICATION, authPayload.userId(), lastEventId);
     }
 
     @GetMapping("/idea/{id}")

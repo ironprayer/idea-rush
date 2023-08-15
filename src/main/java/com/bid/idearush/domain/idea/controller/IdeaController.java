@@ -4,7 +4,9 @@ import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.service.IdeaService;
 import com.bid.idearush.domain.idea.type.Category;
+import com.bid.idearush.global.security.AuthPayload;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,18 +22,16 @@ public class IdeaController {
     @PutMapping("{id}")
     void updateIdea(@PathVariable(name = "id") Long ideaId,
                     @RequestPart(name = "idea") IdeaRequest ideaRequest,
-                    @RequestPart(required = false) MultipartFile image) {
-        Long dummyUserId = 1L;
-
-        ideaService.update(dummyUserId, ideaId, ideaRequest, image);
+                    @RequestPart(required = false) MultipartFile image,
+                    @AuthenticationPrincipal AuthPayload authPayload) {
+        ideaService.update(authPayload.userId(), ideaId, ideaRequest, image);
 
     }
 
     @DeleteMapping("{id}")
-    void deleteIdea(@PathVariable(name = "id") Long ideaId) {
-        Long dummyUserId = 1L;
-
-        ideaService.deleteIdea(dummyUserId, ideaId);
+    void deleteIdea(@PathVariable(name = "id") Long ideaId,
+                    @AuthenticationPrincipal AuthPayload authPayload) {
+        ideaService.deleteIdea(authPayload.userId(), ideaId);
     }
 
     @GetMapping
