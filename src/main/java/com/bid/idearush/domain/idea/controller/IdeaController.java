@@ -4,7 +4,9 @@ import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.service.IdeaService;
 import com.bid.idearush.domain.idea.type.Category;
+import com.bid.idearush.global.security.AuthPayload;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,6 +50,13 @@ public class IdeaController {
             @PathVariable Long id
     ) {
         return ideaService.findOneIdea(id);
+    }
+
+    @PostMapping
+    public void createIdea(@RequestPart(name = "idea") IdeaRequest ideaRequest,
+                           @RequestPart(required = false) MultipartFile image,
+                           @AuthenticationPrincipal AuthPayload authPayload) {
+        ideaService.createIdea(ideaRequest, image, authPayload.userId());
     }
 
 }
