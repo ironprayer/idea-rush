@@ -2,7 +2,9 @@ package com.bid.idearush.domain.bid.controller;
 
 import com.bid.idearush.domain.bid.model.request.BidRequest;
 import com.bid.idearush.domain.bid.service.BidService;
+import com.bid.idearush.global.security.AuthPayload;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
@@ -15,11 +17,11 @@ public class BidController {
     private final BidService bidService;
 
     @PostMapping
-    public void createBid(@PathVariable(name = "id") Long ideaId, @RequestBody BidRequest request) {
-        Random random = new Random();
-        Long dummyUserId = 1L + random.nextInt(3);
+    public void createBid(@PathVariable(name = "id") Long ideaId,
+                          @RequestBody BidRequest request,
+                          @AuthenticationPrincipal AuthPayload authPayload) {
 
-        bidService.createBid(ideaId, dummyUserId, request);
+        bidService.createBid(ideaId, authPayload.userId(), request);
     }
 
 }
