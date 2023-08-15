@@ -2,6 +2,7 @@ package com.bid.idearush.domain.chat.config;
 
 import com.bid.idearush.domain.chat.model.reponse.ChatMessageResponse;
 import com.bid.idearush.domain.chat.model.request.ChatMessageRequest;
+import com.bid.idearush.global.util.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
@@ -20,6 +22,7 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -37,10 +40,11 @@ public class WebSocketConfigTest {
     private int port;
     private BlockingQueue<String> blockingQueue;
     private WebSocketStompClient stompClient;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @BeforeEach
     public void setup() {
-
         this.blockingQueue = new ArrayBlockingQueue<>(1);
         List<Transport> transports = Collections.singletonList(new WebSocketTransport(new StandardWebSocketClient()));
         this.stompClient = new WebSocketStompClient(new SockJsClient(transports));
@@ -51,7 +55,14 @@ public class WebSocketConfigTest {
     @Test
     @DisplayName("웹 소켓 연결 테스트")
     public void shouldReceiveMessageSuccessTest() throws Exception {
-        StompSession session = stompClient.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {}, port).get(1, TimeUnit.SECONDS);
+        StompHeaders stompHeaders = new StompHeaders();
+        stompHeaders.set("Authorization", jwtUtils.generateToken(1L));
+        stompHeaders.add("heart-beat", "0,0");
+        stompHeaders.add("accept-version", "1.1,1.2");
+        stompHeaders.add("destination", "/sub");
+        stompHeaders.add("id", "0");
+        StompSession session = stompClient.connect(WEBSOCKET_URI, new WebSocketHttpHeaders(), stompHeaders, new StompSessionHandlerAdapter() {
+        }, port).get(5, TimeUnit.SECONDS);
         session.subscribe(WEBSOCKET_TOPIC, new DefaultStompFrameHandler());
         String testMessage = "테스트";
 

@@ -33,7 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 ((requestURI.matches("/api/ideas") ||
                         requestURI.matches("/api/ideas/.*") ||
                         requestURI.matches("/api/ideas/.*/bid")) &&
-                        "GET".equalsIgnoreCase(method))) {
+                        "GET".equalsIgnoreCase(method)) ||
+                requestURI.matches("/chat/.*")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -57,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring("Bearer ".length());
         }
         return null;

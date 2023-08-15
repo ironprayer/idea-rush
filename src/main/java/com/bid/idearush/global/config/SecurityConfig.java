@@ -41,6 +41,7 @@ public class SecurityConfig {
                                         "/api/ideas", "/api/ideas/{id}", "/api/ideas/{id}/bid").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/ideas/{id}/notice").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/api/sse/connect/idea/**").permitAll()
+                                .requestMatchers("/chat/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
