@@ -27,7 +27,6 @@ public class WebSocketInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         MessageHeaders header = message.getHeaders();
         MultiValueMap<String, String> map = header.get(StompHeaderAccessor.NATIVE_HEADERS, MultiValueMap.class);
-        System.out.println("헤더 : "+map);
         if (StompCommand.CONNECT == accessor.getCommand()) {
             if(!jwtUtils.validateToken(map.get("Authorization").get(0))) return null;
         }
