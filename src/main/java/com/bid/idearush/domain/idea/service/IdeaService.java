@@ -105,7 +105,7 @@ public class IdeaService {
     }
 
     private boolean isMultipartFile(MultipartFile multipartFile) {
-        return !multipartFile.isEmpty() && multipartFile != null;
+        return multipartFile != null && !multipartFile.isEmpty();
     }
 
     private boolean validateImage(MultipartFile image) {
