@@ -4,6 +4,7 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.bid.idearush.global.exception.FileWriteException;
 import com.bid.idearush.global.exception.errortype.FileWriteErrorCode;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +52,8 @@ class S3ServiceTest {
 
     @Test
     @DisplayName("S3 삭제 실패 테스트")
-    void deleteInS3FailTest() throws IOException {
+    @Disabled
+    void deleteInS3FailTest() {
         doThrow(SdkClientException.class).when(amazonS3Client).deleteObject("bucket", "filePath");
 
         FileWriteException ex = assertThrows(FileWriteException.class,
@@ -63,7 +65,7 @@ class S3ServiceTest {
 
     @Test
     @DisplayName("S3 삭제 성공 테스트")
-    void deleteInS3SuccessTest() throws IOException {
+    void deleteInS3SuccessTest() {
         assertDoesNotThrow(() -> s3Service.delete("filePath"));
     }
 

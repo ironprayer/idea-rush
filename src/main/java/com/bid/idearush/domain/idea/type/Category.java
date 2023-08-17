@@ -1,5 +1,9 @@
 package com.bid.idearush.domain.idea.type;
 
 public enum Category {
-    LIFE, MUSIC, MOVIE;
+    TECHNOLOGY,
+    ART_AND_DESIGN,
+    BUSINESS,
+    SOCIAL_ISSUES,
+    LIFESTYLE;
 }
