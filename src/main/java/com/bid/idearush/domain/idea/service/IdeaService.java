@@ -80,27 +80,19 @@ public class IdeaService {
 
     @Transactional
     public void update(Long userId, Long ideaId, IdeaRequest ideaRequest, MultipartFile image) {
-        if (isMultipartFile(image) && !validateImage(image)) {
-            throw new IllegalArgumentException("이미지 파일이 아닙니다.");
+        Idea idea = getIdea(ideaId);
+        String imageName = idea.getImageName();
+        validateUser(userId, idea);
+
+        if (isMultipartFile(image)) {
+            if (!validateImage(image)) {
+                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
+            }
+
+            imageName = image.getOriginalFilename();
+            s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
         }
 
-        boolean isUser = userRepository.findById(userId).isPresent();
-
-        if (!isUser) {
-            throw new IllegalArgumentException("유저가 존재하지 않습니다.");
-        }
-
-        Idea idea = ideaRepository.findById(ideaId).orElseThrow(
-                () -> new IllegalArgumentException("아이디어가 존재하지 않습니다."));
-
-        if (userId != idea.getUsers().getId()) {
-            throw new IllegalArgumentException("아이디어에 권한이 없습니다.");
-        }
-
-        // TODO 이이미 파일이 없는 경우 S3 Upload가 되어서는 안됨. (수정 해야 함)
-        String imageName = isMultipartFile(image) ? image.getOriginalFilename() : idea.getImageName();
-
-        s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
         idea.updateOf(ideaRequest, imageName);
     }
 

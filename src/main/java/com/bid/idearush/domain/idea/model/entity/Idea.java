@@ -80,6 +80,6 @@ public class Idea extends BaseTime {
     }
 
     public boolean isAuthUser(Long userId) {
-        return userId == this.users.getId();
+        return userId.equals(this.users.getId());
     }
 }
