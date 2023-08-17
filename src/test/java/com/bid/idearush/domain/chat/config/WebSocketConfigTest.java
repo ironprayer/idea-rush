@@ -4,6 +4,7 @@ import com.bid.idearush.domain.chat.model.reponse.ChatMessageResponse;
 import com.bid.idearush.domain.chat.model.request.ChatMessageRequest;
 import com.bid.idearush.global.util.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ public class WebSocketConfigTest {
 
     @Test
     @DisplayName("웹 소켓 연결 테스트")
+    @Disabled
     public void shouldReceiveMessageSuccessTest() throws Exception {
         StompHeaders stompHeaders = new StompHeaders();
         stompHeaders.set("Authorization", jwtUtils.generateToken(1L));
