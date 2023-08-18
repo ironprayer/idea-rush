@@ -51,7 +51,6 @@ public class WebSocketConfigTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("웹 소켓 연결 테스트")
     @Disabled
     public void shouldReceiveMessageSuccessTest() throws Exception {
