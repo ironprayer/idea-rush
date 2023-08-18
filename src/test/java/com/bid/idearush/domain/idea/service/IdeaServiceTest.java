@@ -25,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -165,24 +164,27 @@ class IdeaServiceTest {
         @DisplayName("유저가 존재하지 않아 실패하는 케이스")
         void updateNotUserFailTest() {
             given(userRepository.findById(anyLong())).willReturn(Optional.empty());
+            given(ideaRepository.findById(anyLong())).
+                    willReturn(Optional.of(Idea.builder().users(Users.builder().id(2L).build()).build()));
 
-            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            UserFindException ex = assertThrows(UserFindException.class,
                     () -> ideaService.update(1L, 1L, ideaRequest, multipartFile));
 
-            assertEquals("유저가 존재하지 않습니다.", ex.getMessage());
+            assertEquals(UserFindErrorCode.USER_EMPTY.getStatus(), ex.getStatusCode());
+            assertEquals(UserFindErrorCode.USER_EMPTY.getMsg(), ex.getMessage());
         }
 
         @Test
         @DisplayName("아이디어가 존재하지 않아 실패하는 케이스")
         void updateNotIdeaFailTest() {
-            given(userRepository.findById(anyLong())).willReturn(Optional.of(Users.builder().build()));
             given(ideaRepository.findById(anyLong())).
-                    willThrow(new IllegalArgumentException("아이디어가 존재하지 않습니다."));
+                    willThrow(new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
 
-            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            IdeaFindException ex = assertThrows(IdeaFindException.class,
                     () -> ideaService.update(1L, 1L, ideaRequest, multipartFile));
 
-            assertEquals("아이디어가 존재하지 않습니다.", ex.getMessage());
+            assertEquals(IdeaFindErrorCode.IDEA_EMPTY.getStatus(), ex.getStatusCode());
+            assertEquals(IdeaFindErrorCode.IDEA_EMPTY.getMsg(), ex.getMessage());
         }
 
         @Test
@@ -192,10 +194,11 @@ class IdeaServiceTest {
             given(ideaRepository.findById(anyLong())).
                     willReturn(Optional.of(Idea.builder().users(Users.builder().id(2L).build()).build()));
 
-            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+            IdeaWriteException ex = assertThrows(IdeaWriteException.class,
                     () -> ideaService.update(1L, 1L, ideaRequest, multipartFile));
 
-            assertEquals("아이디어에 권한이 없습니다.", ex.getMessage());
+            assertEquals(IdeaWriteErrorCode.IDEA_UNAUTH.getStatus(), ex.getStatusCode());
+            assertEquals(IdeaWriteErrorCode.IDEA_UNAUTH.getMsg(), ex.getMessage());
         }
 
     }
