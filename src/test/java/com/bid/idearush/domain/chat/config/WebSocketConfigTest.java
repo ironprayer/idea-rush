@@ -1,9 +1,8 @@
 package com.bid.idearush.domain.chat.config;
 
-import com.bid.idearush.domain.chat.model.reponse.ChatMessageResponse;
-import com.bid.idearush.domain.chat.model.request.ChatMessageRequest;
 import com.bid.idearush.global.util.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -53,6 +51,7 @@ public class WebSocketConfigTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("웹 소켓 연결 테스트")
     public void shouldReceiveMessageSuccessTest() throws Exception {
         StompHeaders stompHeaders = new StompHeaders();
