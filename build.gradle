@@ -79,9 +79,9 @@ querydsl {
 	querydslSourcesDir = querydslDir
 }
 //위치 IDE 애들이 자동으로 import 해줌.
-sourceSets {
-	main.java.srcDir querydslDir
-}
+//sourceSets {
+//	main.java.srcDir querydslDir
+//}
 //컴파일 되면서 Q 클래스 생성
 configurations {
 	querydsl.extendsFrom compileClasspath
