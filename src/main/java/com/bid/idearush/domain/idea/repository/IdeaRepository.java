@@ -17,10 +17,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IdeaRepository extends
-        JpaRepository<Idea, Long> ,
+        JpaRepository<Idea, Long>,
         IdeaRepositoryCustom,
-        QuerydslPredicateExecutor
-{
+        QuerydslPredicateExecutor {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT m FROM Idea m WHERE m.id = :id")
