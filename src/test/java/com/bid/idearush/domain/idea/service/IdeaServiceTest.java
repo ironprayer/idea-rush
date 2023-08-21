@@ -30,7 +30,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,46 +70,37 @@ class IdeaServiceTest {
         @Test
         @DisplayName("카테고리별 리스트를 반환한다.")
         void categoryFindSuccessTest() {
-            List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
-            given(ideaRepository.findAllByCategory(category, pageable)).willReturn(mockIdeaList);
-            List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
-                    .map(IdeaResponse::from)
-                    .collect(Collectors.toList());
+            List<IdeaResponse> mockIdeaList = Collections.singletonList(createTestIdea());
+            given(ideaRepository.findCategoryAndTitleAll(category, null, pageable)).willReturn(mockIdeaList);
 
             List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, category, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
-            assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
+            assertThat(actualIdeaResponseList).isEqualTo(mockIdeaList);
         }
 
         @Test
         @DisplayName("검색어를 통해 리스트를 반환한다.")
         void titleFindSuccessTest() {
-            List<Idea> mockIdeaList = Collections.singletonList(createTestIdea());
-            given(ideaRepository.findAllByTitleContaining(keyword, pageable)).willReturn(mockIdeaList);
-            List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
-                    .map(IdeaResponse::from)
-                    .collect(Collectors.toList());
+            List<IdeaResponse> mockIdeaList = Collections.singletonList(createTestIdea());
+            given(ideaRepository.findCategoryAndTitleAll(null, keyword, pageable)).willReturn(mockIdeaList);
 
             List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(keyword, null, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
-            assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
+            assertThat(actualIdeaResponseList).isEqualTo(mockIdeaList);
         }
 
         @Test
         @DisplayName("일반 리스트를 반환한다.")
         void FindAllSuccessTest() {
-            Page<Idea> mockIdeaList = new PageImpl<>(Collections.singletonList(createTestIdea()));
-            given(ideaRepository.findAll(pageable)).willReturn(mockIdeaList);
-            List<IdeaResponse> expectedIdeaResponseList = mockIdeaList.stream()
-                    .map(IdeaResponse::from)
-                    .collect(Collectors.toList());
+            List<IdeaResponse> mockIdeaList = Collections.singletonList(createTestIdea());
+            given(ideaRepository.findIdeaAll(pageable)).willReturn(mockIdeaList);
 
             List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, null, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
-            assertThat(actualIdeaResponseList).isEqualTo(expectedIdeaResponseList);
+            assertThat(actualIdeaResponseList).isEqualTo(mockIdeaList);
         }
     }
 
@@ -122,7 +112,7 @@ class IdeaServiceTest {
         @DisplayName("아이디어 상세 조회하는데 해당 아이디어가 없을 경우")
         void testFindOneThrowsExceptionFailTest() {
             Long testIdeaId = 1L;
-            given(ideaRepository.findById(testIdeaId)).willReturn(Optional.empty());
+            given(ideaRepository.findIdeaOne(testIdeaId)).willReturn(Optional.empty());
 
             assertThrows(IdeaFindException.class, () -> ideaService.findOneIdea(testIdeaId));
         }
@@ -131,12 +121,12 @@ class IdeaServiceTest {
         @DisplayName("아이디어 상세 조회하는데 해당 아이디어를 반환한다.")
         void testFindOneSuccessTest() {
             Long testIdeaId = 1L;
-            Idea expectedIdea = createTestIdea();
-            given(ideaRepository.findById(testIdeaId)).willReturn(Optional.of(expectedIdea));
+            IdeaResponse expectedIdea = createTestIdea();
+            given(ideaRepository.findIdeaOne(testIdeaId)).willReturn(Optional.of(expectedIdea));
 
             IdeaResponse actualIdeaResponse = ideaService.findOneIdea(testIdeaId);
 
-            assertThat(actualIdeaResponse).isEqualTo(IdeaResponse.from(expectedIdea));
+            assertThat(actualIdeaResponse).isEqualTo(expectedIdea);
         }
 
     }
@@ -307,9 +297,9 @@ class IdeaServiceTest {
 
     }
 
-    private Idea createTestIdea() {
-        return Idea.builder()
-                .category(Category.TECHNOLOGY)
+    private IdeaResponse createTestIdea() {
+        return IdeaResponse.from(Idea.builder()
+                .category(category)
                 .title("title")
                 .content("content")
                 .imageName("imageName")
@@ -317,7 +307,7 @@ class IdeaServiceTest {
                 .auctionStartTime(LocalDateTime.now())
                 .auctionStatus(AuctionStatus.PREPARE)
                 .users(Users.builder().build())
-                .build();
+                .build());
     }
 
 }

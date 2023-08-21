@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
@@ -41,13 +40,10 @@ public class IdeaService {
 
     @Transactional(readOnly = true)
     public IdeaResponse findOneIdea(Long ideaId) {
-
-        Idea findIdea = ideaRepository.findById(ideaId)
+        return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
                 });
-
-        return IdeaResponse.from(findIdea);
     }
 
     @Transactional(readOnly = true)
@@ -61,20 +57,11 @@ public class IdeaService {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        if (StringUtils.hasText(keyword)) {
-            findList = ideaRepository.findAllByTitleContaining(keyword, pageable).stream()
-                    .map(IdeaResponse::from)
-                    .collect(Collectors.toList());
-        } else if (!Objects.isNull(category)) {
-            findList = ideaRepository.findAllByCategory(category, pageable).stream()
-                    .map(IdeaResponse::from)
-                    .collect(Collectors.toList());
+        if (!StringUtils.hasText(keyword) && Objects.isNull(category)) {
+            findList = ideaRepository.findIdeaAll(pageable);
         } else {
-            findList = ideaRepository.findAll(pageable).stream()
-                    .map(IdeaResponse::from)
-                    .collect(Collectors.toList());
+            findList = ideaRepository.findCategoryAndTitleAll(category, keyword, pageable);
         }
-
         return findList;
     }
 
@@ -94,44 +81,6 @@ public class IdeaService {
         }
 
         idea.updateOf(ideaRequest, imageName);
-    }
-
-    private boolean isMultipartFile(MultipartFile multipartFile) {
-        return multipartFile != null && !multipartFile.isEmpty();
-    }
-
-    private boolean validateImage(MultipartFile image) {
-        List<String> imageExtensions = List.of("image/jpeg", "image/png", "image/gif",
-                "image/bmp", "image/tiff", "image/webp", "image/heif");
-
-        return imageExtensions.contains(image.getContentType());
-    }
-
-    public void deleteIdea(Long userId, Long ideaId) {
-        Idea idea = getIdea(ideaId);
-        String filePath = IMAGE_BASE_PATH + "/" + idea.getId() + "/" + idea.getImageName();
-
-        validateUser(userId, idea);
-
-        s3Service.delete(filePath);
-        ideaRepository.delete(idea);
-    }
-
-    private Idea getIdea(Long ideaId) {
-        return ideaRepository.findById(ideaId).orElseThrow(
-                () -> new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
-    }
-
-    private void validateUser(Long userId, Idea idea) {
-        boolean isUser = userRepository.findById(userId).isPresent();
-
-        if (!isUser) {
-            throw new UserFindException(UserFindErrorCode.USER_EMPTY);
-        }
-
-        if (!idea.isAuthUser(userId)) {
-            throw new IdeaWriteException(IdeaWriteErrorCode.IDEA_UNAUTH);
-        }
     }
 
     @Transactional
@@ -155,5 +104,44 @@ public class IdeaService {
             s3Service.upload(uploadPath, imageName, image);
         }
     }
+
+    public void deleteIdea(Long userId, Long ideaId) {
+        Idea idea = getIdea(ideaId);
+        String filePath = IMAGE_BASE_PATH + "/" + idea.getId() + "/" + idea.getImageName();
+
+        validateUser(userId, idea);
+
+        s3Service.delete(filePath);
+        ideaRepository.delete(idea);
+    }
+
+    private boolean isMultipartFile(MultipartFile multipartFile) {
+        return multipartFile != null && !multipartFile.isEmpty();
+    }
+
+    private boolean validateImage(MultipartFile image) {
+        List<String> imageExtensions = List.of("image/jpeg", "image/png", "image/gif",
+                "image/bmp", "image/tiff", "image/webp", "image/heif");
+
+        return imageExtensions.contains(image.getContentType());
+    }
+
+    private Idea getIdea(Long ideaId) {
+        return ideaRepository.findById(ideaId).orElseThrow(
+                () -> new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
+    }
+
+    private void validateUser(Long userId, Idea idea) {
+        boolean isUser = userRepository.findById(userId).isPresent();
+
+        if (!isUser) {
+            throw new UserFindException(UserFindErrorCode.USER_EMPTY);
+        }
+
+        if (!idea.isAuthUser(userId)) {
+            throw new IdeaWriteException(IdeaWriteErrorCode.IDEA_UNAUTH);
+        }
+    }
+
 
 }
