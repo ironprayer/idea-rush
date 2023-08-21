@@ -30,7 +30,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew cleanQuerydsl clean build
+        run: ./gradlew build
         shell: bash
 
       - name: Login to AWS ECR
