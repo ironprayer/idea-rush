@@ -51,8 +51,8 @@ public class WebSocketConfigTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("웹 소켓 연결 테스트")
+    @Disabled
     public void shouldReceiveMessageSuccessTest() throws Exception {
         StompHeaders stompHeaders = new StompHeaders();
         stompHeaders.set("Authorization", jwtUtils.generateToken(1L));

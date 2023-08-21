@@ -40,7 +40,7 @@ public class SseService {
     public void send(SseConnect type, SseEvent event, Long id, Object data) {
         List<CustomSseEmitter> currentEmitters = type == SseConnect.NOTIFICATION ? noticeEmitters : bidEmitters;
         List<CustomSseEmitter> sendEmitters = currentEmitters.stream()
-                .filter((customSseEmitter) -> customSseEmitter.id() == id).toList();
+                .filter((customSseEmitter) -> customSseEmitter.id().equals(id)).toList();
 
         for(CustomSseEmitter sendEmitter : sendEmitters) {
             try {
