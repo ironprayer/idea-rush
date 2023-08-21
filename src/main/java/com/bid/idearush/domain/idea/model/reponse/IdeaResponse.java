@@ -2,7 +2,9 @@ package com.bid.idearush.domain.idea.model.reponse;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
+import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.global.type.ServerIpAddress;
+import com.querydsl.core.annotations.QueryProjection;
 
 public record IdeaResponse(
         String writer,
@@ -25,4 +27,5 @@ public record IdeaResponse(
                 idea.getBidWinPrice()
         );
     }
+
 }
