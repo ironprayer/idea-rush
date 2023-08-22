@@ -30,9 +30,9 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     private QUsers qUsers = QUsers.users;
     private JPAQueryFactory queryFactory;
 
-    public IdeaRepositoryCustomImpl(EntityManager em) {
+    public IdeaRepositoryCustomImpl(EntityManager em, JPAQueryFactory jpaQueryFactory) {
         super(Idea.class);
-        queryFactory = new JPAQueryFactory(em);
+        this.queryFactory = jpaQueryFactory;
     }
 
     @Override
