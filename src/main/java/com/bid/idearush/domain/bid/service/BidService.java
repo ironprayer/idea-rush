@@ -45,7 +45,7 @@ public class BidService {
 
         bidRepository.save(newBid);
 
-        sseService.send(SseConnect.BID,SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice());
+        sseService.send(SseConnect.BID,SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice().toString());
         noticeService.noticeBidEvent(userId, idea, request.bidPrice());
     }
 

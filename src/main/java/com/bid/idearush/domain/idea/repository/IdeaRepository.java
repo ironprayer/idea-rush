@@ -4,7 +4,6 @@ import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.type.Category;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +19,7 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
 
     List<Idea> findAllByTitleContaining(String keyword, Pageable pageable);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("SELECT m FROM Idea m WHERE m.id = :id")
     Optional<Idea> findByIdWithPessimisticLock(@Param("id") Long id);
 
