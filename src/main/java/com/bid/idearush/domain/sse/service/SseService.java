@@ -32,6 +32,10 @@ public class SseService {
             customSseEmitter.sseEmitter().complete();
             currentEmitters.remove(customSseEmitter);
         });
+        emitter.onError(e -> {
+            emitter.completeWithError(e);
+            currentEmitters.remove(customSseEmitter);
+        });
 
         //TODO 503 에러 문제 해결하기 위해서 첫 연길시 메시지 보냄. 정확한 원인에 대해 나중에 이야기가 되어야 할듯.
         try {
@@ -55,8 +59,8 @@ public class SseService {
                         .send(SseEmitter.event()
                                 .name(event.toString())
                                 .data(data));
-            } catch (IOException | IllegalStateException exception) {
-                sendEmitter.sseEmitter().completeWithError(exception);
+            } catch (IOException | IllegalStateException e) {
+                sendEmitter.sseEmitter().completeWithError(e);
                 currentEmitters.remove(sendEmitter);
             }
         }
