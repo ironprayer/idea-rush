@@ -19,7 +19,7 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
 
     List<Idea> findAllByTitleContaining(String keyword, Pageable pageable);
 
-    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT m FROM Idea m WHERE m.id = :id")
     Optional<Idea> findByIdWithPessimisticLock(@Param("id") Long id);
 
