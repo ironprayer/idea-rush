@@ -18,6 +18,7 @@ public class SseService {
     private static final Long DEFAULT_TIMEOUT = 1000 * 60 * 30L;
     private static final ConcurrentLinkedDeque<CustomSseEmitter> noticeEmitters = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<CustomSseEmitter> bidEmitters = new ConcurrentLinkedDeque<>();
+    private static int count = 0;
 
     public SseEmitter connect(SseConnect type, Long id, String lastEventId) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
@@ -39,6 +40,7 @@ public class SseService {
 
         //TODO 503 에러 문제 해결하기 위해서 첫 연길시 메시지 보냄. 정확한 원인에 대해 나중에 이야기가 되어야 할듯.
         try {
+//            System.out.println("connect" + lastEventId);
             emitter.send(initMessage);
         } catch (IOException e) {
             customSseEmitter.sseEmitter().completeWithError(e);
@@ -51,7 +53,7 @@ public class SseService {
     public void send(SseConnect type, SseEvent event, Long id, Object data) {
         ConcurrentLinkedDeque<CustomSseEmitter> currentEmitters = type == SseConnect.NOTIFICATION ? noticeEmitters : bidEmitters;
         List<CustomSseEmitter> sendEmitters = currentEmitters.stream()
-                .filter((customSseEmitter) -> customSseEmitter != null && id.equals(customSseEmitter.id())).toList();
+                .filter((customSseEmitter) -> id.equals(customSseEmitter.id())).toList();
 
         for(CustomSseEmitter sendEmitter : sendEmitters) {
             try {
