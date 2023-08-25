@@ -62,5 +62,5 @@ jobs:
           script: |
             docker stop ${{ env.ECR_REPOSITORY }}
             docker rm ${{ env.ECR_REPOSITORY }} 
-            docker pull ${{ env.ECR_REGISTRY }}:${{ env.IMAGE_TAG }}
+            docker pull ${{ env.ECR_REGISTRY }}
             docker run -d -p 8080:8080 --name idea-rush ${{ env.ECR_REGISTRY }}
