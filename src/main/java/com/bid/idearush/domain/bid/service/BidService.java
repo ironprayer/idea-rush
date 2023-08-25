@@ -32,10 +32,12 @@ public class BidService {
     private final BidRepository bidRepository;
     private final NoticeService noticeService;
     private final SseService sseService;
+    private static long end_time= 0L;
 
     @Transactional
     public void createBid(Long ideaId, Long userId, BidRequest request) {
         long point_one = System.currentTimeMillis();
+        long start_method_time = point_one;
         Idea idea = ideaRepository.findByIdWithPessimisticLock(ideaId).orElseThrow(() ->
                 new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
         long point_two = System.currentTimeMillis();
@@ -54,8 +56,12 @@ public class BidService {
         noticeService.noticeBidEvent(userId, idea, request.bidPrice());
         long point_seven = System.currentTimeMillis();
 
+        point_one = end_time == 0L ? point_one : end_time;
+        end_time = point_seven;
+
         log.info( "Idea Id : " + ideaId
                 + " Bid Id : " + newBid.getId()
+                + " Deley Time : " + (point_one - start_method_time)
                 + " Start Time :" + point_one
                 + " All Time : " + (point_seven - point_one)
                 + " Idea Find Time : " + (point_two - point_one)
