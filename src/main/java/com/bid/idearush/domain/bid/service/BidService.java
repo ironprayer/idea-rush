@@ -22,6 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,6 +35,8 @@ public class BidService {
     private final BidRepository bidRepository;
     private final NoticeService noticeService;
     private final SseService sseService;
+
+    private final static ExecutorService executorService = Executors.newSingleThreadExecutor();
     private static long end_time= 0L;
 
     @Transactional
@@ -51,17 +56,19 @@ public class BidService {
 
         bidRepository.save(newBid);
         long point_five = System.currentTimeMillis();
-        sseService.send(SseConnect.BID,SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice());
+        sseService.send(SseConnect.BID, SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice());
+//        executorService.submit(() -> sseService.send(SseConnect.BID,SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice()));
         long point_six = System.currentTimeMillis();
         noticeService.noticeBidEvent(userId, idea, request.bidPrice());
         long point_seven = System.currentTimeMillis();
 
         point_one = end_time == 0L ? point_one : end_time;
-        end_time = point_seven;
+        point_one = point_one < start_method_time ? start_method_time : point_one;
 
         log.info( "Idea Id : " + ideaId
                 + " Bid Id : " + newBid.getId()
-                + " Deley Time : " + (point_one - start_method_time)
+                + " Delay Time : " + (point_one - start_method_time)
+                + " start_method_time : " + start_method_time
                 + " Start Time :" + point_one
                 + " All Time : " + (point_seven - point_one)
                 + " Idea Find Time : " + (point_two - point_one)
@@ -70,6 +77,8 @@ public class BidService {
                 + " Bid Save : " + (point_five - point_four)
                 + " Bid Update Send : " + (point_six - point_five)
                 + " Bid Notice Send : " + (point_seven - point_six));
+
+        end_time = point_seven;
     }
 
     private void validateBidPrice(Idea idea, BidRequest request) {
