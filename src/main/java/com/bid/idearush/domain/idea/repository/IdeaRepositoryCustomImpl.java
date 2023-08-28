@@ -53,8 +53,8 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public List<IdeaResponse> findIdeaAll(Pageable pageable) {
-        return queryFactory.select(Projections.constructor(IdeaResponse.class,
+    public Page<IdeaResponse> findIdeaAll(Pageable pageable) {
+        QueryResults<IdeaResponse> results = queryFactory.select(Projections.constructor(IdeaResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
@@ -68,12 +68,13 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .orderBy(qIdea.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .fetchResults();
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     @Override
-    public List<IdeaResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable) {
-        return queryFactory.select(Projections.constructor(IdeaResponse.class,
+    public Page<IdeaResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable) {
+        QueryResults<IdeaResponse> results = queryFactory.select(Projections.constructor(IdeaResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
@@ -91,7 +92,8 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .orderBy(qIdea.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .fetchResults();
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     private BooleanExpression ideaTitleContains(String keyword) {

@@ -17,6 +17,7 @@ import com.bid.idearush.global.exception.errortype.IdeaWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
 import com.bid.idearush.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -47,13 +48,13 @@ public class IdeaService {
     }
 
     @Transactional(readOnly = true)
-    public List<IdeaResponse> findAllIdea(String keyword, Category category, Integer page) {
+    public Page<IdeaResponse> findAllIdea(String keyword, Category category, Integer page) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
             throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
         }
 
-        List<IdeaResponse> findList;
+        Page<IdeaResponse> findList;
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
 
