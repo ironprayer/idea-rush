@@ -1,7 +1,7 @@
 package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
-import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
@@ -70,10 +70,11 @@ class IdeaServiceTest {
         @Test
         @DisplayName("카테고리별 리스트를 반환한다.")
         void categoryFindSuccessTest() {
-            List<IdeaResponse> mockIdeaList = Collections.singletonList(createTestIdea());
+            List<IdeaListResponse> ideaList = Collections.singletonList(createTestIdea());
+            Page<IdeaListResponse> mockIdeaList = new PageImpl<>(ideaList, pageable, ideaList.size());
             given(ideaRepository.findCategoryAndTitleAll(category, null, pageable)).willReturn(mockIdeaList);
 
-            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, category, 0);
+            Page<IdeaListResponse> actualIdeaResponseList = ideaService.findAllIdea(null, category, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
             assertThat(actualIdeaResponseList).isEqualTo(mockIdeaList);
@@ -82,10 +83,11 @@ class IdeaServiceTest {
         @Test
         @DisplayName("검색어를 통해 리스트를 반환한다.")
         void titleFindSuccessTest() {
-            List<IdeaResponse> mockIdeaList = Collections.singletonList(createTestIdea());
+            List<IdeaListResponse> ideaList = Collections.singletonList(createTestIdea());
+            Page<IdeaListResponse> mockIdeaList = new PageImpl<>(ideaList, pageable, ideaList.size());
             given(ideaRepository.findCategoryAndTitleAll(null, keyword, pageable)).willReturn(mockIdeaList);
 
-            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(keyword, null, 0);
+            Page<IdeaListResponse> actualIdeaResponseList = ideaService.findAllIdea(keyword, null, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
             assertThat(actualIdeaResponseList).isEqualTo(mockIdeaList);
@@ -94,10 +96,11 @@ class IdeaServiceTest {
         @Test
         @DisplayName("일반 리스트를 반환한다.")
         void FindAllSuccessTest() {
-            List<IdeaResponse> mockIdeaList = Collections.singletonList(createTestIdea());
+            List<IdeaListResponse> ideaList = Collections.singletonList(createTestIdea());
+            Page<IdeaListResponse> mockIdeaList = new PageImpl<>(ideaList, pageable, ideaList.size());
             given(ideaRepository.findIdeaAll(pageable)).willReturn(mockIdeaList);
 
-            List<IdeaResponse> actualIdeaResponseList = ideaService.findAllIdea(null, null, 0);
+            Page<IdeaListResponse> actualIdeaResponseList = ideaService.findAllIdea(null, null, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
             assertThat(actualIdeaResponseList).isEqualTo(mockIdeaList);
@@ -121,10 +124,10 @@ class IdeaServiceTest {
         @DisplayName("아이디어 상세 조회하는데 해당 아이디어를 반환한다.")
         void testFindOneSuccessTest() {
             Long testIdeaId = 1L;
-            IdeaResponse expectedIdea = createTestIdea();
+            IdeaListResponse expectedIdea = createTestIdea();
             given(ideaRepository.findIdeaOne(testIdeaId)).willReturn(Optional.of(expectedIdea));
 
-            IdeaResponse actualIdeaResponse = ideaService.findOneIdea(testIdeaId);
+            IdeaListResponse actualIdeaResponse = ideaService.findOneIdea(testIdeaId);
 
             assertThat(actualIdeaResponse).isEqualTo(expectedIdea);
         }
@@ -297,8 +300,8 @@ class IdeaServiceTest {
 
     }
 
-    private IdeaResponse createTestIdea() {
-        return IdeaResponse.from(Idea.builder()
+    private IdeaListResponse createTestIdea() {
+        return IdeaListResponse.from(Idea.builder()
                 .category(category)
                 .title("title")
                 .content("content")
