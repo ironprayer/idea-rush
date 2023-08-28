@@ -55,17 +55,17 @@ public class SseService {
         List<CustomSseEmitter> sendEmitters = currentEmitters.stream()
                 .filter((customSseEmitter) -> id.equals(customSseEmitter.id())).toList();
 
-//        for(CustomSseEmitter sendEmitter : sendEmitters) {
-//            try {
-//                sendEmitter.sseEmitter()
-//                        .send(SseEmitter.event()
-//                                .name(event.toString())
-//                                .data(data));
-//            } catch (IOException | IllegalStateException e) {
-//                sendEmitter.sseEmitter().completeWithError(e);
-//                currentEmitters.remove(sendEmitter);
-//            }
-//        }
+        for(CustomSseEmitter sendEmitter : sendEmitters) {
+            try {
+                sendEmitter.sseEmitter()
+                        .send(SseEmitter.event()
+                                .name(event.toString())
+                                .data(data));
+            } catch (IOException | IllegalStateException e) {
+                sendEmitter.sseEmitter().completeWithError(e);
+                currentEmitters.remove(sendEmitter);
+            }
+        }
     }
 
 }
