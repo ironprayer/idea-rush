@@ -1,7 +1,8 @@
 package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
-import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaFindAllResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
@@ -40,7 +41,7 @@ public class IdeaService {
     private final S3Service s3Service;
 
     @Transactional(readOnly = true)
-    public IdeaResponse findOneIdea(Long ideaId) {
+    public IdeaListResponse findOneIdea(Long ideaId) {
         return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
@@ -48,13 +49,13 @@ public class IdeaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<IdeaResponse> findAllIdea(String keyword, Category category, Integer page) {
+    public IdeaFindAllResponse findAllIdea(String keyword, Category category, Integer page) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
             throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
         }
 
-        Page<IdeaResponse> findList;
+        IdeaFindAllResponse findList;
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
 
