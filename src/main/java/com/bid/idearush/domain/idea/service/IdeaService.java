@@ -1,7 +1,6 @@
 package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
-import com.bid.idearush.domain.idea.model.reponse.IdeaFindAllResponse;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
@@ -16,6 +15,7 @@ import com.bid.idearush.global.exception.errortype.FileWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.IdeaFindErrorCode;
 import com.bid.idearush.global.exception.errortype.IdeaWriteErrorCode;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
+import com.bid.idearush.global.util.RedisUtil;
 import com.bid.idearush.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
@@ -39,6 +40,7 @@ public class IdeaService {
     private final IdeaRepository ideaRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final RedisUtil redisUtil;
 
     @Transactional(readOnly = true)
     public IdeaListResponse findOneIdea(Long ideaId) {
@@ -59,10 +61,12 @@ public class IdeaService {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
 
+        long count = getCount();
+
         if (!StringUtils.hasText(keyword) && Objects.isNull(category)) {
-            findList = ideaRepository.findIdeaAll(pageable);
+            findList = ideaRepository.findIdeaAll(pageable,count);
         } else {
-            findList = ideaRepository.findCategoryAndTitleAll(category, keyword, pageable);
+            findList = ideaRepository.findCategoryAndTitleAll(category, keyword, pageable, count);
         }
         return findList;
     }
@@ -98,6 +102,8 @@ public class IdeaService {
             imageName = image.getOriginalFilename();
         }
 
+        redisUtil.setIdeaCount(getCount()+1);
+
         Idea newIdea = ideaRequest.toIdea(user, imageName);
         ideaRepository.save(newIdea);
 
@@ -113,6 +119,7 @@ public class IdeaService {
 
         validateUser(userId, idea);
 
+        redisUtil.setIdeaCount(getCount()-1);
         s3Service.delete(filePath);
         ideaRepository.delete(idea);
     }
@@ -145,5 +152,13 @@ public class IdeaService {
         }
     }
 
+    private Long getCount(){
+        Long count = redisUtil.getIdeaCount();
+        if(Objects.isNull(count)) {
+            count = ideaRepository.count();
+            redisUtil.setIdeaCount(count);
+        }
+        return count;
+    }
 
 }
