@@ -75,9 +75,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .from(qIdea);
 
         long dataSize = count.fetchCount();
-        long totalPages = dataSize % pageable.getPageSize() == 0 ? dataSize / pageable.getPageSize() : dataSize / pageable.getPageSize() + 1;
         return new PageImpl<>(results, pageable, dataSize);
-        //        return new IdeaFindAllResponse(results, dataSize, totalPages);
     }
 
     @Override
@@ -107,9 +105,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 .from(qIdea);
 
         long dataSize = count.fetchCount();
-        long totalPages = dataSize % pageable.getPageSize() == 0 ? dataSize / pageable.getPageSize() : dataSize / pageable.getPageSize() + 1;
         return new PageImpl<>(results, pageable, dataSize);
-        //        return new IdeaFindAllResponse(results, dataSize, totalPages);
     }
 
     private BooleanExpression ideaTitleContains(String keyword) {
