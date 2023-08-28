@@ -53,7 +53,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public IdeaFindAllResponse findIdeaAll(Pageable pageable) {
+    public Page<IdeaListResponse> findIdeaAll(Pageable pageable) {
         List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
@@ -76,11 +76,12 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
         long dataSize = count.fetchCount();
         long totalPages = dataSize % pageable.getPageSize() == 0 ? dataSize / pageable.getPageSize() : dataSize / pageable.getPageSize() + 1;
-        return new IdeaFindAllResponse(results, dataSize, totalPages);
+        return new PageImpl<>(results, pageable, dataSize);
+        //        return new IdeaFindAllResponse(results, dataSize, totalPages);
     }
 
     @Override
-    public IdeaFindAllResponse findCategoryAndTitleAll(Category category, String keyword, Pageable pageable) {
+    public Page<IdeaListResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable) {
         List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
@@ -107,7 +108,8 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
         long dataSize = count.fetchCount();
         long totalPages = dataSize % pageable.getPageSize() == 0 ? dataSize / pageable.getPageSize() : dataSize / pageable.getPageSize() + 1;
-        return new IdeaFindAllResponse(results, dataSize, totalPages);
+        return new PageImpl<>(results, pageable, dataSize);
+        //        return new IdeaFindAllResponse(results, dataSize, totalPages);
     }
 
     private BooleanExpression ideaTitleContains(String keyword) {

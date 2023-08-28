@@ -35,7 +35,7 @@ public class IdeaController {
     }
 
     @GetMapping
-    public IdeaFindAllResponse findAllIdea(
+    public Page<IdeaListResponse> findAllIdea(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Category category,
             @RequestParam Integer page

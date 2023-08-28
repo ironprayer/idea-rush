@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface IdeaRepositoryCustom {
 
-    IdeaFindAllResponse findIdeaAll(Pageable pageable);
-    IdeaFindAllResponse findCategoryAndTitleAll(Category category, String keyword, Pageable pageable);
+    Page<IdeaListResponse> findIdeaAll(Pageable pageable);
+    Page<IdeaListResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable);
     Optional<IdeaListResponse> findIdeaOne(Long ideaId);
 
 }

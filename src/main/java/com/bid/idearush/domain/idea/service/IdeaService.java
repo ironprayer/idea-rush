@@ -49,13 +49,13 @@ public class IdeaService {
     }
 
     @Transactional(readOnly = true)
-    public IdeaFindAllResponse findAllIdea(String keyword, Category category, Integer page) {
+    public Page<IdeaListResponse> findAllIdea(String keyword, Category category, Integer page) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
             throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
         }
 
-        IdeaFindAllResponse findList;
+        Page<IdeaListResponse> findList;
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
 
