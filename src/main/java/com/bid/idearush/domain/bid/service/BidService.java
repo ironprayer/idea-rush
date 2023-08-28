@@ -37,6 +37,7 @@ public class BidService {
     private final SseService sseService;
 
     private final static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final static ExecutorService noticeExecutorService = Executors.newSingleThreadExecutor();
     private static long end_time= 0L;
 
     @Transactional
@@ -59,7 +60,8 @@ public class BidService {
 //        sseService.send(SseConnect.BID, SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice());
         executorService.submit(() -> sseService.send(SseConnect.BID,SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice()));
         long point_six = System.currentTimeMillis();
-        noticeService.noticeBidEvent(userId, idea, request.bidPrice());
+        noticeExecutorService.submit(() -> noticeService.noticeBidEvent(userId, idea, request.bidPrice()));
+//        noticeService.noticeBidEvent(userId, idea, request.bidPrice());
         long point_seven = System.currentTimeMillis();
 
         point_one = end_time == 0L ? point_one : end_time;
