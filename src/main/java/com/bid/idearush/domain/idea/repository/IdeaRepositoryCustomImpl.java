@@ -43,7 +43,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 ))
                 .where(qIdea.id.eq(ideaId))
                 .from(qIdea)
-                .leftJoin(qIdea.users, qUsers)
+                .innerJoin(qIdea.users, qUsers)
                 .fetchOne());
     }
 
@@ -59,17 +59,12 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         qIdea.bidWinPrice
                 ))
                 .from(qIdea)
-                .leftJoin(qIdea.users, qUsers)
+                .innerJoin(qIdea.users, qUsers)
                 .orderBy(qIdea.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-//        JPAQuery<Long> count = queryFactory
-//                .select(qIdea.id)
-//                .from(qIdea);
-//
-//        long dataSize = count.fetchCount();
         return new PageImpl<>(results, pageable, count);
     }
 
@@ -89,17 +84,12 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         ideaCategoryEq(category)
                 )
                 .from(qIdea)
-                .leftJoin(qIdea.users, qUsers)
+                .innerJoin(qIdea.users, qUsers)
                 .orderBy(qIdea.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-//        JPAQuery<Long> count = queryFactory
-//                .select(qIdea.id)
-//                .from(qIdea);
-//
-//        long dataSize = count.fetchCount();
         return new PageImpl<>(results, pageable, count);
     }
 
