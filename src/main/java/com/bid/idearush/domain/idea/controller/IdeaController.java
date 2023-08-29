@@ -1,6 +1,6 @@
 package com.bid.idearush.domain.idea.controller;
 
-import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.service.IdeaService;
 import com.bid.idearush.domain.idea.type.Category;
@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/ideas")
@@ -36,7 +34,7 @@ public class IdeaController {
     }
 
     @GetMapping
-    public List<IdeaResponse> findAllIdea(
+    public Page<IdeaListResponse> findAllIdea(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Category category,
             @RequestParam Integer page
@@ -45,7 +43,7 @@ public class IdeaController {
     }
 
     @GetMapping("/{id}")
-    public IdeaResponse findOneQuery(
+    public IdeaListResponse findOneQuery(
             @PathVariable Long id
     ) {
         return ideaService.findOneIdea(id);
