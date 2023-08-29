@@ -1,6 +1,5 @@
 package com.bid.idearush.domain.idea.controller;
 
-import com.bid.idearush.domain.idea.model.reponse.IdeaFindAllResponse;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.service.IdeaService;
