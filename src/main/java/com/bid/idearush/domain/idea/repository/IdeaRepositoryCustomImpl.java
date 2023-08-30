@@ -2,18 +2,13 @@ package com.bid.idearush.domain.idea.repository;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.entity.QIdea;
-import com.bid.idearush.domain.idea.model.reponse.IdeaResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.QUsers;
 import com.bid.idearush.global.type.ServerIpAddress;
-import com.querydsl.core.QueryFactory;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,14 +25,14 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     private QUsers qUsers = QUsers.users;
     private JPAQueryFactory queryFactory;
 
-    public IdeaRepositoryCustomImpl(EntityManager em, JPAQueryFactory jpaQueryFactory) {
+    public IdeaRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
         super(Idea.class);
         this.queryFactory = jpaQueryFactory;
     }
 
     @Override
-    public Optional<IdeaResponse> findIdeaOne(Long ideaId) {
-        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaResponse.class,
+    public Optional<IdeaListResponse> findIdeaOne(Long ideaId) {
+        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaListResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
@@ -48,13 +43,13 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                 ))
                 .where(qIdea.id.eq(ideaId))
                 .from(qIdea)
-                .leftJoin(qIdea.users, qUsers)
+                .innerJoin(qIdea.users, qUsers)
                 .fetchOne());
     }
 
     @Override
-    public List<IdeaResponse> findIdeaAll(Pageable pageable) {
-        return queryFactory.select(Projections.constructor(IdeaResponse.class,
+    public Page<IdeaListResponse> findIdeaAll(Pageable pageable, long count) {
+        List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
@@ -64,16 +59,18 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         qIdea.bidWinPrice
                 ))
                 .from(qIdea)
-                .leftJoin(qIdea.users, qUsers)
+                .innerJoin(qIdea.users, qUsers)
                 .orderBy(qIdea.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        return new PageImpl<>(results, pageable, count);
     }
 
     @Override
-    public List<IdeaResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable) {
-        return queryFactory.select(Projections.constructor(IdeaResponse.class,
+    public Page<IdeaListResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable, long count) {
+        List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
@@ -87,11 +84,13 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         ideaCategoryEq(category)
                 )
                 .from(qIdea)
-                .leftJoin(qIdea.users, qUsers)
+                .innerJoin(qIdea.users, qUsers)
                 .orderBy(qIdea.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        return new PageImpl<>(results, pageable, count);
     }
 
     private BooleanExpression ideaTitleContains(String keyword) {

@@ -2,11 +2,9 @@ package com.bid.idearush.domain.idea.model.reponse;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
-import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.global.type.ServerIpAddress;
-import com.querydsl.core.annotations.QueryProjection;
 
-public record IdeaResponse(
+public record IdeaListResponse(
         String writer,
         String title,
         String content,
@@ -16,8 +14,8 @@ public record IdeaResponse(
         Long BidWinPrice
 ) {
 
-    public static IdeaResponse from(Idea idea){
-        return new IdeaResponse(
+    public static IdeaListResponse from(Idea idea){
+        return new IdeaListResponse(
                 idea.getUsers().getNickname(),
                 idea.getTitle(),
                 idea.getContent(),
