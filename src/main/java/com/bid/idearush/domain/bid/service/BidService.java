@@ -5,9 +5,7 @@ import com.bid.idearush.domain.bid.model.request.BidRequest;
 import com.bid.idearush.domain.bid.repository.BidRepository;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
-import com.bid.idearush.domain.sse.service.SseService;
-import com.bid.idearush.domain.sse.type.SseConnect;
-import com.bid.idearush.domain.sse.type.SseEvent;
+import com.bid.idearush.domain.kafka.KafkaProducerService;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.BidWriteException;
@@ -34,7 +32,7 @@ public class BidService {
     private final UserRepository userRepository;
     private final BidRepository bidRepository;
     private final NoticeService noticeService;
-    private final SseService sseService;
+    private final KafkaProducerService kafkaProducerService;
 
     private final static ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final static ExecutorService noticeExecutorService = Executors.newSingleThreadExecutor();
@@ -57,11 +55,11 @@ public class BidService {
 
         bidRepository.save(newBid);
         long point_five = System.currentTimeMillis();
-//        sseService.send(SseConnect.BID, SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice());
-        executorService.submit(() -> sseService.send(SseConnect.BID,SseEvent.BID_PRICE_UPDATE,ideaId,newBid.getBidPrice()));
+        kafkaProducerService.sendMessage("bid", "BID_PRICE_UPDATE#"
+                                            + newBid.getBidPrice() + "#"
+                                            + newBid.getIdea().getId());
         long point_six = System.currentTimeMillis();
-        noticeExecutorService.submit(() -> noticeService.noticeBidEvent(userId, idea, request.bidPrice()));
-//        noticeService.noticeBidEvent(userId, idea, request.bidPrice());
+        noticeService.noticeBidEvent(userId, idea, request.bidPrice());
         long point_seven = System.currentTimeMillis();
 
         point_one = end_time == 0L ? point_one : end_time;
