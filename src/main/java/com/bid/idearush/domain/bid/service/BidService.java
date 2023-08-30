@@ -35,7 +35,6 @@ public class BidService {
     private final KafkaProducerService kafkaProducerService;
 
     private final static ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final static ExecutorService noticeExecutorService = Executors.newSingleThreadExecutor();
     private static long end_time= 0L;
 
     @Transactional
@@ -59,7 +58,7 @@ public class BidService {
                                             + newBid.getBidPrice() + "#"
                                             + newBid.getIdea().getId());
         long point_six = System.currentTimeMillis();
-        noticeService.noticeBidEvent(userId, idea, request.bidPrice());
+        executorService.submit(()->noticeService.noticeBidEvent(userId, idea, request.bidPrice()));
         long point_seven = System.currentTimeMillis();
 
         point_one = end_time == 0L ? point_one : end_time;
