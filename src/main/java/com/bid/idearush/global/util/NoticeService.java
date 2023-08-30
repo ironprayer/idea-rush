@@ -4,11 +4,9 @@ import com.bid.idearush.domain.bid.repository.BidRepository;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.DealStatus;
+import com.bid.idearush.domain.kafka.KafkaProducerService;
 import com.bid.idearush.domain.reservation.model.entity.BidReservation;
 import com.bid.idearush.domain.reservation.repository.ReservationRepository;
-import com.bid.idearush.domain.sse.service.SseService;
-import com.bid.idearush.domain.sse.type.SseConnect;
-import com.bid.idearush.domain.sse.type.SseEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
-
-    private final SseService sseService;
+    private final KafkaProducerService kafkaProducerService;
     private final IdeaRepository ideaRepository;
     private final BidRepository bidRepository;
     private final ReservationRepository reservationRepository;
@@ -30,7 +27,9 @@ public class NoticeService {
 
         for(Long userId : userIds) {
             String message = "아이디어 + '" + idea.getTitle() + "'가 " + bidPrice + "원에 입찰되었습니다.";
-            sseService.send(SseConnect.NOTIFICATION, SseEvent.NOTICE_BID_PRICE_UPDATE, userId, message);
+            kafkaProducerService.sendMessage("notice", "NOTICE_BID_PRICE_UPDATE#"
+                    + message + "#"
+                    + userId);
         }
     }
 
@@ -44,7 +43,9 @@ public class NoticeService {
 
             for(BidReservation bidReservation : bidReservations) {
                 String message = "아이디어 + '" + idea.getTitle() + "'가 시작 " + hopeTime  + "분 전입니다.";
-                sseService.send(SseConnect.NOTIFICATION, SseEvent.NOTICE_BID_START_BEFORE, bidReservation.getUsers().getId(), message);
+                kafkaProducerService.sendMessage("notice", "NOTICE_BID_START_BEFORE#"
+                        + message + "#"
+                        + bidReservation.getUsers().getId());
             }
         }
     }
@@ -54,7 +55,10 @@ public class NoticeService {
                 ? "아이디어 + '" + idea.getTitle() + "'가 " + idea.getBidWinPrice() + "원에 낙찰되었습니다."
                 : "아이디어 + '" + idea.getTitle() + "'가 " + "유찰되었습니다.";
 
-        sseService.send(SseConnect.NOTIFICATION, SseEvent.NOTICE_BID_END, userId, message);
+        kafkaProducerService.sendMessage("notice", "NOTICE_BID_END#"
+                + message + "#"
+                + userId);
+
     }
 
 }
