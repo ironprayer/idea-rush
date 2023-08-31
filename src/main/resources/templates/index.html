@@ -2,15 +2,15 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <script>
-        const eventSource = new EventSource("/api/sse/connect/user/1")
-        eventSource.addEventListener("NOTICE_BID_START_BEFORE", function(e){
-            const p = document.createElement("p")
-            p.innerText = e.data
+<!--    <script>-->
+<!--        const eventSource = new EventSource("/api/sse/connect/user/1")-->
+<!--        eventSource.addEventListener("NOTICE_BID_START_BEFORE", function(e){-->
+<!--            const p = document.createElement("p")-->
+<!--            p.innerText = e.data-->
 
-            document.getElementById("messages").appendChild(p)
-        })
-    </script>
+<!--            document.getElementById("messages").appendChild(p)-->
+<!--        })-->
+<!--    </script>-->
 </head>
 
 <body>
