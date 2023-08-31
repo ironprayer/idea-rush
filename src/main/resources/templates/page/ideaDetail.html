@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script>
+    <meta charset="utf-8" />
+        <script>
+            const eventSource = new EventSource("http://localhost:8081/api/sse/connect/idea/1")
+            eventSource.addEventListener("BID_PRICE_UPDATE", function(e){
+                const p = document.createElement("p")
+                p.innerText = e.data
 
-
-    </script>
+                document.getElementById("messages").appendChild(p)
+            })
+        </script>
 </head>
+
 <body>
-    안녕하세요.
+<div id="messages"></div>
 </body>
 </html>
