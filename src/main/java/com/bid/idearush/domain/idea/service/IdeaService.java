@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
@@ -101,12 +100,11 @@ public class IdeaService {
             }
             imageName = image.getOriginalFilename();
         }
-
         redisUtil.setIdeaCount(getCount()+1);
 
         Idea newIdea = ideaRequest.toIdea(user, imageName);
         ideaRepository.save(newIdea);
-
+        System.out.println(newIdea.getId());
         if (imageName != null) {
             String uploadPath = IMAGE_BASE_PATH + "/" + newIdea.getId();
             s3Service.upload(uploadPath, imageName, image);

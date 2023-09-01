@@ -12,4 +12,9 @@ public class ViewController {
     public String ideaDetailPage() {
         return "page/ideaDetail";
     }
+
+    @GetMapping("/pageWrite")
+    public String ideaWritePage() {
+        return "page/ideaWrite";
+    }
 }
