@@ -104,7 +104,7 @@ public class IdeaService {
 
         Idea newIdea = ideaRequest.toIdea(user, imageName);
         ideaRepository.save(newIdea);
-        System.out.println(newIdea.getId());
+
         if (imageName != null) {
             String uploadPath = IMAGE_BASE_PATH + "/" + newIdea.getId();
             s3Service.upload(uploadPath, imageName, image);
