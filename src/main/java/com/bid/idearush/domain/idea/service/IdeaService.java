@@ -2,6 +2,7 @@ package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
@@ -42,7 +43,7 @@ public class IdeaService {
     private final RedisUtil redisUtil;
 
     @Transactional(readOnly = true)
-    public IdeaListResponse findOneIdea(Long ideaId) {
+    public IdeaOneResponse findOneIdea(Long ideaId) {
         return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);

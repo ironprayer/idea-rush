@@ -1,6 +1,7 @@
 package com.bid.idearush.domain.idea.controller;
 
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.service.IdeaService;
 import com.bid.idearush.domain.idea.type.Category;
@@ -43,7 +44,7 @@ public class IdeaController {
     }
 
     @GetMapping("/{id}")
-    public IdeaListResponse findOneQuery(
+    public IdeaOneResponse findOneQuery(
             @PathVariable Long id
     ) {
         return ideaService.findOneIdea(id);
