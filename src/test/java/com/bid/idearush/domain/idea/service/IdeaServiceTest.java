@@ -2,6 +2,7 @@ package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
@@ -132,10 +133,10 @@ class IdeaServiceTest {
         @DisplayName("아이디어 상세 조회하는데 해당 아이디어를 반환한다.")
         void testFindOneSuccessTest() {
             Long testIdeaId = 1L;
-            IdeaListResponse expectedIdea = createTestIdea();
+            IdeaOneResponse expectedIdea = createTestIdeaOne();
             given(ideaRepository.findIdeaOne(testIdeaId)).willReturn(Optional.of(expectedIdea));
 
-            IdeaListResponse actualIdeaResponse = ideaService.findOneIdea(testIdeaId);
+            IdeaOneResponse actualIdeaResponse = ideaService.findOneIdea(testIdeaId);
 
             assertThat(actualIdeaResponse).isEqualTo(expectedIdea);
         }
@@ -307,6 +308,20 @@ class IdeaServiceTest {
         }
 
     }
+
+    private IdeaOneResponse createTestIdeaOne() {
+        return IdeaOneResponse.from(Idea.builder()
+                .category(category)
+                .title("title")
+                .content("content")
+                .imageName("imageName")
+                .minimumStartingPrice(0L)
+                .auctionStartTime(LocalDateTime.now())
+                .auctionStatus(AuctionStatus.PREPARE)
+                .users(Users.builder().build())
+                .build());
+    }
+
 
     private IdeaListResponse createTestIdea() {
         return IdeaListResponse.from(Idea.builder()

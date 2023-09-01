@@ -3,6 +3,7 @@ package com.bid.idearush.domain.idea.repository;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.entity.QIdea;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.QUsers;
 import com.bid.idearush.global.type.ServerIpAddress;
@@ -31,15 +32,17 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Optional<IdeaListResponse> findIdeaOne(Long ideaId) {
-        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaListResponse.class,
+    public Optional<IdeaOneResponse> findIdeaOne(Long ideaId) {
+        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaOneResponse.class,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
                         qIdea.imageName.concat(ServerIpAddress.s3Address).as("imageUrl"),
                         qIdea.auctionStatus.as("status"),
                         qIdea.minimumStartingPrice,
-                        qIdea.bidWinPrice
+                        qIdea.bidWinPrice,
+                        qIdea.category,
+                        qIdea.auctionStartTime
                 ))
                 .where(qIdea.id.eq(ideaId))
                 .from(qIdea)
