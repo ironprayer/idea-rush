@@ -277,6 +277,7 @@
         /* 아이템 스타일 */
         .item {
             display: flex;
+            gap: 10px;
             width: 1700px;
             border: 1px solid #ccc;
             padding: 10px;
@@ -292,13 +293,13 @@
 
         /* 설명 스타일 */
         .item p {
-            width: 1000px;
+            width: 1200px;
             margin: 0 0 10px 0; /* 아래쪽 마진 추가하여 가격과의 간격 조절 */
         }
 
         /* 가격 스타일 */
         .item span {
-            width: 100px;
+            width: 150px;
             font-weight: bold;
         }
 
@@ -316,6 +317,7 @@
             cursor: pointer;
             border: black;
         }
+
         /* 페이지 내용을 감싸는 컨테이너 스타일 */
         .item-container {
             display: flex;
@@ -360,29 +362,32 @@
             flex-direction: column;
             align-items: center;
         }
+
         /* 활성화된 페이지 버튼 스타일링 */
 
-        .page{
+        .page {
             border: none;
             display: flex;
             gap: 20px;
             border: none;
         }
-        .page-number{
+
+        .page-number {
             width: 30px;
             border: none;
             cursor: pointer;
         }
-        .page-number.active{
-            pointer-events : none;
+
+        .page-number.active {
+            pointer-events: none;
             background: beige;
         }
     </style>
 </head>
 <body>
 <div class="a">
-    <img class="logo" src="/image/logo.png"/>
-    <div class="title">Idea-Rush</div>
+    <img class="logo" src="/image/logo.png" onclick="urlEvent('/view/pageMain')"/>
+    <div class="title" onclick="urlEvent('/view/pageMain')">Idea-Rush</div>
     <div class="inside"></div>
 </div>
 <div class="bLayout"></div>
@@ -396,36 +401,38 @@
             <div class="content">
                 여러분들의 아이디어를 등록하고 아이디어를 사가세요!
             </div>
-            <button class="button1">Login</button>
-            <button class="button1">Sign Up</button>
+            <button class="button1" onclick="urlEvent('/')">Login</button>
+            <button class="button1" onclick="urlEvent('/')">Sign Up</button>
         </div>
         <div class="bLayout3"></div>
     </div>
 
     <div class="bar">
         <div class="search-bar">
-            <input class="test" placeholder="Search"/>
-            <button class="categoryboxIn3">검색하기</button>
+            <input class="test" id="search" placeholder="Search"/>
+            <button class="categoryboxIn3" onclick="searchPage()">검색하기</button>
         </div>
         <div class="categorybar">
             <div class="categorybox">
-                <button class="categoryboxIn">TECHNOLOGY</button>
+                <button class="categoryboxIn" value="TECHNOLOGY" onclick="category(null, this.value)">TECHNOLOGY</button>
             </div>
             <div class="categorybox">
-                <button class="categoryboxIn">ART_AND_DESIGN</button>
+                <button class="categoryboxIn" value="ART_AND_DESIGN" onclick="category(null, this.value)">ART_AND_DESIGN
+                </button>
             </div>
             <div class="categorybox">
-                <button class="categoryboxIn">BUSINESS</button>
+                <button class="categoryboxIn" value="BUSINESS" onclick="category(null, this.value)">BUSINESS</button>
             </div>
             <div class="categorybox">
-                <button class="categoryboxIn">SOCIAL_ISSUES</button>
+                <button class="categoryboxIn" value="SOCIAL_ISSUES" onclick="category(null, this.value)">SOCIAL_ISSUES
+                </button>
             </div>
             <div class="categorybox">
-                <button class="categoryboxIn">LIFESTYLE</button>
+                <button class="categoryboxIn" value="LIFESTYLE" onclick="category(null, this.value)">LIFESTYLE</button>
             </div>
         </div>
         <div class="categorybox2">
-            <button class="categoryboxIn2">게시글 등록</button>
+            <button class="categoryboxIn2" onclick="urlEvent('/')">게시글 등록</button>
         </div>
 
     </div>
@@ -464,9 +471,56 @@
     let currentPage = 0; // 현재 페이지
     const itemsPerPage = 20; // 한 페이지에 보여질 아이템 수
     let total;
-
+    let inputElement;
+    let categoryNum;
+    let pageNum = 0;
     // 페이지 로드 시 초기 데이터 불러오기
     loadPage(currentPage);
+
+    function category(page, category) {
+        if (page == null) {
+            page = pageNum;
+        }
+        categoryNum = category;
+        document.getElementById("search").value = "";
+        console.log(categoryNum, page)
+        // Ajax 요청을 보내고 페이지에 따른 데이터를 받아옵니다.
+        fetch(`/api/ideas?page=${page}&category=${categoryNum}`)
+            .then(response => response.json())
+            .then(data => {
+                // 데이터를 화면에 표시하고 페이지네이션 업데이트
+                console.log(">? : " + data.title)
+                displayItems(data);
+                updatePagination(data);
+            })
+            .catch(error => {
+                console.error("데이터를 불러오는 중 오류가 발생했습니다:", error.message);
+            });
+    }
+
+    function searchPage(page) {
+        if (page == null) {
+            page = pageNum;
+        }
+        inputElement = document.getElementById("search").value;
+        categoryNum = null;
+        // 검색어 가져오기
+        console.log(inputElement);
+
+        // Ajax 요청을 보내고 페이지에 따른 데이터를 받아옵니다.
+        fetch(`/api/ideas?page=${page}&keyword=${inputElement}`)
+            .then(response => response.json())
+            .then(data => {
+                // 데이터를 화면에 표시하고 페이지네이션 업데이트
+                console.log(">? : " + data.title)
+                displayItems(data);
+                updatePagination(data);
+            })
+            .catch(error => {
+                console.error("데이터를 불러오는 중 오류가 발생했습니다:", error.message);
+            });
+    }
+
 
     function loadPage(page) {
         // Ajax 요청을 보내고 페이지에 따른 데이터를 받아옵니다.
@@ -474,7 +528,7 @@
             .then(response => response.json())
             .then(data => {
                 // 데이터를 화면에 표시하고 페이지네이션 업데이트
-                console.log(">? : "+data.title)
+                console.log(">? : " + data.title)
                 displayItems(data);
                 updatePagination(data);
             })
@@ -512,7 +566,7 @@
 
             // 가격 생성 및 설정
             const itemPrice = document.createElement("span");
-            itemPrice.textContent = `가격: ${item.BidWinPrice}원`;
+            itemPrice.textContent = `가격: ${item.minimumStartingPrice}원`;
 
             // 버튼에 아이템 컨테이너를 추가
             itemContainer.appendChild(itemButton);
@@ -527,6 +581,7 @@
             itemList.appendChild(itemContainer);
         });
     }
+
     function updatePagination(data) {
         const pageNumbers = document.getElementById("pageNumbers");
         pageNumbers.innerHTML = "";
@@ -544,7 +599,14 @@
             pageNumberButton.textContent = i;
             pageNumberButton.addEventListener("click", function () {
                 currentPage = i - 1;
-                loadPage(currentPage);
+
+                if (inputElement != null) {
+                    searchPage(currentPage)
+                } else if (categoryNum != null) {
+                    category(currentPage, categoryNum)
+                } else {
+                    loadPage(currentPage);
+                }
             });
             pageNumberButton.classList.add("page-number")
             // 현재 페이지 버튼인 경우 활성화 표시
@@ -560,19 +622,37 @@
     function prevPage() {
         if (currentPage > 0) {
             currentPage--;
-            loadPage(currentPage);
+            if (inputElement != null) {
+                searchPage(currentPage);
+            } else if (categoryNum != null) {
+                category(currentPage, categoryNum)
+            } else {
+                loadPage(currentPage);
+            }
         }
     }
 
-    // "다음" 버튼 이벤트 핸들러
+
     function nextPage() {
         const totalPages = total; // 총 페이지 수
 
+        console.log(inputElement)
         if (currentPage < totalPages - 1) {
             currentPage++;
-            loadPage(currentPage);
+            if (inputElement != null) {
+                searchPage(currentPage);
+            } else if (categoryNum != null) {
+                category(currentPage, categoryNum)
+            } else {
+                loadPage(currentPage);
+            }
         }
     }
+
+    function urlEvent(url){
+        window.location.href = url;
+    }
+
 </script>
 
 </body>
