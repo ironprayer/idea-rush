@@ -50,6 +50,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     @Override
     public Page<IdeaListResponse> findIdeaAll(Pageable pageable, long count) {
         List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
+                        qIdea.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
