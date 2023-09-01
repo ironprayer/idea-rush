@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
@@ -101,7 +100,6 @@ public class IdeaService {
             }
             imageName = image.getOriginalFilename();
         }
-
         redisUtil.setIdeaCount(getCount()+1);
 
         Idea newIdea = ideaRequest.toIdea(user, imageName);
