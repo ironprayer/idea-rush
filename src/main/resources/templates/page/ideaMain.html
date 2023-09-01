@@ -552,6 +552,9 @@
             // 각 아이템을 감싸는 버튼 생성
             const itemButton = document.createElement("button");
             itemButton.classList.add("item-button");
+            itemButton.onclick = function() {
+                urlEvent('?' + item.id);
+            };
 
             const itemLi = document.createElement("li");
             itemLi.classList.add("item");
