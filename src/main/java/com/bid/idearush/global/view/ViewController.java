@@ -17,4 +17,9 @@ public class ViewController {
     public String ideaWritePage() {
         return "page/ideaWrite";
     }
+
+    @GetMapping("/pageUpdate")
+    public String ideaUpdatePage() {
+        return "page/ideaUpdate";
+    }
 }
