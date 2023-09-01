@@ -17,4 +17,10 @@ public class ViewController {
     public String ideaWritePage() {
         return "page/ideaWrite";
     }
+
+    @GetMapping("/pageSignup")
+    public String signupPage() {
+        return "page/signup";
+    }
+
 }
