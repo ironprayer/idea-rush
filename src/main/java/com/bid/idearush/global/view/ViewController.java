@@ -12,4 +12,10 @@ public class ViewController {
     public String ideaDetailPage() {
         return "page/ideaDetail";
     }
+
+    @GetMapping("/pageMain")
+    public String ideaMainPage(){
+        return "page/ideaMain";
+    }
+
 }
