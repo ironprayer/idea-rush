@@ -23,4 +23,9 @@ public class ViewController {
         return "page/signup";
     }
 
+    @GetMapping("/pageLogin")
+    public String loginPage() {
+        return "page/login";
+    }
+
 }
