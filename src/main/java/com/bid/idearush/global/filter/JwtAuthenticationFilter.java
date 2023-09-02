@@ -34,7 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         requestURI.matches("/api/ideas/.*") ||
                         requestURI.matches("/api/ideas/.*/bid")) &&
                         "GET".equalsIgnoreCase(method)) ||
-                requestURI.matches("/chat/.*") || requestURI.matches("/view/.*") || requestURI.matches("/image/.*")) {
+                requestURI.matches("/chat/.*") ||
+                requestURI.matches("/view/.*") ||
+                requestURI.matches("/image/.*")||
+                requestURI.matches("/js/.*")
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(jwt)) {
             if (jwtUtils.validateToken(jwt)) {
                 Long userId = jwtUtils.parseUserId(jwt);
+                System.out.println(userId);
                 UserAuthentication authentication = new UserAuthentication(userId);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
