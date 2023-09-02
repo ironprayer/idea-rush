@@ -26,7 +26,7 @@
 <!-- 네비게이션 바 -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <img src="/image/logo.svg" style="height: 35px; width: 35px"></img>
-    <a class="navbar-brand" href="#" style="margin-left: 5px">Idea Rush</a>
+    <a class="navbar-brand" href="/view/pageMain" style="margin-left: 5px">Idea Rush</a>
 </nav>
 
 <div class="container mt-4">
@@ -83,13 +83,13 @@
     <div class="row"> &nbsp;  </div>
 
     <div class="textarea-container">
-        <textarea class="form-control" id="itemDescription" rows="14" maxlength="1000" placeholder="내용을 입력해주세요" oninput="updateCharacterCount()"></textarea>
+        <textarea class="form-control" id="itemDescription" rows="14" maxlength="1000" placeholder="Please fill out the contents" oninput="updateCharacterCount()"></textarea>
         <div class="character-count" id="characterCount">Characters: 0 / 1000</div>
     </div>
     <div class="row"> &nbsp;  </div>
 
     <div class="col-lg-12" style="text-align: right">
-        <button onclick="window.location.href='/view/home'" class="btn btn-dark">CANCEL</button>
+        <button onclick="goWritePage()" class="btn btn-dark">CANCEL</button>
         <button onclick="updateIdea()" class="btn btn-dark">UPDATE</button>
     </div>
     <div class="row"> &nbsp;  </div>
@@ -119,6 +119,13 @@
 
 <script>
 
+    const url = new URL(window.location.href);
+
+    // URLSearchParams 객체
+    const urlParams = url.searchParams;
+
+    let postId = urlParams.get('id')
+
     function isValidImageUrl(url, callback) {
         var img = new Image();  // Create a new image object
         img.onload = function() {  // Image loaded successfully
@@ -130,13 +137,11 @@
         img.src = url;  // Set image source to the test URL
     }
 
+    function goWritePage() {
+        window.location.href = "/view/pageDetail?id=" + postId;
+    }
+
     $(document).ready(function() {
-        const url = new URL(window.location.href);
-
-        // URLSearchParams 객체
-        const urlParams = url.searchParams;
-
-        let postId = urlParams.get('id')
         let sendUrl = "/api/ideas/" + postId
 
         $.ajax({
@@ -257,7 +262,7 @@
             },
             success: function (response) {
                 alert("Idea Registration Completed.")
-                window.location.href = "/view/home"
+                window.location.href = "/view/pageMain"
             },
             error: function (error) {
                 alert("Idea Registration Failed.")
