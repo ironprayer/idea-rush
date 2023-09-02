@@ -1390,3 +1390,85 @@
 14:09:11.667 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
 14:09:41.671 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
 14:09:41.672 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:10:11.677 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:10:11.678 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:10:41.679 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:10:41.680 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:11:11.685 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:11:11.687 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:11:41.691 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:11:41.693 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:12:11.699 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:12:11.699 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:12:41.703 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:12:41.704 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:13:11.710 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:13:11.712 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:13:41.717 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:13:41.717 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:14:11.719 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:14:11.720 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:14:21.281 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Before shutdown stats (total=10, active=0, idle=10, waiting=0)
+14:14:21.283 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@6b0325d0: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@31b54098: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@3f72a8de: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@3b4d2be8: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@7e4fa2e5: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@65e59c34: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@4f7bfc0e: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@1d3b9c62: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@1e605daa: (connection evicted)
+14:14:21.284 DEBUG com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Closing connection org.postgresql.jdbc.PgConnection@572d766e: (connection evicted)
+14:14:21.285 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After shutdown stats (total=0, active=0, idle=0, waiting=0)
+14:14:23.764 DEBUG com.zaxxer.hikari.HikariConfig - Driver class org.postgresql.Driver found in Thread context class loader jdk.internal.loader.ClassLoaders$AppClassLoader@251a69d7
+14:14:23.965 DEBUG com.zaxxer.hikari.HikariConfig - HikariPool-1 - configuration:
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - allowPoolSuspension.............false
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - autoCommit......................true
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - catalog.........................none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - connectionInitSql...............none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - connectionTestQuery.............none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - connectionTimeout...............30000
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - dataSource......................none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - dataSourceClassName.............none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - dataSourceJNDI..................none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - dataSourceProperties............{password=<masked>}
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - driverClassName................."org.postgresql.Driver"
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - exceptionOverrideClassName......none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - healthCheckProperties...........{}
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - healthCheckRegistry.............none
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - idleTimeout.....................600000
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - initializationFailTimeout.......1
+14:14:23.967 DEBUG com.zaxxer.hikari.HikariConfig - isolateInternalQueries..........false
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - jdbcUrl.........................jdbc:postgresql://localhost:5432/idea_rush
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - keepaliveTime...................0
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - leakDetectionThreshold..........0
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - maxLifetime.....................1800000
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - maximumPoolSize.................10
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - metricRegistry..................none
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - metricsTrackerFactory...........none
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - minimumIdle.....................10
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - password........................<masked>
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - poolName........................"HikariPool-1"
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - readOnly........................false
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - registerMbeans..................false
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - scheduledExecutor...............none
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - schema..........................none
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - threadFactory...................internal
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - transactionIsolation............default
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - username........................"idea_rush"
+14:14:23.968 DEBUG com.zaxxer.hikari.HikariConfig - validationTimeout...............5000
+14:14:24.131 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=1, active=1, idle=0, waiting=0)
+14:14:24.240 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7dfca94a
+14:14:24.264 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@733b4885
+14:14:24.283 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7704c23a
+14:14:24.301 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@320642be
+14:14:24.319 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2aa80b4d
+14:14:24.344 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@37e11fd
+14:14:24.363 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@523a06ba
+14:14:24.384 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5229bdf1
+14:14:24.400 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@38b1369a
+14:14:24.410 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - After adding stats (total=10, active=0, idle=10, waiting=0)
+14:14:54.137 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:14:54.138 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).
+14:15:24.143 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)
+14:15:24.144 DEBUG com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Fill pool skipped, pool has sufficient level or currently being filled (queueDepth=0).

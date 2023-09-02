@@ -183,7 +183,7 @@
             formData.append("image", itemImageInput.files[0]);
         }
 
-        const jwtToken = "#";
+        const jwtToken = localStorage.getItem("authToken");
         console.log(jwtToken)
 
         $.ajax({

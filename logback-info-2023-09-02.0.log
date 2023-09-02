@@ -1336,3 +1336,52 @@
 14:08:14.295 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
 14:08:14.296 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
 14:09:12.891 INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+14:14:21.136 INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+14:14:21.137 INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@3d640f70]]
+14:14:21.137 INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+14:14:21.279 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+14:14:21.281 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+14:14:21.285 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+14:14:22.757 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+14:14:22.775 INFO  c.bid.idearush.IdeaRushApplication - Starting IdeaRushApplication using Java 17.0.5 with PID 74267 (/Users/ironprayer/project/sprata/idea-rush/build/classes/java/main started by ironprayer in /Users/ironprayer/project/sprata/idea-rush)
+14:14:22.776 INFO  c.bid.idearush.IdeaRushApplication - The following 1 profile is active: "local"
+14:14:23.130 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+14:14:23.131 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+14:14:23.222 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 87 ms. Found 4 JPA repository interfaces.
+14:14:23.229 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+14:14:23.229 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+14:14:23.237 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.bid.idearush.domain.bid.repository.BidRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+14:14:23.238 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.bid.idearush.domain.idea.repository.IdeaRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+14:14:23.238 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.bid.idearush.domain.reservation.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+14:14:23.238 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.bid.idearush.domain.user.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+14:14:23.238 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+14:14:23.656 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+14:14:23.661 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+14:14:23.662 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+14:14:23.662 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.11]
+14:14:23.717 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+14:14:23.717 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 924 ms
+14:14:23.803 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+14:14:23.831 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.6.Final
+14:14:23.832 INFO  org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+14:14:23.888 INFO  o.h.b.i.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+14:14:23.957 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+14:14:23.968 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+14:14:24.017 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6b0325d0
+14:14:24.049 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+14:14:24.373 INFO  o.h.b.i.BytecodeProviderInitiator - HHH000021: Bytecode provider name : bytebuddy
+14:14:24.700 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+14:14:24.730 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+14:14:25.052 INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+14:14:25.904 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+14:14:25.972 INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@338f9bb5, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1f0f52d6, org.springframework.security.web.context.SecurityContextHolderFilter@60df0131, org.springframework.security.web.header.HeaderWriterFilter@3f92977a, org.springframework.web.filter.CorsFilter@23551fa1, org.springframework.security.web.authentication.logout.LogoutFilter@29d534ce, com.bid.idearush.global.filter.JwtAuthenticationFilter@152a41ab, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@5de25642, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@43e869ea, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@f083345, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5a372288, org.springframework.security.web.session.SessionManagementFilter@17bda3, org.springframework.security.web.access.ExceptionTranslationFilter@f777d41, org.springframework.security.web.access.intercept.AuthorizationFilter@37736bf1]
+14:14:26.147 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+14:14:26.161 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+14:14:26.162 INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+14:14:26.162 INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@2f4847d9]]
+14:14:26.162 INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+14:14:26.168 INFO  c.bid.idearush.IdeaRushApplication - Started IdeaRushApplication in 3.547 seconds (process running for 3.864)
+14:14:35.127 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+14:14:35.127 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+14:14:35.128 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+14:15:25.820 INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
