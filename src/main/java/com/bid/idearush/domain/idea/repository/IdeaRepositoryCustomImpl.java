@@ -75,6 +75,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     @Override
     public Page<IdeaListResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable, long count) {
         List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
+                        qIdea.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
