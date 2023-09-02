@@ -5,6 +5,7 @@ import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.global.type.ServerIpAddress;
 
 public record IdeaListResponse(
+        Long id,
         String writer,
         String title,
         String content,
@@ -16,6 +17,7 @@ public record IdeaListResponse(
 
     public static IdeaListResponse from(Idea idea){
         return new IdeaListResponse(
+                idea.getId(),
                 idea.getUsers().getNickname(),
                 idea.getTitle(),
                 idea.getContent(),
