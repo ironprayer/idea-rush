@@ -27,6 +27,7 @@ public class ChatController {
     public void sendMessage(
             @Payload ChatMessageRequest chatMessage
     ) {
+        System.out.println(chatMessage);
         simpMessageSendingOperations.convertAndSend("/sub", new ChatMessageResponse(chatMessage.name(), chatMessage.msg(), LocalDateTime.now()));
     }
 

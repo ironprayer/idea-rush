@@ -34,7 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         requestURI.matches("/api/ideas/.*") ||
                         requestURI.matches("/api/ideas/.*/bid")) &&
                         "GET".equalsIgnoreCase(method)) ||
-                requestURI.matches("/chat/.*") || requestURI.matches("/view/.*") || requestURI.matches("/image/.*")) {
+                requestURI.matches("/chat/.*") ||
+                requestURI.matches("/view/.*") ||
+                requestURI.matches("/image/.*")||
+                requestURI.matches("/js/.*")
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
