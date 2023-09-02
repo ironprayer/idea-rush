@@ -94,6 +94,7 @@
         }
 
         .binside {
+            margin-top: 30px;
             /* Inside auto layout */
             flex: none;
             order: 1;
@@ -403,7 +404,6 @@
         <div class="search-bar">
             <input class="test" id="search" placeholder="Search"/>
             <div class="categoryboxIn3"><button class="btn btn-outline-dark" onclick="searchPage()">Search</button></div>
-
         </div>
         <div class="categorybar">
             <div class="categoryboxIn">
@@ -563,7 +563,7 @@
             // 가격 생성 및 설정
             const itemPrice = document.createElement("span");
             const formattedPrice = formatNumberWithCommas(item.minimumStartingPrice); // 가격 형식화
-            itemPrice.textContent = `가격: ${formattedPrice}원`;
+            itemPrice.textContent = `${formattedPrice} 원`;
             // 버튼에 아이템 컨테이너를 추가
             itemContainer.appendChild(itemButton);
             itemButton.appendChild(itemLi);
