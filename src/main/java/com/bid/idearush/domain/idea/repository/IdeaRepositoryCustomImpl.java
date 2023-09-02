@@ -1,13 +1,19 @@
 package com.bid.idearush.domain.idea.repository;
 
+import com.bid.idearush.domain.bid.model.entity.QBid;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.entity.QIdea;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.QUsers;
 import com.bid.idearush.global.type.ServerIpAddress;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,6 +29,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
     private QIdea qIdea = QIdea.idea;
     private QUsers qUsers = QUsers.users;
+    private QBid qBid = QBid.bid;
     private JPAQueryFactory queryFactory;
 
     public IdeaRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
@@ -31,15 +38,23 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Optional<IdeaListResponse> findIdeaOne(Long ideaId) {
-        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaListResponse.class,
+    public Optional<IdeaOneResponse> findIdeaOne(Long ideaId) {
+        Expression<Long> maxBidPriceSubquery = JPAExpressions
+                .select(qBid.bidPrice.max())
+                .from(qBid)
+                .where(qBid.idea.id.eq(ideaId));
+        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaOneResponse.class,
+                        qUsers.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
                         qIdea.imageName.concat(ServerIpAddress.s3Address).as("imageUrl"),
                         qIdea.auctionStatus.as("status"),
                         qIdea.minimumStartingPrice,
-                        qIdea.bidWinPrice
+                        qIdea.bidWinPrice,
+                        maxBidPriceSubquery,
+                        qIdea.category,
+                        qIdea.auctionStartTime
                 ))
                 .where(qIdea.id.eq(ideaId))
                 .from(qIdea)
@@ -50,6 +65,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     @Override
     public Page<IdeaListResponse> findIdeaAll(Pageable pageable, long count) {
         List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
+                        qIdea.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
@@ -71,6 +87,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     @Override
     public Page<IdeaListResponse> findCategoryAndTitleAll(Category category, String keyword, Pageable pageable, long count) {
         List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
+                        qIdea.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
