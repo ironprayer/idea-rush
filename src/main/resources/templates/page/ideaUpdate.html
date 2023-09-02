@@ -26,7 +26,7 @@
 <!-- 네비게이션 바 -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <img src="/image/logo.svg" style="height: 35px; width: 35px"></img>
-    <a class="navbar-brand" href="#" style="margin-left: 5px">Idea Rush</a>
+    <a class="navbar-brand" href="/view/pageMain" style="margin-left: 5px">Idea Rush</a>
 </nav>
 
 <div class="container mt-4">
@@ -36,28 +36,28 @@
             <!-- 왼쪽 카드 -->
             <div class="card flex-grow-1">
                 <div class="card-body">
-                    <h5 class="card-title">아이디어 세부 내용</h5>
+                    <h5 class="card-title">IDEA DETAILS</h5>
                     <form>
                         <div class="mb-3"></div>
                         <div class="mb-3">
-                            <label for="itemTitle" class="form-label">Title</label>
+                            <label for="itemTitle" class="form-label">TITLE</label>
                             <input type="text" class="form-control" id="itemTitle" placeholder="Enter item title">
                         </div>
                         <div class="mb-3">
-                            <label for="itemImage" class="form-label">Item Image</label>
+                            <label for="itemImage" class="form-label">ITEM IMAGE</label>
                             <input type="file" class="form-control" id="itemImage" accept="image/*">
                             <div class="mt-2" id="imagePreview"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="startingPrice" class="form-label">Starting Price</label>
+                            <label for="startingPrice" class="form-label">STARTING PRICE</label>
                             <input type="number" class="form-control" id="startingPrice" placeholder="Enter starting price" min="0">
                         </div>
                         <div class="mb-3">
-                            <label for="startTime" class="form-label">Start Time</label>
+                            <label for="startTime" class="form-label">START TIME</label>
                             <input type="datetime-local" class="form-control" id="startTime" required>
                         </div>
                         <div class="mb-3">
-                            <label for="category" class="form-label">Category</label>
+                            <label for="category" class="form-label">CATEGORY</label>
                             <select class="form-select" id="category">
                                 <option value="TECHNOLOGY" selected>Technology</option>
                                 <option value="ART_AND_DESIGN">Art And Design</option>
@@ -83,14 +83,14 @@
     <div class="row"> &nbsp;  </div>
 
     <div class="textarea-container">
-        <textarea class="form-control" id="itemDescription" rows="14" maxlength="1000" placeholder="내용을 입력해주세요" oninput="updateCharacterCount()"></textarea>
-        <div class="character-count" id="characterCount">0 / 1000 글자</div>
+        <textarea class="form-control" id="itemDescription" rows="14" maxlength="1000" placeholder="Please fill out the contents" oninput="updateCharacterCount()"></textarea>
+        <div class="character-count" id="characterCount">Characters: 0 / 1000</div>
     </div>
     <div class="row"> &nbsp;  </div>
 
     <div class="col-lg-12" style="text-align: right">
-        <button onclick="window.location.href='/view/home'" class="btn btn-dark">취소하기</button>
-        <button onclick="updateIdea()" class="btn btn-dark">수정하기</button>
+        <button onclick="goWritePage()" class="btn btn-dark">CANCEL</button>
+        <button onclick="updateIdea()" class="btn btn-dark">UPDATE</button>
     </div>
     <div class="row"> &nbsp;  </div>
 </div>
@@ -119,6 +119,13 @@
 
 <script>
 
+    const url = new URL(window.location.href);
+
+    // URLSearchParams 객체
+    const urlParams = url.searchParams;
+
+    let postId = urlParams.get('id')
+
     function isValidImageUrl(url, callback) {
         var img = new Image();  // Create a new image object
         img.onload = function() {  // Image loaded successfully
@@ -130,13 +137,11 @@
         img.src = url;  // Set image source to the test URL
     }
 
+    function goWritePage() {
+        window.location.href = "/view/pageDetail?id=" + postId;
+    }
+
     $(document).ready(function() {
-        const url = new URL(window.location.href);
-
-        // URLSearchParams 객체
-        const urlParams = url.searchParams;
-
-        let postId = urlParams.get('id')
         let sendUrl = "/api/ideas/" + postId
 
         $.ajax({
@@ -144,7 +149,7 @@
             method: "GET",
             success: function (data) {
                 $('#itemTitle').val(data.title);
-                document.getElementById('itemImage').placeholder = '파일을 선택하세요';
+                document.getElementById('itemImage').placeholder = 'Select A File';
                 // 이미지 URL을 사용하여 이미지를 미리보기에 표시할 수 있습니다.
                 // $('#imagePreview').html('<img src="' + data.imageUrl + '" alt="Item Image">');
                 $('#startingPrice').val(data.minimumStartingPrice);
@@ -190,7 +195,7 @@
         const currentDateTime = new Date();
 
         if (selectedDateTime < currentDateTime) {
-            alert("시작시간은 현재 시간 이후로 지정하셔야 합니다.")
+            alert("Start Time Must Be Specified After The Current Time.")
             startTimeInput.blur();
             startTimeInput.value = getCurrentDateTime();
         }
@@ -211,7 +216,7 @@
         let maxCharacterCount = parseInt(textarea.getAttribute("maxlength"));
         let countElement = document.getElementById("characterCount");
 
-        countElement.textContent = currentCharacterCount + " / " + maxCharacterCount + " 글자";
+        countElement.textContent = currentCharacterCount + " / " + maxCharacterCount + " characters";
         textarea.textContent = text;
     }
 
@@ -244,7 +249,7 @@
             formData.append("image", itemImageInput.files[0]);
         }
 
-        const jwtToken = "#";
+        const jwtToken = localStorage.getItem("authToken");
 
         $.ajax({
             type: "PUT",
@@ -256,11 +261,11 @@
                 Authorization: `Bearer ${jwtToken}`
             },
             success: function (response) {
-                alert("아이디어 등록이 완료되었습니다.")
-                window.location.href = "/view/home"
+                alert("Idea Registration Completed.")
+                window.location.href = "/view/pageMain"
             },
             error: function (error) {
-                alert("아이디어 등록에 실패했습니다.")
+                alert("Idea Registration Failed.")
             }
         });
     }
