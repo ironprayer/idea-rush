@@ -1,34 +1,25 @@
 package com.bid.idearush.domain.chat.controller;
 
-import com.bid.idearush.domain.chat.model.reponse.ChatMessageResponse;
-import com.bid.idearush.domain.chat.model.request.ChatMessageRequest;
+import com.bid.idearush.domain.chat.service.ChatService;
+import com.bid.idearush.global.security.AuthPayload;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Headers;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.util.MultiValueMap;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/chat")
 public class ChatController {
 
-    private final SimpMessageSendingOperations simpMessageSendingOperations;
+    private final ChatService chatService;
 
-    @MessageMapping("/sendMessage")
-    public void sendMessage(
-            @Payload ChatMessageRequest chatMessage
+    @GetMapping("/getUserName")
+    public String getUserNickName(
+            @AuthenticationPrincipal AuthPayload authPayload
     ) {
-        System.out.println(chatMessage);
-        simpMessageSendingOperations.convertAndSend("/sub", new ChatMessageResponse(chatMessage.name(), chatMessage.msg(), LocalDateTime.now()));
+        return chatService.getUserNickName(authPayload.userId());
     }
 
 }

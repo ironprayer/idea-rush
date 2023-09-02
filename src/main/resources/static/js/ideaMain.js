@@ -6,6 +6,7 @@ let total;
 let inputElement;
 let categoryNum;
 let pageNum = 0;
+let nickname;
 // 페이지 로드 시 초기 데이터 불러오기
 loadPage(currentPage);
 chatting();
@@ -60,10 +61,21 @@ function chatting() {
         chatInputContainer.appendChild(messageInput); // 입력란을 컨테이너에 추가합니다.
         chatInputContainer.appendChild(sendButton); // 버튼을 컨테이너에 추가합니다.
 
-        stompClient = Stomp.over(socket);
         var headers = {
-            'Authorization': 'Bearer '+localStorage.getItem("authToken") // 여기에 토큰 값을 넣어주세요
+            'Authorization': 'Bearer ' + localStorage.getItem("authToken") // 여기에 토큰 값을 넣어주세요
         };
+
+        fetch(`/api/chat/getUserName`, {method: "GET", headers: headers})
+            .then(response => response.text())
+            .then(data => {
+                console.log('? : ' + data)
+                nickname = data;
+            })
+            .catch(error => {
+                console.error("데이터를 불러오는 중 오류가 발생했습니다:", error.message);
+            });
+
+        stompClient = Stomp.over(socket);
         stompClient.connect(headers, onConnectead, onError);
 
     }
@@ -93,7 +105,7 @@ function sendMessage() {
         messageInput.value = "";
 
         var chatMessage = {
-            name: "익명",
+            name: nickname,
             msg: messageText,
         };
         stompClient.send("/pub/sendMessage", {}, JSON.stringify(chatMessage));
@@ -105,24 +117,131 @@ function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
 
     const chatMessages = document.getElementById("chat-room");
+
     // 생성한 메시지를 DOM에 추가
+    if (message.senderName == nickname) {
 
-    const messageDiv = document.createElement("div");
-    messageDiv.textContent = message.msg;
-    messageDiv.style.backgroundColor = "#007bff";
-    messageDiv.style.color = "#fff";
-    messageDiv.style.padding = "10px";
-    messageDiv.style.marginBottom = "5px";
-    messageDiv.style.borderRadius = "5px";
-    messageDiv.style.width = "250px"; // 너비 설정
-    messageDiv.style.marginLeft = "auto"; // 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬
-    chatMessages.appendChild(messageDiv);
+        // 메세지 컨테이너 생성 및 스타일 설정 (오른쪽 정렬)
+        const messageContainer = document.createElement("div");
+        messageContainer.style.display = "flex"; // 컨테이너 내 요소들을 가로로 정렬
+        messageContainer.style.flexDirection = "column"; // 세로로 배치
+        messageContainer.style.alignItems = "flex-end"; // 아이템을 오른쪽으로 정렬
+        messageContainer.style.marginBottom = "10px";
+        // 메세지 컨테이너에 메시지 추가
+        const messageDiv = document.createElement("div");
+        messageDiv.textContent = message.msg;
+        messageDiv.style.backgroundColor = "#007bff";
+        messageDiv.style.color = "#fff";
+        messageDiv.style.padding = "10px";
+        messageDiv.style.borderRadius = "5px";
+        messageDiv.style.width = "250px"; // 너비 설정
+        messageContainer.appendChild(messageDiv);
 
+        // From 컨테이너 생성 및 스타일 설정 (왼쪽 정렬)
+        const fromContainer = document.createElement("div");
+        fromContainer.style.display = "flex"; // From 컨테이너 내 요소들을 가로로 정렬
+        fromContainer.style.alignItems = "center"; // 아이템을 가운데 정렬
+        fromContainer.style.justifyContent = "flex-start"; // 내용을 왼쪽으로 정렬
+
+        // 보낸 사람의 닉네임을 표시하는 DOM 요소 생성 및 추가
+        const senderInfoDiv = document.createElement("div");
+        senderInfoDiv.textContent = `From: ${message.senderName}`;
+        senderInfoDiv.style.fontSize = "12px"; // 폰트 크기 설정 (작게)
+        senderInfoDiv.style.justifyContent = "flex-start"; // 내용을 오른쪽으로 정렬
+        fromContainer.appendChild(senderInfoDiv);
+
+        // Sent at 컨테이너 생성 및 스타일 설정 (오른쪽 정렬)
+        const sentAtContainer = document.createElement("div");
+        sentAtContainer.style.display = "flex"; // Sent at 컨테이너 내 요소들을 가로로 정렬
+        sentAtContainer.style.alignItems = "center"; // 아이템을 가운데 정렬
+        sentAtContainer.style.justifyContent = "flex-end"; // 내용을 오른쪽으로 정렬
+
+
+        // 보낸 날짜 및 시간을 표시하는 DOM 요소 생성 및 추가
+        const dateInfoDiv = document.createElement("div");
+        dateInfoDiv.textContent = `Sent at: ${formatTimestamp(message.createdAt)}`;
+        dateInfoDiv.style.fontSize = "12px"; // 폰트 크기 설정 (작게)
+        sentAtContainer.appendChild(dateInfoDiv);
+
+        // From 컨테이너를 메세지 컨테이너에 추가
+        messageContainer.appendChild(fromContainer);
+
+        // Sent at 컨테이너를 메세지 컨테이너에 추가
+        messageContainer.appendChild(sentAtContainer);
+
+        // 메세지 컨테이너를 채팅 메시지 창에 추가
+        chatMessages.appendChild(messageContainer);
+
+    } else {
+
+        // 메세지 컨테이너 생성 및 스타일 설정 (오른쪽 정렬)
+        const messageContainer = document.createElement("div");
+        messageContainer.style.display = "flex"; // 컨테이너 내 요소들을 가로로 정렬
+        messageContainer.style.flexDirection = "column"; // 세로로 배치
+        messageContainer.style.alignItems = "flex-start"; // 아이템을 오른쪽으로 정렬
+        messageContainer.style.marginBottom = "10px";
+        // 메세지 컨테이너에 메시지 추가
+        const messageDiv = document.createElement("div");
+        messageDiv.textContent = message.msg;
+        messageDiv.style.backgroundColor = "gray";
+        messageDiv.style.color = "#fff";
+        messageDiv.style.padding = "10px";
+        messageDiv.style.borderRadius = "5px";
+        messageDiv.style.width = "250px"; // 너비 설정
+        messageContainer.appendChild(messageDiv);
+
+        // From 컨테이너 생성 및 스타일 설정 (왼쪽 정렬)
+        const fromContainer = document.createElement("div");
+        fromContainer.style.display = "flex"; // From 컨테이너 내 요소들을 가로로 정렬
+        fromContainer.style.alignItems = "center"; // 아이템을 가운데 정렬
+        fromContainer.style.justifyContent = "flex-start"; // 내용을 왼쪽으로 정렬
+
+        // 보낸 사람의 닉네임을 표시하는 DOM 요소 생성 및 추가
+        const senderInfoDiv = document.createElement("div");
+        senderInfoDiv.textContent = `From: ${message.senderName}`;
+        senderInfoDiv.style.fontSize = "12px"; // 폰트 크기 설정 (작게)
+        senderInfoDiv.style.justifyContent = "flex-start"; // 내용을 오른쪽으로 정렬
+        fromContainer.appendChild(senderInfoDiv);
+
+        // Sent at 컨테이너 생성 및 스타일 설정 (오른쪽 정렬)
+        const sentAtContainer = document.createElement("div");
+        sentAtContainer.style.display = "flex"; // Sent at 컨테이너 내 요소들을 가로로 정렬
+        sentAtContainer.style.alignItems = "center"; // 아이템을 가운데 정렬
+        sentAtContainer.style.justifyContent = "flex-end"; // 내용을 오른쪽으로 정렬
+
+
+        // 보낸 날짜 및 시간을 표시하는 DOM 요소 생성 및 추가
+        const dateInfoDiv = document.createElement("div");
+        dateInfoDiv.textContent = `Sent at: ${formatTimestamp(message.createdAt)}`;
+        dateInfoDiv.style.fontSize = "12px"; // 폰트 크기 설정 (작게)
+        sentAtContainer.appendChild(dateInfoDiv);
+
+        // From 컨테이너를 메세지 컨테이너에 추가
+        messageContainer.appendChild(fromContainer);
+
+        // Sent at 컨테이너를 메세지 컨테이너에 추가
+        messageContainer.appendChild(sentAtContainer);
+
+        // 메세지 컨테이너를 채팅 메시지 창에 추가
+        chatMessages.appendChild(messageContainer);
+
+    }
     // 스크롤을 가장 아래로 이동하여 최신 메시지를 표시
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
 }
 
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 function category(page, category) {
     if (page == null) {
