@@ -74,7 +74,7 @@
         <div class="col-lg-5">
             <!-- 오른쪽 이미지 컨테이너 -->
             <div style="height: 100%;">
-                <img src="/image/logo.svg" id="imageDisplay" class="img-fluid" alt="Auction Item" style="height: 550px; width: 100%">
+                <img src="/image/logo.svg" id="imageDisplay" class="img-fluid" alt="Auction Item" style="height: 550px; width: 100%;">
             </div>
         </div>
     </div>
@@ -90,10 +90,11 @@
 
     <div class="col-lg-12" style="text-align: right">
         <button onclick="window.location.href='/view/home'" class="btn btn-dark">취소하기</button>
-        <button onclick="writeIdea()" class="btn btn-dark">작성하기</button>
+        <button onclick="updateIdea()" class="btn btn-dark">수정하기</button>
     </div>
     <div class="row"> &nbsp;  </div>
 </div>
+
 <script>
     const itemImageInput = document.getElementById('itemImage');
     const imageDisplay = document.getElementById('imageDisplay');
@@ -117,6 +118,58 @@
 
 
 <script>
+
+    function isValidImageUrl(url, callback) {
+        var img = new Image();  // Create a new image object
+        img.onload = function() {  // Image loaded successfully
+            callback(true);
+        };
+        img.onerror = function() {  // Error occurred while loading image
+            callback(false);
+        };
+        img.src = url;  // Set image source to the test URL
+    }
+
+    $(document).ready(function() {
+        const url = new URL(window.location.href);
+
+        // URLSearchParams 객체
+        const urlParams = url.searchParams;
+
+        let postId = urlParams.get('id')
+        let sendUrl = "/api/ideas/" + postId
+
+        $.ajax({
+            url: sendUrl,
+            method: "GET",
+            success: function (data) {
+                $('#itemTitle').val(data.title);
+                document.getElementById('itemImage').placeholder = '파일을 선택하세요';
+                // 이미지 URL을 사용하여 이미지를 미리보기에 표시할 수 있습니다.
+                // $('#imagePreview').html('<img src="' + data.imageUrl + '" alt="Item Image">');
+                $('#startingPrice').val(data.minimumStartingPrice);
+                $('#startTime').val(data.auctionStartTime);
+                $('#category').val(data.category);
+                $('#itemDescription').val(data.content)
+
+                isValidImageUrl(data.imageUrl, function (isValid) {
+                    if (isValid) {
+                        document.getElementById('imageDisplay').src = data.imageUrl;
+                        // $("#image").attr("src", data.imageUrl);
+                    } else {
+                        document.getElementById('imageDisplay').src = "/image/logo.svg";
+                        // $("#image").attr("src", "/image/logo.svg");
+                    }
+                });
+
+                updateCharacterCount();
+            },
+            error: function (err) {
+                console.log("An error occurred:", err); // For debugging
+            }
+        });
+    });
+
     function getCurrentDateTime() {
         const now = new Date();
         const year = now.getFullYear();
@@ -163,7 +216,15 @@
     }
 
 
-    let writeIdea = function(event) {
+    let updateIdea = function(event) {
+
+        const url = new URL(window.location.href);
+
+        const urlParams = url.searchParams;
+
+        let postId = urlParams.get('id')
+        let sendUrl = "/api/ideas/" + postId
+
         const formData = new FormData();
 
         const idea = {
@@ -186,8 +247,8 @@
         const jwtToken = "#";
 
         $.ajax({
-            type: "POST",
-            url: "http://localhost:8080/api/ideas",
+            type: "PUT",
+            url: sendUrl,
             data: formData,
             processData: false,
             contentType: false,

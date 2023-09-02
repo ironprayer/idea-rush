@@ -22,6 +22,10 @@ public class ViewController {
         return "page/ideaWrite";
     }
 
+    @GetMapping("/pageUpdate")
+    public String ideaUpdatePage() {
+        return "page/ideaUpdate";
+    }
     @GetMapping("/pageSignup")
     public String signupPage() {
         return "page/signup";
