@@ -2,6 +2,7 @@ package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
@@ -29,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
@@ -43,7 +43,7 @@ public class IdeaService {
     private final RedisUtil redisUtil;
 
     @Transactional(readOnly = true)
-    public IdeaListResponse findOneIdea(Long ideaId) {
+    public IdeaOneResponse findOneIdea(Long ideaId) {
         return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
@@ -101,7 +101,6 @@ public class IdeaService {
             }
             imageName = image.getOriginalFilename();
         }
-
         redisUtil.setIdeaCount(getCount()+1);
 
         Idea newIdea = ideaRequest.toIdea(user, imageName);
