@@ -13,6 +13,10 @@ public class ViewController {
         return "page/ideaDetail";
     }
 
+    @GetMapping("/pageMain")
+    public String ideaMainPage(){
+        return "page/ideaMain";
+      
     @GetMapping("/pageWrite")
     public String ideaWritePage() {
         return "page/ideaWrite";
@@ -22,4 +26,9 @@ public class ViewController {
     public String ideaUpdatePage() {
         return "page/ideaUpdate";
     }
+    @GetMapping("/pageSignup")
+    public String signupPage() {
+        return "page/signup";
+    }
+
 }
