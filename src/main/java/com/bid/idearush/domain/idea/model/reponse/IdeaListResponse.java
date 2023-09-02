@@ -15,17 +15,5 @@ public record IdeaListResponse(
         Long BidWinPrice
 ) {
 
-    public static IdeaListResponse from(Idea idea){
-        return new IdeaListResponse(
-                idea.getId(),
-                idea.getUsers().getNickname(),
-                idea.getTitle(),
-                idea.getContent(),
-                ServerIpAddress.s3Address+idea.getImageName(),
-                idea.getAuctionStatus(),
-                idea.getMinimumStartingPrice(),
-                idea.getBidWinPrice()
-        );
-    }
 
 }
