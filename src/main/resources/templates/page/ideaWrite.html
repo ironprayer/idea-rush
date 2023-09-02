@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Auction Item Details</title>
+    <style>
+        .textarea-container {
+            position: relative;
+        }
+
+        .character-count {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 네비게이션 바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <img src="/image/logo.svg" style="height: 35px; width: 35px"></img>
+    <a class="navbar-brand" href="#" style="margin-left: 5px">Idea Rush</a>
+</nav>
+
+<div class="container mt-4">
+    <div class="row" style="height: 550px">
+        <div class="row" > &nbsp;  </div>
+        <div class="col-lg-7" style="display: flex; flex-direction: column;">
+            <!-- 왼쪽 카드 -->
+            <div class="card flex-grow-1">
+                <div class="card-body">
+                    <h5 class="card-title">아이디어 세부 내용</h5>
+                    <form>
+                        <div class="mb-3"></div>
+                        <div class="mb-3">
+                            <label for="itemTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="itemTitle" placeholder="Enter item title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="itemImage" class="form-label">Item Image</label>
+                            <input type="file" class="form-control" id="itemImage" accept="image/*">
+                            <div class="mt-2" id="imagePreview"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startingPrice" class="form-label">Starting Price</label>
+                            <input type="number" class="form-control" id="startingPrice" placeholder="Enter starting price" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="startTime" class="form-label">Start Time</label>
+                            <input type="datetime-local" class="form-control" id="startTime" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category">
+                                <option value="TECHNOLOGY" selected>Technology</option>
+                                <option value="ART_AND_DESIGN">Art And Design</option>
+                                <option value="BUSINESS">Business</option>
+                                <option value="SOCIAL_ISSUES">Social</option>
+                                <option value="LIFESTYLE">Lifestyle</option>
+                                <!-- Add more categories as needed -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <!-- 오른쪽 이미지 컨테이너 -->
+            <div style="height: 100%;">
+                <img src="https://via.placeholder.com/400x300" id="imageDisplay" class="img-fluid" alt="Auction Item" style="height: 550px; width: 100%">
+            </div>
+        </div>
+    </div>
+    <div class="row"> &nbsp;  </div>
+    <div class="row"> &nbsp;  </div>
+    <div class="row"> &nbsp;  </div>
+
+    <div class="textarea-container">
+        <textarea class="form-control" id="itemDescription" rows="14" maxlength="1000" placeholder="내용을 입력해주세요" oninput="updateCharacterCount()"></textarea>
+        <div class="character-count" id="characterCount">0 / 1000 글자</div>
+    </div>
+    <div class="row"> &nbsp;  </div>
+
+    <div class="col-lg-12" style="text-align: right">
+        <button onclick="window.location.href='/view/home'" class="btn btn-dark">취소하기</button>
+        <button onclick="writeIdea()" class="btn btn-dark">작성하기</button>
+    </div>
+    <div class="row"> &nbsp;  </div>
+</div>
+<script>
+    const itemImageInput = document.getElementById('itemImage');
+    const imageDisplay = document.getElementById('imageDisplay');
+
+    itemImageInput.addEventListener('change', function () {
+        const selectedImage = itemImageInput.files[0];
+
+        if (selectedImage) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                imageDisplay.src = e.target.result;
+            };
+
+            reader.readAsDataURL(selectedImage);
+        } else {
+            imageDisplay.src = 'https://via.placeholder.com/400x300';
+        }
+    });
+</script>
+
+
+<script>
+    function getCurrentDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+        return currentDateTime;
+    }
+
+    const startTimeInput = document.getElementById("startTime");
+    startTimeInput.min = getCurrentDateTime();
+    let minute = -1;
+
+    startTimeInput.addEventListener("input", function () {
+        const selectedDateTime = new Date(startTimeInput.value);
+        const currentDateTime = new Date();
+
+        if (selectedDateTime < currentDateTime) {
+            alert("시작시간은 현재 시간 이후로 지정하셔야 합니다.")
+            startTimeInput.blur();
+            startTimeInput.value = getCurrentDateTime();
+        }
+
+        minute = minute == -1 ? currentDateTime.getMinutes() : minute;
+
+        if (selectedDateTime.getMinutes() != minute) {
+            startTimeInput.blur();
+        }
+
+        minute = selectedDateTime.getMinutes();
+    });
+
+    let updateCharacterCount = function() {
+        let textarea = document.getElementById("itemDescription");
+        let text = textarea.value;
+        let currentCharacterCount = text.length;
+        let maxCharacterCount = parseInt(textarea.getAttribute("maxlength"));
+        let countElement = document.getElementById("characterCount");
+
+        countElement.textContent = currentCharacterCount + " / " + maxCharacterCount + " 글자";
+        textarea.textContent = text;
+    }
+
+
+    let writeIdea = function(event) {
+        const formData = new FormData();
+
+        const idea = {
+            title: $("#itemTitle").val(),
+            minimumStartingPrice: $("#startingPrice").val(),
+            auctionStartTime: $("#startTime").val(),
+            category: $("#category").val(),
+            content: $("#itemDescription").val()
+        };
+
+        const ideaJson = JSON.stringify(idea);
+
+        formData.append("idea", new Blob([ideaJson], { type: "application/json" }));
+
+        const itemImageInput = document.getElementById("itemImage");
+        if (itemImageInput.files.length > 0) {
+            formData.append("image", itemImageInput.files[0]);
+        }
+
+        const jwtToken = "#";
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/api/ideas",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                Authorization: `Bearer ${jwtToken}`
+            },
+            success: function (response) {
+                alert("아이디어 등록이 완료되었습니다.")
+                window.location.href = "/view/home"
+            },
+            error: function (error) {
+                alert("아이디어 등록에 실패했습니다.")
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -16,6 +16,15 @@ public class ViewController {
     @GetMapping("/pageMain")
     public String ideaMainPage(){
         return "page/ideaMain";
+      
+    @GetMapping("/pageWrite")
+    public String ideaWritePage() {
+        return "page/ideaWrite";
+    }
+
+    @GetMapping("/pageSignup")
+    public String signupPage() {
+        return "page/signup";
     }
 
 }
