@@ -310,30 +310,32 @@ class IdeaServiceTest {
     }
 
     private IdeaOneResponse createTestIdeaOne() {
-        return IdeaOneResponse.from(Idea.builder()
-                .category(category)
-                .title("title")
-                .content("content")
-                .imageName("imageName")
-                .minimumStartingPrice(0L)
-                .auctionStartTime(LocalDateTime.now())
-                .auctionStatus(AuctionStatus.PREPARE)
-                .users(Users.builder().build())
-                .build());
+        return new IdeaOneResponse(1L,
+                "title",
+                "content",
+                "imageName",
+                "img",
+                AuctionStatus.PREPARE,
+                0L,
+                0L,
+                0L,
+                Category.TECHNOLOGY,
+                LocalDateTime.now()
+        );
     }
 
 
     private IdeaListResponse createTestIdea() {
-        return IdeaListResponse.from(Idea.builder()
-                .category(category)
-                .title("title")
-                .content("content")
-                .imageName("imageName")
-                .minimumStartingPrice(0L)
-                .auctionStartTime(LocalDateTime.now())
-                .auctionStatus(AuctionStatus.PREPARE)
-                .users(Users.builder().build())
-                .build());
+        return new IdeaListResponse(
+                1L,
+                "Test",
+                "title",
+                "content",
+                "imageName",
+                AuctionStatus.PREPARE,
+                1L,
+                1L
+                );
     }
 
 }
