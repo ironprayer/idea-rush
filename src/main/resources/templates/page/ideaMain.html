@@ -150,7 +150,7 @@
             order: 0;
             align-self: stretch;
             flex-grow: 0;
-            background: rgba(217, 217, 217, 0.50);
+            background-image: url("/image/logo.png");
             width: 520px;
             height: 350px;
             float: right;
@@ -187,9 +187,26 @@
             color: white;
         }
 
+
+        .button3 {
+            float: left;
+            margin-left: 245px;
+            margin-top: 10px;
+            display: flex;
+            width: 160px;
+            padding: 12px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            background: #000;
+            border: 1px solid black;
+            color: white;
+        }
+
         .button2 {
             float: left;
-            margin: 10px 0px 30px 40px;
+            margin: 10px 0px 0px 40px;
             width: 160px;
             padding: 12px;
             flex-direction: column;
@@ -385,6 +402,47 @@
             pointer-events: none;
             background: beige;
         }
+
+        <!-- 채팅 -->
+        /* CSS */
+        .chat-container {
+            width: 300px;
+            height: 350px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #f7f7f7;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        #messageInput {
+            flex-grow: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #sendButton {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -396,7 +454,7 @@
 <div class="bLayout"></div>
 <div class="alllayout">
     <div class="b">
-        <div class="binside">
+        <div class="binside" id="layoutb">
             <div class="bLayout2"></div>
             <div class="bTitle">
                 <div class="bBox">실시간 아이디어 경매</div>
@@ -404,10 +462,10 @@
             <div class="content">
                 여러분들의 아이디어를 등록하고 아이디어를 사가세요!
             </div>
-            <button class="button2" onclick="urlEvent('/')">Login</button>
-            <button class="button1" onclick="urlEvent('/')">Sign Up</button>
+            <button class="button2" id="login" onclick="urlEvent('/view/pageLogin')">Login</button>
+            <button class="button1" id="register" onclick="urlEvent('/view/pageSignup')">Sign Up</button>
         </div>
-        <div class="bLayout3"></div>
+        <div class="bLayout3" id="mainImg"></div>
     </div>
     <div class="bar">
         <div class="search-bar">
@@ -441,7 +499,7 @@
             </div>
         </div>
         <div class="categoryboxIn">
-            <button class="btn btn-outline-dark" onclick="urlEvent('/')">Post Registration</button>
+            <button class="btn btn-outline-dark" onclick="urlEvent('/view/pageWrite')">Post Registration</button>
         </div>
 
     </div>
@@ -485,9 +543,89 @@
     let pageNum = 0;
     // 페이지 로드 시 초기 데이터 불러오기
     loadPage(currentPage);
+    chatting();
 
-    console.log(localStorage.getItem("authToken"));
+    function chatting() {
+        console.log(localStorage.getItem("authToken"));
+        if (localStorage.getItem("authToken") != null) {
+            document.getElementById("login").remove();
+            document.getElementById("register").remove();
 
+            const logoutButton = document.createElement("button");
+            logoutButton.classList.add("button3"); // 적절한 클래스를 추가하세요
+            logoutButton.textContent = "Logout"; // 버튼 텍스트 설정
+            logoutButton.onclick = function () {
+                // 로그아웃 로직을 여기에 추가하세요.
+                localStorage.removeItem("authToken")
+                location.reload();
+            };
+            // 로그아웃 버튼을 레이아웃에 추가합니다.
+            document.getElementById("layoutb").appendChild(logoutButton);
+            document.getElementById("mainImg").style.backgroundImage = "none";
+            document.getElementById("mainImg").style.background = "rgba(217, 217, 217, 0.50)";
+
+            //채팅
+            const chatMessagesContainer = document.createElement("div");
+            chatMessagesContainer.classList.add("chat-messages");
+            chatMessagesContainer.id = "chat-room";
+            chatMessagesContainer.style.width = "520px"; // 너비 설정
+            chatMessagesContainer.style.height = "320px"; // 높이 설정
+
+            const messageInput = document.createElement("input");
+            messageInput.type = "text";
+            messageInput.id = "messageInput";
+            messageInput.placeholder = "메시지 입력";
+            messageInput.style.width = "450px"; // 너비 설정
+            messageInput.style.float = "left";
+            messageInput.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
+            });
+            // 전송 버튼 생성
+            const sendButton = document.createElement("button");
+            sendButton.id = "sendButton";
+            sendButton.textContent = "전송";
+            sendButton.style.width = "70px"; // 너비 설정
+            sendButton.style.float = "left";
+
+            // 생성한 요소를 DOM에 추가
+            const chatInputContainer = document.getElementById("mainImg")
+            chatInputContainer.append(chatMessagesContainer);
+            chatInputContainer.appendChild(messageInput); // 입력란을 컨테이너에 추가합니다.
+            chatInputContainer.appendChild(sendButton); // 버튼을 컨테이너에 추가합니다.
+        }
+    }
+
+    document.getElementById("sendButton").addEventListener("click", function() {
+        sendMessage();
+    });
+    function sendMessage(){
+        const messageInput = document.getElementById("messageInput");
+        const messageText = messageInput.value.trim();
+
+        if (messageText !== "") {
+            const chatMessages = document.getElementById("chat-room");
+            // 생성한 메시지를 DOM에 추가
+
+            const messageDiv = document.createElement("div");
+            messageDiv.textContent = messageText;
+            messageDiv.style.backgroundColor = "#007bff";
+            messageDiv.style.color = "#fff";
+            messageDiv.style.padding = "10px";
+            messageDiv.style.marginBottom = "5px";
+            messageDiv.style.borderRadius = "5px";
+            messageDiv.style.width = "250px"; // 너비 설정
+            messageDiv.style.marginLeft = "auto"; // 왼쪽 여백을 auto로 설정하여 오른쪽으로 정렬
+            chatMessages.appendChild(messageDiv);
+
+            // 스크롤을 가장 아래로 이동하여 최신 메시지를 표시
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // 입력란 비우기
+            messageInput.value = "";
+        }
+    }
     function category(page, category) {
         if (page == null) {
             page = pageNum;
@@ -500,7 +638,6 @@
             .then(response => response.json())
             .then(data => {
                 // 데이터를 화면에 표시하고 페이지네이션 업데이트
-                console.log(">? : " + data.title)
                 displayItems(data);
                 updatePagination(data);
             })
@@ -516,7 +653,6 @@
         inputElement = document.getElementById("search").value;
         categoryNum = null;
         // 검색어 가져오기
-        console.log(inputElement);
 
         // Ajax 요청을 보내고 페이지에 따른 데이터를 받아옵니다.
         fetch(`/api/ideas?page=${page}&keyword=${inputElement}`)
@@ -538,7 +674,6 @@
             .then(response => response.json())
             .then(data => {
                 // 데이터를 화면에 표시하고 페이지네이션 업데이트
-                console.log(">? : " + data.title)
                 displayItems(data);
                 updatePagination(data);
             })
@@ -563,7 +698,7 @@
             const itemButton = document.createElement("button");
             itemButton.classList.add("item-button");
             itemButton.onclick = function () {
-                urlEvent('?' + item.id);
+                urlEvent('/view/pageDetail?id=' + item.id);
             };
 
             const itemLi = document.createElement("li");
@@ -592,6 +727,7 @@
 
             // 목록 항목을 아이템 목록에 추가
             itemList.appendChild(itemContainer);
+
         });
     }
 
