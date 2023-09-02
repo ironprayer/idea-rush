@@ -1,71 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
     <title>Idea Detail</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        const url = new URL(window.location.href);
-        const urlParams = url.searchParams;
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS */
+        #content {
+            font-size: 18px;
+            padding: 20px;
+        }
+        /* Adding border to card */
+        .bordered-card {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
 
-        let postId = urlParams.get('id');
-        let sendUrl = "http://localhost:8080/api/ideas/" + postId;
+        /* Centering the title */
+        .card-header.text-center {
+            text-align: center;
+        }
 
-        $(document).ready(function() {
+        /* Styling the footer */
+        .card-footer {
+            background-color: #f9f9f9;
+            border-top: 1px solid #ccc;
+        }
 
-            $.ajax({
-                url: sendUrl, // 백엔드 API URL
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    // data는 IdeaListResponse 객체를 담고 있을 것입니다.
-                    // 이를 활용하여 프론트엔드에 내용을 뿌려줍니다.
-                    $('#ideaTitle').text(data.title);
-                    $('#ideaContent').text(data.content);
-                    $('#ideaImage').attr('src', data.imageUrl);
-                    $('#ideaWriter').text(data.writer);
-                    $('#ideaCategory').text(data.status);  // Category 정보가 없어서 일단 status로 대체
-                    $('#ideaMinimumStartingPrice').text(data.minimumStartingPrice);
-                    $('#ideaAuctionStatus').text(data.status);
-                    $('#ideaDealStatus').text(data.BidWinPrice === null ? 'Pending' : 'Completed');  // BidWinPrice가 null이면 Pending
-                },
-                error: function(err) {
-                    // 에러 처리
-                    console.error('게시글을 불러오는 데 실패했습니다:', err);
-                }
-            });
-        });
-        // const eventSource = new EventSource("http://localhost:8081/api/sse/connect/idea/1")
-        // eventSource.addEventListener("BID_PRICE_UPDATE", function(e){
-        //     const p = document.createElement("p")
-        //     p.innerText = e.data
-        //
-        //     document.getElementById("messages").appendChild(p)
-        // })
-    </script>
+    </style>
 </head>
-
 <body>
-<div class="container mt-5">
+<!--&lt;!&ndash; 네비게이션 바 &ndash;&gt;-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <img src="/image/logo.svg" style="height: 35px; width: 35px"></img>
+    <a class="navbar-brand" href="/" style="margin-left: 5px">Idea Rush</a>
+</nav>
+
+<div class="container mt-4">
     <div class="row">
-        <div class="col-md-8">
-            <h1 id="ideaTitle" class="display-4"></h1>
-            <p id="ideaContent"></p>
+        <!-- Left Side (Image) -->
+        <div class="col-md-6">
+            <div class="card bordered-card" style="height: 550px;">
+                <div class="card-body d-flex align-items-center justify-content-center" style="height: 100%;">
+                    <img id="image" class="img-fluid" style="object-fit: contain; width: 100%; height: 100%;">
+                </div>
+            </div>
+            <!-- Card for details -->
+            <div class="card mt-4 bordered-card" style="height: 190px;">
+                <div class="card-body">
+                    <h3 id="title" class="card-title"></h3>
+                    <p id="writer" class="card-text"></p>
+                    <p id="status" class="card-text"></p>
+                    <p id="minimumStartingPrice" class="card-text"></p>
+                    <p id="BidWinPrice" class="card-text"></p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-            <img id="ideaImage" src="" alt="Idea image" class="img-fluid rounded">
-        </div>
-    </div>
-    <div class="row mt-3">
-        <div class="col-md-4">
-            <p><strong>Writer:</strong> <span id="ideaWriter"></span></p>
-            <p><strong>Category:</strong> <span id="ideaCategory"></span></p>
-            <p><strong>Minimum Starting Price:</strong> <span id="ideaMinimumStartingPrice"></span></p>
-            <p><strong>Auction Status:</strong> <span id="ideaAuctionStatus"></span></p>
-            <p><strong>Deal Status:</strong> <span id="ideaDealStatus"></span></p>
+
+        <!-- Right Side (SSE and Content) -->
+        <div class="col-md-6">
+            <!-- SSE Card -->
+            <div class="card bordered-card" style="height: 550px;">
+                <div class="card-header text-center">
+                    <h3 class="card-title">실시간 입찰 현황</h3>
+                </div>
+                <div class="card-body d-flex flex-column" id="sse-data" style="height: calc(100% - 100px); overflow-y: auto;">
+                    <!-- SSE data will be appended here -->
+                </div>
+                <div class="card-footer">
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="bid-price" placeholder="입찰가격을 입력하세요">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" id="bid-button">입찰</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Content Card -->
+            <div class="card mt-4 bordered-card" style="height: 190px;">
+                <div class="card-body" id="content" style="max-height: 100%; overflow-y: auto;">
+                    <!-- Content will go here -->
+                </div>
+            </div>
+
+            <div class="text-right mt-2">
+                <button class="btn btn-secondary btn-sm" id="edit-button">수정</button>
+            </div>
         </div>
     </div>
 </div>
-</body>
-</html>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    const url = new URL(window.location.href);
+    const urlParams = url.searchParams;
+
+    let ideaId = urlParams.get('id');
+    let sendUrl = "/api/ideas/" + ideaId;
+
+    function isValidImageUrl(url, callback) {
+        var img = new Image();
+        img.onload = function() {
+            callback(true);
+        };
+        img.onerror = function() {
+            callback(false);
+        };
+        img.src = url;
+    }
+
+    $(document).ready(function() {
+        $.ajax({
+            url: sendUrl,
+            method: "GET",
+            success: function(data) {
+                console.log("Received data:", data);
+                $("#title").text(data.title);
+                $("#writer").html("<strong>작성자:</strong> " + data.writer);
+                $("#status").html("<strong>경매 상태:</strong> " + data.status);
+
+                if (data.status === "END") {
+                    $("#BidWinPrice").html("<strong>낙찰가:</strong> " + data.BidWinPrice);
+                    $("#BidWinPrice").show();
+                    $("#minimumStartingPrice").hide();
+                } else {
+                    $("#BidWinPrice").hide();
+                    $("#minimumStartingPrice").html("<strong>최소 입찰 금액:</strong> " + data.minimumStartingPrice);
+                    $("#minimumStartingPrice").show();
+                }
+
+                $("#content").text(data.content);
+
+                isValidImageUrl(data.imageUrl, function(isValid) {
+                    if (isValid) {
+                        $("#image").attr("src", data.imageUrl);
+                    } else {
+                        $("#image").attr("src", "/image/logo.svg");
+                    }
+                });
+                //writerId를 response에서 받아와야 할 듯
+                // var loggedInUserId = localStorage.getItem('userId');
+                // if (data.writerId === loggedInUserId) {
+                //     $("#edit-button").show();  // '수정' 버튼 보여주기
+                // } else {
+                //     $("#edit-button").hide();  // '수정' 버튼 숨기기
+                // }
+            },
+            error: function(err) {
+                console.log("An error occurred:", err);
+            }
+        });
+
+        // SSE
+        var eventSource = new EventSource("http://54.180.135.121:8080/api/sse/connect/idea/" + ideaId);
+        eventSource.addEventListener('BID_PRICE_UPDATE', function(e) {
+            console.log("Bid price update event received:", e.data);
+
+            var newElement = document.createElement('p');
+            newElement.textContent = e.data + '원에 입찰 되었습니다.';
+
+            var sseDataDiv = document.getElementById('sse-data');
+            sseDataDiv.appendChild(newElement);
+        }, false);
+
+        // 입찰 버튼을 눌렀을 때의 이벤트 처리
+        $("#bid-button").click(function() {
+            var bidPrice = $("#bid-price").val(); // 입력된 입찰가격 가져오기
+
+            // 빈 값인지 검증
+            if (!bidPrice) {
+                alert("입찰 가격을 입력해주세요.");
+                return;
+            }
+
+            // BidRequest 객체 생성
+            var bidRequest = {
+                "bidPrice": parseInt(bidPrice)
+            };
+
+            // 서버에 POST 요청 보내기
+            $.ajax({
+                url: "http://3.36.98.58:8080/api/ideas/" + ideaId + "/bid",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(bidRequest),
+                // headers: {
+                //       // 헤더에 토큰 추가
+                // },
+                success: function(response) {
+                    console.log("Bid successfully created:", response);
+                    alert("입찰이 성공적으로 완료되었습니다.");
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("An error occurred while creating the bid:", jqXHR, textStatus, errorThrown);
+
+                    // HTTP 상태 코드가 401인 경우 로그인 필요 알림 띄우기
+                    if(jqXHR.status === 401) {
+                        alert("로그인이 필요합니다.");
+                    } else {
+                        alert("유효하지 않은 입찰금액입니다.");
+                    }
+                }
+            });
+        });
+
+
+    });
+</script>
