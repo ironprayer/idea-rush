@@ -486,6 +486,8 @@
     // 페이지 로드 시 초기 데이터 불러오기
     loadPage(currentPage);
 
+    console.log(localStorage.getItem("authToken"));
+
     function category(page, category) {
         if (page == null) {
             page = pageNum;

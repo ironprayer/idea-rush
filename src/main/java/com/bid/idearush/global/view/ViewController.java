@@ -10,7 +10,7 @@ public class ViewController {
 
     @GetMapping("/pageDetail")
     public String ideaDetailPage() {
-        return "page/ideaDetail";
+        return "ideaDetail1";
     }
 
     @GetMapping("/pageMain")
