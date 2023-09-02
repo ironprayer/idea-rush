@@ -106,7 +106,6 @@
 
         /* Auto layout */
         .bLayout {
-            margin-top: 50px;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -114,7 +113,7 @@
             gap: 24px;
 
             width: 520px;
-            height: 90px;
+            height: 80px;
         }
 
         /* Inside auto layout */
@@ -176,8 +175,6 @@
             float: left;
             margin: 30px;
 
-            box-sizing: border-box;
-
             /* Auto layout */
             display: flex;
             flex-direction: column;
@@ -200,14 +197,11 @@
         /* Auto layout */
         .categoryboxIn {
             display: flex;
-            flex-direction: row;
-            justify-content: center;
             align-items: center;
             padding: 10px;
-            gap: 40px;
-            margin: -30px;
 
             width: auto;
+            box-sizing: border-box;
             height: 36px;
 
             background: #FFFFFF;
@@ -221,8 +215,6 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
-            gap: 40px;
-            margin-left: 20px;
 
             width: auto;
             height: 36px;
@@ -246,7 +238,6 @@
 
             width: 200px;
             height: 36px;
-            margin-bottom: 40px;
 
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 6px;
@@ -261,7 +252,6 @@
 
             width: 80px;
             height: 36px;
-            margin-bottom: 40px;
 
             background: #FFFFFF;
 
@@ -286,6 +276,7 @@
 
         /* 제목 스타일 */
         .item h2 {
+            text-align: left;
             font-size: 18px;
             width: 300px;
             margin: 0 0 10px 0; /* 아래쪽 마진 추가하여 가격과의 간격 조절 */
@@ -293,12 +284,14 @@
 
         /* 설명 스타일 */
         .item p {
+            text-align: left;
             width: 1200px;
             margin: 0 0 10px 0; /* 아래쪽 마진 추가하여 가격과의 간격 조절 */
         }
 
         /* 가격 스타일 */
         .item span {
+            text-align: right;
             width: 150px;
             font-weight: bold;
         }
@@ -350,7 +343,7 @@
 
         .categorybar {
             display: flex;
-            gap: 65px;
+            gap: 35px;
         }
 
         .categorybox2 {
@@ -401,38 +394,39 @@
             <div class="content">
                 여러분들의 아이디어를 등록하고 아이디어를 사가세요!
             </div>
-            <button class="button1" onclick="urlEvent('/')">Login</button>
+            <button class="button1"  onclick="urlEvent('/')">Login</button>
             <button class="button1" onclick="urlEvent('/')">Sign Up</button>
         </div>
         <div class="bLayout3"></div>
     </div>
-
     <div class="bar">
         <div class="search-bar">
             <input class="test" id="search" placeholder="Search"/>
-            <button class="categoryboxIn3" onclick="searchPage()">검색하기</button>
+            <div class="categoryboxIn3"><button class="btn btn-outline-dark" onclick="searchPage()">Search</button></div>
+
         </div>
         <div class="categorybar">
-            <div class="categorybox">
-                <button class="categoryboxIn" value="TECHNOLOGY" onclick="category(null, this.value)">TECHNOLOGY</button>
-            </div>
-            <div class="categorybox">
-                <button class="categoryboxIn" value="ART_AND_DESIGN" onclick="category(null, this.value)">ART_AND_DESIGN
+            <div class="categoryboxIn">
+                <button class="btn btn-outline-dark" value="TECHNOLOGY" onclick="category(null, this.value)">TECHNOLOGY
                 </button>
             </div>
-            <div class="categorybox">
-                <button class="categoryboxIn" value="BUSINESS" onclick="category(null, this.value)">BUSINESS</button>
-            </div>
-            <div class="categorybox">
-                <button class="categoryboxIn" value="SOCIAL_ISSUES" onclick="category(null, this.value)">SOCIAL_ISSUES
+            <div class="categoryboxIn">
+                <button class="btn btn-outline-dark" value="ART_AND_DESIGN" onclick="category(null, this.value)">ART AND DESIGN
                 </button>
             </div>
-            <div class="categorybox">
-                <button class="categoryboxIn" value="LIFESTYLE" onclick="category(null, this.value)">LIFESTYLE</button>
+            <div class="categoryboxIn">
+                <button class="btn btn-outline-dark" value="BUSINESS" onclick="category(null, this.value)">BUSINESS</button>
+            </div>
+            <div class="categoryboxIn">
+                <button class="btn btn-outline-dark" value="SOCIAL_ISSUES" onclick="category(null, this.value)">SOCIAL ISSUES
+                </button>
+            </div>
+            <div class="categoryboxIn">
+                <button class="btn btn-outline-dark" value="LIFESTYLE" onclick="category(null, this.value)">LIFESTYLE</button>
             </div>
         </div>
-        <div class="categorybox2">
-            <button class="categoryboxIn2" onclick="urlEvent('/')">게시글 등록</button>
+        <div class="categoryboxIn">
+            <button class="btn btn-outline-dark" onclick="urlEvent('/')">Post Registration</button>
         </div>
 
     </div>
@@ -512,7 +506,6 @@
             .then(response => response.json())
             .then(data => {
                 // 데이터를 화면에 표시하고 페이지네이션 업데이트
-                console.log(">? : " + data.title)
                 displayItems(data);
                 updatePagination(data);
             })
@@ -552,7 +545,7 @@
             // 각 아이템을 감싸는 버튼 생성
             const itemButton = document.createElement("button");
             itemButton.classList.add("item-button");
-            itemButton.onclick = function() {
+            itemButton.onclick = function () {
                 urlEvent('?' + item.id);
             };
 
@@ -565,12 +558,12 @@
 
             // 설명 생성 및 설정
             const itemDescription = document.createElement("p");
-            itemDescription.textContent = item.content;
+            itemDescription.textContent = truncateText(item.content, 100);
 
             // 가격 생성 및 설정
             const itemPrice = document.createElement("span");
-            itemPrice.textContent = `가격: ${item.minimumStartingPrice}원`;
-
+            const formattedPrice = formatNumberWithCommas(item.minimumStartingPrice); // 가격 형식화
+            itemPrice.textContent = `가격: ${formattedPrice}원`;
             // 버튼에 아이템 컨테이너를 추가
             itemContainer.appendChild(itemButton);
             itemButton.appendChild(itemLi);
@@ -583,6 +576,18 @@
             // 목록 항목을 아이템 목록에 추가
             itemList.appendChild(itemContainer);
         });
+    }
+
+    function formatNumberWithCommas(number) {
+        return new Intl.NumberFormat('ko-KR').format(number);
+    }
+
+    function truncateText(text, maxLength) {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + " ...";
+        } else {
+            return text;
+        }
     }
 
     function updatePagination(data) {
@@ -652,7 +657,7 @@
         }
     }
 
-    function urlEvent(url){
+    function urlEvent(url) {
         window.location.href = url;
     }
 
