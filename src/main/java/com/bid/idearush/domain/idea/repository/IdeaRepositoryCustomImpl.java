@@ -48,7 +48,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
-                        qIdea.imageName.concat(ServerIpAddress.s3Address).as("imageUrl"),
+                        qIdea.imageName.prepend(ServerIpAddress.s3Address).as("imageUrl"),
                         qIdea.auctionStatus.as("status"),
                         qIdea.minimumStartingPrice,
                         qIdea.bidWinPrice,

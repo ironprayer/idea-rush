@@ -84,9 +84,10 @@ public class IdeaService {
 
             imageName = image.getOriginalFilename();
             s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
+            idea.updateOf(ideaRequest, IMAGE_BASE_PATH + "/" + idea.getId() + "/" + imageName);
+        } else {
+            idea.updateOf(ideaRequest, imageName);
         }
-
-        idea.updateOf(ideaRequest, imageName);
     }
 
     @Transactional
@@ -108,6 +109,7 @@ public class IdeaService {
 
         if (imageName != null) {
             String uploadPath = IMAGE_BASE_PATH + "/" + newIdea.getId();
+            newIdea.changeImage(uploadPath + "/" + imageName);
             s3Service.upload(uploadPath, imageName, image);
         }
     }

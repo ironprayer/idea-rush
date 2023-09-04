@@ -20,6 +20,8 @@ function chatting() {
         const logoutButton = document.createElement("button");
         logoutButton.classList.add("button3"); // 적절한 클래스를 추가하세요
         logoutButton.textContent = "Logout"; // 버튼 텍스트 설정
+        logoutButton.style.width = '300px';
+        logoutButton.style.height = '50px';
         logoutButton.onclick = function () {
             // 로그아웃 로직을 여기에 추가하세요.
             localStorage.removeItem("authToken")
