@@ -1,15 +1,14 @@
 package com.bid.idearush.domain.idea.repository;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
-import com.bid.idearush.domain.idea.type.Category;
 import jakarta.persistence.LockModeType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,5 +27,11 @@ public interface IdeaRepository extends
     List<Idea> findEndIdeas();
 
     @Query("SELECT m FROM Idea m WHERE m.auctionStatus = 'PREPARE' and :minTime <= m.auctionStartTime and  m.auctionStartTime <= :maxTime")
-    List<Idea> findBeforeTime(LocalDateTime minTime, LocalDateTime maxTime);
+    List<Idea> findBeforeTime(@Param("minTime") LocalDateTime minTime, @Param("maxTime") LocalDateTime maxTime);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Idea m SET m.auctionStatus = 'ONGOING' WHERE m.auctionStatus = 'PREPARE' and m.auctionStartTime <= :currentTime")
+    void updatePrepareToOngoing(@Param("currentTime") LocalDateTime currentTime);
+
 }

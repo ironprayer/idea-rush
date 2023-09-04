@@ -42,8 +42,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/ideas/{id}/notice").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/api/sse/connect/idea/**").permitAll()
                                 .requestMatchers("/chat/**").permitAll()
-                                .anyRequest()
-                                .authenticated()
+                                .requestMatchers("/view/**").permitAll()
+                                .requestMatchers("/image/**").permitAll()
+                                .requestMatchers("/js/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
 

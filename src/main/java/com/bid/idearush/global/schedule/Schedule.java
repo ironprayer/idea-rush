@@ -5,18 +5,19 @@ import com.bid.idearush.domain.bid.repository.BidRepository;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.global.util.NoticeService;
-import com.bid.idearush.domain.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 @RequiredArgsConstructor
 public class Schedule {
-    private final SseService sseService;
+
     private final IdeaRepository ideaRepository;
     private final BidRepository bidRepository;
     private final NoticeService noticeService;
@@ -48,4 +49,12 @@ public class Schedule {
             noticeService.noticeBeforeEvent(currentTime, hopeTime);
         }
     }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional
+    public void startBidOfIdea() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        ideaRepository.updatePrepareToOngoing(currentTime);
+    }
+
 }

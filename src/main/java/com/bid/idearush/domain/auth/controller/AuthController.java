@@ -3,14 +3,13 @@ package com.bid.idearush.domain.auth.controller;
 import com.bid.idearush.domain.auth.model.request.LoginRequest;
 import com.bid.idearush.domain.auth.model.request.SignupRequest;
 import com.bid.idearush.domain.auth.service.AuthService;
+import com.bid.idearush.global.security.AuthPayload;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")

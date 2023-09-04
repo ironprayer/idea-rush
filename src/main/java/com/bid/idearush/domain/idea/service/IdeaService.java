@@ -2,6 +2,7 @@ package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.model.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
@@ -29,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
@@ -43,7 +43,7 @@ public class IdeaService {
     private final RedisUtil redisUtil;
 
     @Transactional(readOnly = true)
-    public IdeaListResponse findOneIdea(Long ideaId) {
+    public IdeaOneResponse findOneIdea(Long ideaId) {
         return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
@@ -64,7 +64,7 @@ public class IdeaService {
         long count = getCount();
 
         if (!StringUtils.hasText(keyword) && Objects.isNull(category)) {
-            findList = ideaRepository.findIdeaAll(pageable,count);
+            findList = ideaRepository.findIdeaAll(pageable, count);
         } else {
             findList = ideaRepository.findCategoryAndTitleAll(category, keyword, pageable, count);
         }
@@ -84,9 +84,10 @@ public class IdeaService {
 
             imageName = image.getOriginalFilename();
             s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
+            idea.updateOf(ideaRequest, IMAGE_BASE_PATH + "/" + idea.getId() + "/" + imageName);
+        } else {
+            idea.updateOf(ideaRequest, imageName);
         }
-
-        idea.updateOf(ideaRequest, imageName);
     }
 
     @Transactional
@@ -101,14 +102,14 @@ public class IdeaService {
             }
             imageName = image.getOriginalFilename();
         }
-
-        redisUtil.setIdeaCount(getCount()+1);
+        redisUtil.setIdeaCount(getCount() + 1);
 
         Idea newIdea = ideaRequest.toIdea(user, imageName);
         ideaRepository.save(newIdea);
 
         if (imageName != null) {
             String uploadPath = IMAGE_BASE_PATH + "/" + newIdea.getId();
+            newIdea.changeImage(uploadPath + "/" + imageName);
             s3Service.upload(uploadPath, imageName, image);
         }
     }
@@ -119,7 +120,7 @@ public class IdeaService {
 
         validateUser(userId, idea);
 
-        redisUtil.setIdeaCount(getCount()-1);
+        redisUtil.setIdeaCount(getCount() - 1);
         s3Service.delete(filePath);
         ideaRepository.delete(idea);
     }
@@ -152,9 +153,9 @@ public class IdeaService {
         }
     }
 
-    private Long getCount(){
+    private Long getCount() {
         Long count = redisUtil.getIdeaCount();
-        if(Objects.isNull(count)) {
+        if (Objects.isNull(count)) {
             count = ideaRepository.count();
             redisUtil.setIdeaCount(count);
         }
