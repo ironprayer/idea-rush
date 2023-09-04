@@ -7,12 +7,14 @@ import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.global.util.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 @RequiredArgsConstructor
 public class Schedule {
 
@@ -47,4 +49,12 @@ public class Schedule {
             noticeService.noticeBeforeEvent(currentTime, hopeTime);
         }
     }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional
+    public void startBidOfIdea() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        ideaRepository.updatePrepareToOngoing(currentTime);
+    }
+
 }
