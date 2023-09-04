@@ -64,7 +64,7 @@ public class IdeaService {
         long count = getCount();
 
         if (!StringUtils.hasText(keyword) && Objects.isNull(category)) {
-            findList = ideaRepository.findIdeaAll(pageable,count);
+            findList = ideaRepository.findIdeaAll(pageable, count);
         } else {
             findList = ideaRepository.findCategoryAndTitleAll(category, keyword, pageable, count);
         }
@@ -84,9 +84,10 @@ public class IdeaService {
 
             imageName = image.getOriginalFilename();
             s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
+            idea.updateOf(ideaRequest, IMAGE_BASE_PATH + "/" + idea.getId() + "/" + imageName);
+        } else {
+            idea.updateOf(ideaRequest, imageName);
         }
-
-        idea.updateOf(ideaRequest, imageName);
     }
 
     @Transactional
@@ -101,13 +102,14 @@ public class IdeaService {
             }
             imageName = image.getOriginalFilename();
         }
-        redisUtil.setIdeaCount(getCount()+1);
+        redisUtil.setIdeaCount(getCount() + 1);
 
         Idea newIdea = ideaRequest.toIdea(user, imageName);
         ideaRepository.save(newIdea);
 
         if (imageName != null) {
             String uploadPath = IMAGE_BASE_PATH + "/" + newIdea.getId();
+            newIdea.changeImage(uploadPath + "/" + imageName);
             s3Service.upload(uploadPath, imageName, image);
         }
     }
@@ -118,7 +120,7 @@ public class IdeaService {
 
         validateUser(userId, idea);
 
-        redisUtil.setIdeaCount(getCount()-1);
+        redisUtil.setIdeaCount(getCount() - 1);
         s3Service.delete(filePath);
         ideaRepository.delete(idea);
     }
@@ -151,9 +153,9 @@ public class IdeaService {
         }
     }
 
-    private Long getCount(){
+    private Long getCount() {
         Long count = redisUtil.getIdeaCount();
-        if(Objects.isNull(count)) {
+        if (Objects.isNull(count)) {
             count = ideaRepository.count();
             redisUtil.setIdeaCount(count);
         }

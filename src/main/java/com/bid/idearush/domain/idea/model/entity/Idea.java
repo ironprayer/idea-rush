@@ -65,6 +65,7 @@ public class Idea extends BaseTime {
         this.category = ideaRequest.category();
         this.imageName = imageName;
         this.auctionStartTime = ideaRequest.auctionStartTime();
+        this.auctionEndTime = ideaRequest.auctionStartTime().plusMinutes(10);
         this.minimumStartingPrice = ideaRequest.minimumStartingPrice();
     }
 
@@ -81,5 +82,9 @@ public class Idea extends BaseTime {
 
     public boolean isAuthUser(Long userId) {
         return userId.equals(this.users.getId());
+    }
+
+    public void changeImage(String imagePath) {
+        this.imageName = imagePath;
     }
 }

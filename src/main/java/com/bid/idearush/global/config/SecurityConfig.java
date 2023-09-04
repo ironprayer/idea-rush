@@ -44,8 +44,8 @@ public class SecurityConfig {
                                 .requestMatchers("/chat/**").permitAll()
                                 .requestMatchers("/view/**").permitAll()
                                 .requestMatchers("/image/**").permitAll()
-                                .anyRequest()
-                                .authenticated()
+                                .requestMatchers("/js/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
 

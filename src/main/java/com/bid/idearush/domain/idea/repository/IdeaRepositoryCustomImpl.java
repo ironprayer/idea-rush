@@ -11,9 +11,7 @@ import com.bid.idearush.global.type.ServerIpAddress;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,7 +46,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
                         qUsers.nickname.as("writer"),
                         qIdea.title,
                         qIdea.content,
-                        qIdea.imageName.concat(ServerIpAddress.s3Address).as("imageUrl"),
+                        qIdea.imageName.prepend(ServerIpAddress.s3Address).as("imageUrl"),
                         qIdea.auctionStatus.as("status"),
                         qIdea.minimumStartingPrice,
                         qIdea.bidWinPrice,
