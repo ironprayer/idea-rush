@@ -19,10 +19,7 @@ import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
 import com.bid.idearush.global.util.RedisUtil;
 import com.bid.idearush.global.util.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -30,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
@@ -61,13 +59,27 @@ public class IdeaService {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
 
-        long count = getCount();
+        long count = getIdeaCount();
 
         if (!StringUtils.hasText(keyword) && Objects.isNull(category)) {
             findList = ideaRepository.findIdeaAll(pageable, count);
+        } else if (!Objects.isNull(category)) {
+            findList = ideaRepository.findCategory(pageable, category, getCategoryCount(category));
         } else {
-            findList = ideaRepository.findCategoryAndTitleAll(category, keyword, pageable, count);
+//            findList = ideaRepository.findByKeyword(keyword, pageable)
+//                    .map(idea -> new IdeaListResponse(
+//                            idea.getId(),
+//                            idea.getUsers().getNickname(),
+//                            idea.getTitle(),
+//                            idea.getContent(),
+//                            idea.getImageName(), // 혹시 이미지 URL 조합이 필요하다면 여기에 추가
+//                            idea.getAuctionStatus(),
+//                            idea.getMinimumStartingPrice(),
+//                            idea.getBidWinPrice()
+//                    ));
+            findList = ideaRepository.findTitle(pageable,keyword);
         }
+
         return findList;
     }
 
@@ -102,7 +114,6 @@ public class IdeaService {
             }
             imageName = image.getOriginalFilename();
         }
-        redisUtil.setIdeaCount(getCount() + 1);
 
         Idea newIdea = ideaRequest.toIdea(user, imageName);
         ideaRepository.save(newIdea);
@@ -112,6 +123,8 @@ public class IdeaService {
             newIdea.changeImage(uploadPath + "/" + imageName);
             s3Service.upload(uploadPath, imageName, image);
         }
+        redisUtil.addIdeaCount();
+        redisUtil.addCategoryCount(ideaRequest.category());
     }
 
     public void deleteIdea(Long userId, Long ideaId) {
@@ -120,9 +133,10 @@ public class IdeaService {
 
         validateUser(userId, idea);
 
-        redisUtil.setIdeaCount(getCount() - 1);
         s3Service.delete(filePath);
         ideaRepository.delete(idea);
+        redisUtil.minIdeaCount();
+        redisUtil.minCategoryCount(idea.getCategory());
     }
 
     private boolean isMultipartFile(MultipartFile multipartFile) {
@@ -153,11 +167,23 @@ public class IdeaService {
         }
     }
 
-    private Long getCount() {
+    private Long getIdeaCount() {
         Long count = redisUtil.getIdeaCount();
         if (Objects.isNull(count)) {
             count = ideaRepository.count();
             redisUtil.setIdeaCount(count);
+        }
+        return count;
+    }
+
+    private Long getCategoryCount(Category category) {
+        Long count = redisUtil.getCategoryCount(category);
+        System.out.println("redis : " + count);
+        if (Objects.isNull(count)) {
+            count = ideaRepository.countByCategory(category);
+            System.out.println("category : " + category);
+            System.out.println("category : " + count);
+            redisUtil.setCategoryCount(category, count);
         }
         return count;
     }
