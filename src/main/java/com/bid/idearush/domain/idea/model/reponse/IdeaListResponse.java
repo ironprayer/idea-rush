@@ -15,5 +15,4 @@ public record IdeaListResponse(
         Long BidWinPrice
 ) {
 
-
 }
