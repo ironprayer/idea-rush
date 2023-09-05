@@ -73,13 +73,14 @@ class IdeaServiceTest {
             assertEquals(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME.getMsg(), exception.getMessage());
         }
 
+
         @Test
         @DisplayName("카테고리별 리스트를 반환한다.")
         @Disabled
         void categoryFindSuccessTest() {
             List<IdeaListResponse> ideaList = Collections.singletonList(createTestIdea());
             Page<IdeaListResponse> mockIdeaList = new PageImpl<>(ideaList, pageable, ideaList.size());
-            given(ideaRepository.findCategoryAndTitleAll(category, null, pageable, 1)).willReturn(mockIdeaList);
+            given(ideaRepository.findTitle(pageable, keyword)).willReturn(mockIdeaList);
 
             Page<IdeaListResponse> actualIdeaResponseList = ideaService.findAllIdea(null, category, 0);
 
@@ -93,13 +94,14 @@ class IdeaServiceTest {
         void titleFindSuccessTest() {
             List<IdeaListResponse> ideaList = Collections.singletonList(createTestIdea());
             Page<IdeaListResponse> mockIdeaList = new PageImpl<>(ideaList, pageable, ideaList.size());
-            given(ideaRepository.findCategoryAndTitleAll(null, keyword, pageable, 1)).willReturn(mockIdeaList);
+            given(ideaRepository.findCategory(pageable, category, 1)).willReturn(mockIdeaList);
 
             Page<IdeaListResponse> actualIdeaResponseList = ideaService.findAllIdea(keyword, null, 0);
 
             assertThat(actualIdeaResponseList).hasSize(1);
             assertThat(actualIdeaResponseList).isEqualTo(mockIdeaList);
         }
+
 
         @Test
         @DisplayName("일반 리스트를 반환한다.")
