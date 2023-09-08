@@ -85,11 +85,11 @@
 ## API
 👉 [API 보러가기](https://it-test-test.atlassian.net/wiki/spaces/final/pages/2752580/API+v1)
 
-## 💾 ERD
+## ERD
 
 ![ERD](./src/main/resources/static/image/erd.png)
 
-# 👨 팀원 소개
+# 팀원 소개
 
 | Name | Email                    | GitHub                            | Blog                                        |
 |------|--------------------------|-----------------------------------|---------------------------------------------|
