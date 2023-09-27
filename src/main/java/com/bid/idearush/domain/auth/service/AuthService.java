@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.bid.idearush.global.exception.errortype.UserFindErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -19,15 +21,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-    
+
     public void signup(SignupRequest signupRequest) {
         boolean isDupUserAccountId = userRepository.findByUserAccountId(signupRequest.userAccountId()).isPresent();
         boolean isDupNickname = userRepository.findByNickname(signupRequest.nickname()).isPresent();
 
         if(isDupUserAccountId) {
-            throw new IllegalStateException("유저 아이디가 중복됩니다.");
+            throw new UserFindException(USER_ID_DUPLICATE);
         } else if(isDupNickname) {
-            throw new IllegalStateException("닉네임이 중복됩니다.");
+            throw new UserFindException(USER_NICKNAME_DUPLICATE);
         }
 
         Users user = signupRequest.toUsers(passwordEncoder);
@@ -38,11 +40,11 @@ public class AuthService {
     public String login(LoginRequest loginRequest) {
         Users user = userRepository.findByUserAccountId(loginRequest.userAccountId())
                 .orElseThrow(() -> {
-                    throw new UserFindException(UserFindErrorCode.USER_ACCOUNT_ID_EMPTY);
+                    throw new UserFindException(USER_ACCOUNT_ID_EMPTY);
                 });
 
         if(!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-            throw new UserFindException(UserFindErrorCode.USER_PASSWORD_WRONG);
+            throw new UserFindException(USER_PASSWORD_WRONG);
         }
 
         return jwtUtils.generateToken(user.getId());
