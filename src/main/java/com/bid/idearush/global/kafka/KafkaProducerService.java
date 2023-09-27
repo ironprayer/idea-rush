@@ -1,4 +1,4 @@
-package com.bid.idearush.domain.kafka;
+package com.bid.idearush.global.kafka;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

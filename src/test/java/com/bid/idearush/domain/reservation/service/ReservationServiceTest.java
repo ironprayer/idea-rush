@@ -2,7 +2,8 @@ package com.bid.idearush.domain.reservation.service;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
-import com.bid.idearush.domain.reservation.repository.ReservationRepository;
+import com.bid.idearush.domain.idea.repository.ReservationRepository;
+import com.bid.idearush.domain.idea.service.ReservationService;
 import com.bid.idearush.domain.user.model.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;

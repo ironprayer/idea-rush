@@ -4,9 +4,9 @@ import com.bid.idearush.domain.bid.repository.BidRepository;
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.DealStatus;
-import com.bid.idearush.domain.kafka.KafkaProducerService;
-import com.bid.idearush.domain.reservation.model.entity.BidReservation;
-import com.bid.idearush.domain.reservation.repository.ReservationRepository;
+import com.bid.idearush.global.kafka.KafkaProducerService;
+import com.bid.idearush.domain.idea.model.entity.BidReservation;
+import com.bid.idearush.domain.idea.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

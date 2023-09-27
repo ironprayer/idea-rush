@@ -6,6 +6,7 @@ import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.global.util.NoticeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class Schedule {
 
@@ -27,7 +29,7 @@ public class Schedule {
     @SchedulerLock(name = "endBidOfIdea", lockAtMostFor = "50s", lockAtLeastFor = "50s")
     @Transactional
     public void endBidOfIdea() {
-        System.out.println("endBidOfIdea Start");
+        log.info("endBidOfIdea Start");
         List<Idea> ideas =  ideaRepository.findEndIdeas();
 
         for(Idea idea : ideas) {
@@ -46,7 +48,7 @@ public class Schedule {
     @Scheduled(cron = "0 * * * * *")
     @SchedulerLock(name = "beforeTimeBidOfIdea", lockAtMostFor = "50s", lockAtLeastFor = "50s")
     public void beforeTimeBidOfIdea() {
-        System.out.println("beforeTimeBidOfIdea Start");
+        log.info("beforeTimeBidOfIdea Start");
         int[] hopeTimes = {10, 20, 30};
         LocalDateTime currentTime =  LocalDateTime.now();
 
@@ -59,7 +61,7 @@ public class Schedule {
     @SchedulerLock(name = "startBidOfIdea", lockAtMostFor = "50s", lockAtLeastFor = "50s")
     @Transactional
     public void startBidOfIdea() {
-        System.out.println("startBidOfIdea Start");
+        log.info("startBidOfIdea Start");
         LocalDateTime currentTime = LocalDateTime.now();
         ideaRepository.updatePrepareToOngoing(currentTime);
     }

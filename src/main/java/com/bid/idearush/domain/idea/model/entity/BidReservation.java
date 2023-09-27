@@ -1,4 +1,4 @@
-package com.bid.idearush.domain.reservation.model.entity;
+package com.bid.idearush.domain.idea.model.entity;
 
 import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.user.model.entity.Users;
