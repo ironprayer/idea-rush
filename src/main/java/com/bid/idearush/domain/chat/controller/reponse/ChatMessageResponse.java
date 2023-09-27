@@ -1,4 +1,4 @@
-package com.bid.idearush.domain.chat.model.reponse;
+package com.bid.idearush.domain.chat.controller.reponse;
 
 import java.time.LocalDateTime;
 

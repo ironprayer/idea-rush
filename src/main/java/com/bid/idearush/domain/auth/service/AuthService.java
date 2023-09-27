@@ -1,8 +1,8 @@
 package com.bid.idearush.domain.auth.service;
 
-import com.bid.idearush.domain.auth.model.request.LoginRequest;
-import com.bid.idearush.domain.auth.model.request.SignupRequest;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.auth.controller.request.LoginRequest;
+import com.bid.idearush.domain.auth.controller.request.SignupRequest;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.UserFindException;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;

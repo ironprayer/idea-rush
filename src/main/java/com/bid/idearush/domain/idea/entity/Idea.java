@@ -1,10 +1,10 @@
-package com.bid.idearush.domain.idea.model.entity;
+package com.bid.idearush.domain.idea.entity;
 
-import com.bid.idearush.domain.idea.model.request.IdeaRequest;
+import com.bid.idearush.domain.idea.controller.request.IdeaRequest;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.idea.type.DealStatus;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;

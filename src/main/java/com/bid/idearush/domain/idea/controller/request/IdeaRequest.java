@@ -1,10 +1,10 @@
-package com.bid.idearush.domain.idea.model.request;
+package com.bid.idearush.domain.idea.controller.request;
 
-import com.bid.idearush.domain.idea.model.entity.Idea;
+import com.bid.idearush.domain.idea.entity.Idea;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.idea.type.DealStatus;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 
 import java.time.LocalDateTime;
 

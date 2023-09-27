@@ -1,10 +1,10 @@
 package com.bid.idearush.domain.idea.service;
 
-import com.bid.idearush.domain.idea.model.entity.Idea;
+import com.bid.idearush.domain.idea.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
-import com.bid.idearush.domain.idea.model.entity.BidReservation;
+import com.bid.idearush.domain.idea.entity.BidReservation;
 import com.bid.idearush.domain.idea.repository.ReservationRepository;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

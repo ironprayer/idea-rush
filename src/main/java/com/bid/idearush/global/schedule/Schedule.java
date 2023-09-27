@@ -1,8 +1,8 @@
 package com.bid.idearush.global.schedule;
 
-import com.bid.idearush.domain.bid.model.entity.Bid;
-import com.bid.idearush.domain.bid.repository.BidRepository;
-import com.bid.idearush.domain.idea.model.entity.Idea;
+import com.bid.idearush.domain.idea.entity.Bid;
+import com.bid.idearush.domain.idea.repository.BidRepository;
+import com.bid.idearush.domain.idea.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.global.util.NoticeService;
 import lombok.RequiredArgsConstructor;

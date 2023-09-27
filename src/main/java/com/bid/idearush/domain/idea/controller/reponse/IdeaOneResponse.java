@@ -1,9 +1,7 @@
-package com.bid.idearush.domain.idea.model.reponse;
+package com.bid.idearush.domain.idea.controller.reponse;
 
-import com.bid.idearush.domain.idea.model.entity.Idea;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.global.type.ServerIpAddress;
 
 import java.time.LocalDateTime;
 

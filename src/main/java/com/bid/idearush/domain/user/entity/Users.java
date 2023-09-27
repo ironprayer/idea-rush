@@ -1,4 +1,4 @@
-package com.bid.idearush.domain.user.model.entity;
+package com.bid.idearush.domain.user.entity;
 
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;

@@ -1,7 +1,7 @@
-package com.bid.idearush.domain.bid.repository;
+package com.bid.idearush.domain.idea.repository;
 
-import com.bid.idearush.domain.bid.model.entity.Bid;
-import com.bid.idearush.domain.idea.model.entity.Idea;
+import com.bid.idearush.domain.idea.entity.Bid;
+import com.bid.idearush.domain.idea.entity.Idea;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

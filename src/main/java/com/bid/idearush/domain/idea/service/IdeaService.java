@@ -1,12 +1,12 @@
 package com.bid.idearush.domain.idea.service;
 
-import com.bid.idearush.domain.idea.model.entity.Idea;
-import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
-import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
-import com.bid.idearush.domain.idea.model.request.IdeaRequest;
+import com.bid.idearush.domain.idea.entity.Idea;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaOneResponse;
+import com.bid.idearush.domain.idea.controller.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.FileWriteException;
 import com.bid.idearush.global.exception.IdeaFindException;
@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 

@@ -1,6 +1,6 @@
-package com.bid.idearush.domain.auth.model.request;
+package com.bid.idearush.domain.auth.controller.request;
 
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

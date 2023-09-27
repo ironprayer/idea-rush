@@ -1,11 +1,10 @@
 package com.bid.idearush.domain.idea.repository;
 
 import com.bid.idearush.domain.bid.model.entity.QBid;
-import com.bid.idearush.domain.idea.model.entity.Idea;
+import com.bid.idearush.domain.idea.entity.Idea;
 import com.bid.idearush.domain.idea.model.entity.QIdea;
-import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
-import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
-import com.bid.idearush.domain.idea.type.AuctionStatus;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaOneResponse;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.model.entity.QUsers;
 import com.bid.idearush.global.type.ServerIpAddress;
@@ -13,10 +12,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -25,7 +21,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

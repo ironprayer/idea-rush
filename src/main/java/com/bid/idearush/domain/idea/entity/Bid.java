@@ -1,7 +1,7 @@
-package com.bid.idearush.domain.bid.model.entity;
+package com.bid.idearush.domain.idea.entity;
 
-import com.bid.idearush.domain.idea.model.entity.Idea;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.idea.entity.Idea;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.global.model.entity.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;

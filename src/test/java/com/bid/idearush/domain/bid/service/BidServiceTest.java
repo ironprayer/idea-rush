@@ -1,12 +1,13 @@
 package com.bid.idearush.domain.bid.service;
 
-import com.bid.idearush.domain.bid.model.entity.Bid;
-import com.bid.idearush.domain.bid.model.request.BidRequest;
-import com.bid.idearush.domain.bid.repository.BidRepository;
-import com.bid.idearush.domain.idea.model.entity.Idea;
+import com.bid.idearush.domain.idea.entity.Bid;
+import com.bid.idearush.domain.idea.controller.request.BidRequest;
+import com.bid.idearush.domain.idea.repository.BidRepository;
+import com.bid.idearush.domain.idea.entity.Idea;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
+import com.bid.idearush.domain.idea.service.BidService;
 import com.bid.idearush.global.kafka.KafkaProducerService;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.BidWriteException;
 import com.bid.idearush.global.exception.IdeaFindException;
