@@ -1,16 +1,11 @@
 package com.bid.idearush.domain.chat.controller;
 
-import com.bid.idearush.domain.chat.config.WebSocketConfigTest;
-import com.bid.idearush.domain.chat.model.reponse.ChatMessageResponse;
-import com.bid.idearush.domain.chat.model.request.ChatMessageRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.bid.idearush.domain.chat.controller.reponse.ChatMessageResponse;
+import com.bid.idearush.domain.chat.controller.request.ChatMessageRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -25,10 +20,8 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;

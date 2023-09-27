@@ -1,7 +1,7 @@
 package com.bid.idearush.domain.chat.controller;
 
-import com.bid.idearush.domain.chat.model.reponse.ChatMessageResponse;
-import com.bid.idearush.domain.chat.model.request.ChatMessageRequest;
+import com.bid.idearush.domain.chat.controller.reponse.ChatMessageResponse;
+import com.bid.idearush.domain.chat.controller.request.ChatMessageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

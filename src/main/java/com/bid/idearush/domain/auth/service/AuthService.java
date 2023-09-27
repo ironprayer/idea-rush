@@ -1,8 +1,9 @@
 package com.bid.idearush.domain.auth.service;
 
-import com.bid.idearush.domain.auth.model.request.LoginRequest;
-import com.bid.idearush.domain.auth.model.request.SignupRequest;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.auth.controller.request.LoginRequest;
+import com.bid.idearush.domain.auth.controller.request.SignupRequest;
+import com.bid.idearush.domain.auth.utils.PasswordUtils;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.UserFindException;
 import com.bid.idearush.global.exception.errortype.UserFindErrorCode;
@@ -12,27 +13,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.bid.idearush.domain.auth.utils.PasswordUtils.validatePassword;
+import static com.bid.idearush.global.exception.errortype.UserFindErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-
-    private final String BEARER_PREFIX = "Bearer ";
 
     public void signup(SignupRequest signupRequest) {
         boolean isDupUserAccountId = userRepository.findByUserAccountId(signupRequest.userAccountId()).isPresent();
         boolean isDupNickname = userRepository.findByNickname(signupRequest.nickname()).isPresent();
 
         if(isDupUserAccountId) {
-            throw new IllegalStateException("유저 아이디가 중복됩니다.");
+            throw new UserFindException(USER_ID_DUPLICATE);
         } else if(isDupNickname) {
-            throw new IllegalStateException("닉네임이 중복됩니다.");
+            throw new UserFindException(USER_NICKNAME_DUPLICATE);
         }
 
-        Users user = signupRequest.toUsers(passwordEncoder);
+        Users user = signupRequest.toUser();
         userRepository.save(user);
     }
 
@@ -40,14 +41,14 @@ public class AuthService {
     public String login(LoginRequest loginRequest) {
         Users user = userRepository.findByUserAccountId(loginRequest.userAccountId())
                 .orElseThrow(() -> {
-                    throw new UserFindException(UserFindErrorCode.USER_ACCOUNT_ID_EMPTY);
+                    throw new UserFindException(USER_ACCOUNT_ID_EMPTY);
                 });
 
-        if(!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-            throw new UserFindException(UserFindErrorCode.USER_PASSWORD_WRONG);
+        if(validatePassword(loginRequest.password(), user.getPassword())) {
+            throw new UserFindException(USER_PASSWORD_WRONG);
         }
 
-        return BEARER_PREFIX + jwtUtils.generateToken(user.getId());
+        return jwtUtils.generateToken(user.getId());
     }
 
 }

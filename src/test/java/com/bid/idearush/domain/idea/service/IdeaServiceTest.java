@@ -1,15 +1,14 @@
 package com.bid.idearush.domain.idea.service;
 
-import com.bid.idearush.domain.idea.model.entity.Idea;
-import com.bid.idearush.domain.idea.model.reponse.IdeaListResponse;
-import com.bid.idearush.domain.idea.model.reponse.IdeaOneResponse;
-import com.bid.idearush.domain.idea.model.request.IdeaRequest;
+import com.bid.idearush.domain.idea.entity.Idea;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaListResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaOneResponse;
+import com.bid.idearush.domain.idea.controller.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.AuctionStatus;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
-import com.bid.idearush.global.config.RedisConfig;
 import com.bid.idearush.global.exception.FileWriteException;
 import com.bid.idearush.global.exception.IdeaFindException;
 import com.bid.idearush.global.exception.IdeaWriteException;

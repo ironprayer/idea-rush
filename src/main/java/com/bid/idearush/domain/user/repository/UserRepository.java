@@ -1,6 +1,6 @@
 package com.bid.idearush.domain.user.repository;
 
-import com.bid.idearush.domain.user.model.entity.Users;
+import com.bid.idearush.domain.user.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

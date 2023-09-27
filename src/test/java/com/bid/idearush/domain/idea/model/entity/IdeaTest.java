@@ -1,6 +1,7 @@
 package com.bid.idearush.domain.idea.model.entity;
 
-import com.bid.idearush.domain.idea.model.request.IdeaRequest;
+import com.bid.idearush.domain.idea.entity.Idea;
+import com.bid.idearush.domain.idea.controller.request.IdeaRequest;
 import com.bid.idearush.domain.idea.type.Category;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
