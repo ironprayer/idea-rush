@@ -1,12 +1,12 @@
 package com.bid.idearush.domain.idea.repository;
 
-import com.bid.idearush.domain.bid.model.entity.QBid;
 import com.bid.idearush.domain.idea.entity.Idea;
-import com.bid.idearush.domain.idea.model.entity.QIdea;
+import com.bid.idearush.domain.idea.entity.QBid;
 import com.bid.idearush.domain.idea.controller.reponse.IdeaListResponse;
 import com.bid.idearush.domain.idea.controller.reponse.IdeaOneResponse;
+import com.bid.idearush.domain.idea.entity.QIdea;
 import com.bid.idearush.domain.idea.type.Category;
-import com.bid.idearush.domain.user.model.entity.QUsers;
+import com.bid.idearush.domain.user.entity.QUsers;
 import com.bid.idearush.global.type.ServerIpAddress;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;

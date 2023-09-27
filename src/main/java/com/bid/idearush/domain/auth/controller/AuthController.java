@@ -21,6 +21,7 @@ public class AuthController {
         authService.signup(signupRequest);
     }
 
+    // jwt 토큰을 헤더 , 쿠키 , 바디에 담아서 보내는 것에 차이가 있는가 ?
     @PostMapping("/login")
     public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String accessToken = authService.login(loginRequest);
