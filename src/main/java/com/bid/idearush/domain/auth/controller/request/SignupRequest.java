@@ -1,8 +1,11 @@
 package com.bid.idearush.domain.auth.controller.request;
 
+import com.bid.idearush.domain.auth.utils.PasswordUtils;
 import com.bid.idearush.domain.user.entity.Users;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static com.bid.idearush.domain.auth.utils.PasswordUtils.parsePassword;
 
 public record SignupRequest(
         @Size(max = 16)
@@ -13,11 +16,11 @@ public record SignupRequest(
         String password
 ) {
 
-    public Users toUsers(PasswordEncoder passwordEncoder) {
+    public Users toUser() {
         Users user = Users.builder()
                 .userAccountId(userAccountId())
                 .nickname(nickname())
-                .password(passwordEncoder.encode(password()))
+                .password(parsePassword(password))
                 .build();
         return user;
     }

@@ -2,6 +2,7 @@ package com.bid.idearush.domain.auth.service;
 
 import com.bid.idearush.domain.auth.controller.request.LoginRequest;
 import com.bid.idearush.domain.auth.controller.request.SignupRequest;
+import com.bid.idearush.domain.auth.utils.PasswordUtils;
 import com.bid.idearush.domain.user.entity.Users;
 import com.bid.idearush.domain.user.repository.UserRepository;
 import com.bid.idearush.global.exception.UserFindException;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.bid.idearush.domain.auth.utils.PasswordUtils.validatePassword;
 import static com.bid.idearush.global.exception.errortype.UserFindErrorCode.*;
 
 @Service
@@ -19,7 +21,6 @@ import static com.bid.idearush.global.exception.errortype.UserFindErrorCode.*;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
     public void signup(SignupRequest signupRequest) {
@@ -32,7 +33,7 @@ public class AuthService {
             throw new UserFindException(USER_NICKNAME_DUPLICATE);
         }
 
-        Users user = signupRequest.toUsers(passwordEncoder);
+        Users user = signupRequest.toUser();
         userRepository.save(user);
     }
 
@@ -43,7 +44,7 @@ public class AuthService {
                     throw new UserFindException(USER_ACCOUNT_ID_EMPTY);
                 });
 
-        if(!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
+        if(validatePassword(loginRequest.password(), user.getPassword())) {
             throw new UserFindException(USER_PASSWORD_WRONG);
         }
 
