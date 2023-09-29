@@ -65,40 +65,10 @@ public class IdeaService {
         } else if (!Objects.isNull(category)) {
             findList = ideaRepository.findCategory(pageable, category, getCategoryCount(category));
         } else {
-//            findList = ideaRepository.findByKeyword(keyword, pageable)
-//                    .map(idea -> new IdeaListResponse(
-//                            idea.getId(),
-//                            idea.getUsers().getNickname(),
-//                            idea.getTitle(),
-//                            idea.getContent(),
-//                            idea.getImageName(), // 혹시 이미지 URL 조합이 필요하다면 여기에 추가
-//                            idea.getAuctionStatus(),
-//                            idea.getMinimumStartingPrice(),
-//                            idea.getBidWinPrice()
-//                    ));
             findList = ideaRepository.findTitle(pageable,keyword);
         }
 
         return findList;
-    }
-
-    @Transactional
-    public void update(Long userId, Long ideaId, IdeaRequest ideaRequest, MultipartFile image) {
-        Idea idea = getIdea(ideaId);
-        String imageName = idea.getImageName();
-        validateUser(userId, idea);
-
-        if (isMultipartFile(image)) {
-            if (!validateImage(image)) {
-                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
-            }
-
-            imageName = image.getOriginalFilename();
-            s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
-            idea.updateOf(ideaRequest, IMAGE_BASE_PATH + "/" + idea.getId() + "/" + imageName);
-        } else {
-            idea.updateOf(ideaRequest, imageName);
-        }
     }
 
     @Transactional
@@ -138,6 +108,37 @@ public class IdeaService {
         redisUtil.minCategoryCount(idea.getCategory());
     }
 
+    @Transactional
+    public void update(Long userId, Long ideaId, IdeaRequest ideaRequest, MultipartFile image) {
+        Idea idea = getIdea(ideaId);
+        String imageName = idea.getImageName();
+        validateUser(userId, idea);
+
+        if (isMultipartFile(image)) {
+            if (!validateImage(image)) {
+                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
+            }
+
+            imageName = image.getOriginalFilename();
+            s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
+            idea.updateOf(ideaRequest, IMAGE_BASE_PATH + "/" + idea.getId() + "/" + imageName);
+        } else {
+            idea.updateOf(ideaRequest, imageName);
+        }
+    }
+
+    private void validateUser(Long userId, Idea idea) {
+        boolean isUser = userRepository.findById(userId).isPresent();
+
+        if (!isUser) {
+            throw new UserFindException(UserFindErrorCode.USER_EMPTY);
+        }
+
+        if (!idea.isAuthUser(userId)) {
+            throw new IdeaWriteException(IdeaWriteErrorCode.IDEA_UNAUTH);
+        }
+    }
+
     private boolean isMultipartFile(MultipartFile multipartFile) {
         return multipartFile != null && !multipartFile.isEmpty();
     }
@@ -154,18 +155,6 @@ public class IdeaService {
                 () -> new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
     }
 
-    private void validateUser(Long userId, Idea idea) {
-        boolean isUser = userRepository.findById(userId).isPresent();
-
-        if (!isUser) {
-            throw new UserFindException(UserFindErrorCode.USER_EMPTY);
-        }
-
-        if (!idea.isAuthUser(userId)) {
-            throw new IdeaWriteException(IdeaWriteErrorCode.IDEA_UNAUTH);
-        }
-    }
-
     private Long getIdeaCount() {
         Long count = redisUtil.getIdeaCount();
         if (Objects.isNull(count)) {
@@ -180,8 +169,6 @@ public class IdeaService {
         System.out.println("redis : " + count);
         if (Objects.isNull(count)) {
             count = ideaRepository.countByCategory(category);
-            System.out.println("category : " + category);
-            System.out.println("category : " + count);
             redisUtil.setCategoryCount(category, count);
         }
         return count;
