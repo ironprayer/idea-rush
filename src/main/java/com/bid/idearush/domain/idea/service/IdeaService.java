@@ -28,6 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 
+import static com.bid.idearush.global.exception.errortype.FileWriteErrorCode.NOT_IMAGE;
+import static com.bid.idearush.global.exception.errortype.IdeaFindErrorCode.IDEA_EMPTY;
+import static com.bid.idearush.global.exception.errortype.IdeaFindErrorCode.KEYWORD_CATEGORY_SAME;
+import static com.bid.idearush.global.exception.errortype.IdeaWriteErrorCode.*;
+import static com.bid.idearush.global.exception.errortype.UserFindErrorCode.USER_EMPTY;
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
 @Service
@@ -43,7 +48,7 @@ public class IdeaService {
     public IdeaResponse findOneIdea(Long ideaId) {
         return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
-                    throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
+                    throw new IdeaFindException(IDEA_EMPTY);
                 });
     }
 
@@ -51,7 +56,7 @@ public class IdeaService {
     public Page<IdeasResponse> findAllIdea(String keyword, Category category, Integer page) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
-            throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
+            throw new IdeaFindException(KEYWORD_CATEGORY_SAME);
         }
 
         Page<IdeasResponse> findList;
@@ -65,17 +70,6 @@ public class IdeaService {
         } else if (!Objects.isNull(category)) {
             findList = ideaRepository.findCategory(pageable, category, getCategoryCount(category));
         } else {
-//            findList = ideaRepository.findByKeyword(keyword, pageable)
-//                    .map(idea -> new IdeaListResponse(
-//                            idea.getId(),
-//                            idea.getUsers().getNickname(),
-//                            idea.getTitle(),
-//                            idea.getContent(),
-//                            idea.getImageName(), // 혹시 이미지 URL 조합이 필요하다면 여기에 추가
-//                            idea.getAuctionStatus(),
-//                            idea.getMinimumStartingPrice(),
-//                            idea.getBidWinPrice()
-//                    ));
             findList = ideaRepository.findTitle(pageable,keyword);
         }
 
@@ -83,33 +77,14 @@ public class IdeaService {
     }
 
     @Transactional
-    public void update(Long userId, Long ideaId, IdeaRequest ideaRequest, MultipartFile image) {
-        Idea idea = getIdea(ideaId);
-        String imageName = idea.getImageName();
-        validateUser(userId, idea);
-
-        if (isMultipartFile(image)) {
-            if (!validateImage(image)) {
-                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
-            }
-
-            imageName = image.getOriginalFilename();
-            s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
-            idea.updateOf(ideaRequest, IMAGE_BASE_PATH + "/" + idea.getId() + "/" + imageName);
-        } else {
-            idea.updateOf(ideaRequest, imageName);
-        }
-    }
-
-    @Transactional
     public void createIdea(IdeaRequest ideaRequest, MultipartFile image, Long userId) {
         Users user = userRepository.findById(userId).orElseThrow(
-                () -> new UserFindException(UserFindErrorCode.USER_EMPTY));
+                () -> new UserFindException(USER_EMPTY));
 
         String imageName = null;
         if (isMultipartFile(image)) {
             if (!validateImage(image)) {
-                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
+                throw new FileWriteException(NOT_IMAGE);
             }
             imageName = image.getOriginalFilename();
         }
@@ -138,6 +113,37 @@ public class IdeaService {
         redisUtil.minCategoryCount(idea.getCategory());
     }
 
+    @Transactional
+    public void update(Long userId, Long ideaId, IdeaRequest ideaRequest, MultipartFile image) {
+        Idea idea = getIdea(ideaId);
+        String imageName = idea.getImageName();
+        validateUser(userId, idea);
+
+        if (isMultipartFile(image)) {
+            if (!validateImage(image)) {
+                throw new FileWriteException(NOT_IMAGE);
+            }
+
+            imageName = image.getOriginalFilename();
+            s3Service.upload(IMAGE_BASE_PATH + "/" + idea.getId(), imageName, image);
+            idea.updateOf(ideaRequest, IMAGE_BASE_PATH + "/" + idea.getId() + "/" + imageName);
+        } else {
+            idea.updateOf(ideaRequest, imageName);
+        }
+    }
+
+    private void validateUser(Long userId, Idea idea) {
+        boolean isUser = userRepository.findById(userId).isPresent();
+
+        if (!isUser) {
+            throw new UserFindException(USER_EMPTY);
+        }
+
+        if (!idea.isAuthUser(userId)) {
+            throw new IdeaWriteException(IDEA_UNAUTH);
+        }
+    }
+
     private boolean isMultipartFile(MultipartFile multipartFile) {
         return multipartFile != null && !multipartFile.isEmpty();
     }
@@ -151,19 +157,7 @@ public class IdeaService {
 
     private Idea getIdea(Long ideaId) {
         return ideaRepository.findById(ideaId).orElseThrow(
-                () -> new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
-    }
-
-    private void validateUser(Long userId, Idea idea) {
-        boolean isUser = userRepository.findById(userId).isPresent();
-
-        if (!isUser) {
-            throw new UserFindException(UserFindErrorCode.USER_EMPTY);
-        }
-
-        if (!idea.isAuthUser(userId)) {
-            throw new IdeaWriteException(IdeaWriteErrorCode.IDEA_UNAUTH);
-        }
+                () -> new IdeaFindException(IDEA_EMPTY));
     }
 
     private Long getIdeaCount() {
@@ -180,8 +174,6 @@ public class IdeaService {
         System.out.println("redis : " + count);
         if (Objects.isNull(count)) {
             count = ideaRepository.countByCategory(category);
-            System.out.println("category : " + category);
-            System.out.println("category : " + count);
             redisUtil.setCategoryCount(category, count);
         }
         return count;

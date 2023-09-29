@@ -11,6 +11,4 @@ public record IdeasResponse(
         AuctionStatus status,
         Long minimumStartingPrice,
         Long BidWinPrice
-) {
-
-}
+) {}

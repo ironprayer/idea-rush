@@ -17,7 +17,4 @@ public record IdeaResponse(
         Long BidLastPrice,
         Category category,
         LocalDateTime auctionStartTime
-) {
-
-
-}
+) {}
