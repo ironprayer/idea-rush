@@ -28,6 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 
+import static com.bid.idearush.global.exception.errortype.FileWriteErrorCode.NOT_IMAGE;
+import static com.bid.idearush.global.exception.errortype.IdeaFindErrorCode.IDEA_EMPTY;
+import static com.bid.idearush.global.exception.errortype.IdeaFindErrorCode.KEYWORD_CATEGORY_SAME;
+import static com.bid.idearush.global.exception.errortype.IdeaWriteErrorCode.*;
+import static com.bid.idearush.global.exception.errortype.UserFindErrorCode.USER_EMPTY;
 import static com.bid.idearush.global.type.ServerIpAddress.IMAGE_BASE_PATH;
 
 @Service
@@ -43,7 +48,7 @@ public class IdeaService {
     public IdeaResponse findOneIdea(Long ideaId) {
         return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
-                    throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
+                    throw new IdeaFindException(IDEA_EMPTY);
                 });
     }
 
@@ -51,7 +56,7 @@ public class IdeaService {
     public Page<IdeasResponse> findAllIdea(String keyword, Category category, Integer page) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
-            throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
+            throw new IdeaFindException(KEYWORD_CATEGORY_SAME);
         }
 
         Page<IdeasResponse> findList;
@@ -74,12 +79,12 @@ public class IdeaService {
     @Transactional
     public void createIdea(IdeaRequest ideaRequest, MultipartFile image, Long userId) {
         Users user = userRepository.findById(userId).orElseThrow(
-                () -> new UserFindException(UserFindErrorCode.USER_EMPTY));
+                () -> new UserFindException(USER_EMPTY));
 
         String imageName = null;
         if (isMultipartFile(image)) {
             if (!validateImage(image)) {
-                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
+                throw new FileWriteException(NOT_IMAGE);
             }
             imageName = image.getOriginalFilename();
         }
@@ -116,7 +121,7 @@ public class IdeaService {
 
         if (isMultipartFile(image)) {
             if (!validateImage(image)) {
-                throw new FileWriteException(FileWriteErrorCode.NOT_IMAGE);
+                throw new FileWriteException(NOT_IMAGE);
             }
 
             imageName = image.getOriginalFilename();
@@ -131,11 +136,11 @@ public class IdeaService {
         boolean isUser = userRepository.findById(userId).isPresent();
 
         if (!isUser) {
-            throw new UserFindException(UserFindErrorCode.USER_EMPTY);
+            throw new UserFindException(USER_EMPTY);
         }
 
         if (!idea.isAuthUser(userId)) {
-            throw new IdeaWriteException(IdeaWriteErrorCode.IDEA_UNAUTH);
+            throw new IdeaWriteException(IDEA_UNAUTH);
         }
     }
 
@@ -152,7 +157,7 @@ public class IdeaService {
 
     private Idea getIdea(Long ideaId) {
         return ideaRepository.findById(ideaId).orElseThrow(
-                () -> new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY));
+                () -> new IdeaFindException(IDEA_EMPTY));
     }
 
     private Long getIdeaCount() {
