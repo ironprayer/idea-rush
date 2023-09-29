@@ -12,7 +12,7 @@ public record BidRequest (
         return Bid.builder()
                 .idea(idea)
                 .users(user)
-                .bidPrice(this.bidPrice())
+                .bidPrice(bidPrice)
                 .build();
     }
 
