@@ -1,7 +1,7 @@
 package com.bid.idearush.domain.idea.controller;
 
-import com.bid.idearush.domain.idea.controller.reponse.IdeaListResponse;
-import com.bid.idearush.domain.idea.controller.reponse.IdeaOneResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeasResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.controller.request.IdeaRequest;
 import com.bid.idearush.domain.idea.service.IdeaService;
 import com.bid.idearush.domain.idea.type.Category;
@@ -35,7 +35,7 @@ public class IdeaController {
     }
 
     @GetMapping
-    public Page<IdeaListResponse> findAllIdea(
+    public Page<IdeasResponse> findAllIdea(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Category category,
             @RequestParam Integer page
@@ -44,7 +44,7 @@ public class IdeaController {
     }
 
     @GetMapping("/{id}")
-    public IdeaOneResponse findOneQuery(
+    public IdeaResponse findOneQuery(
             @PathVariable Long id
     ) {
         return ideaService.findOneIdea(id);

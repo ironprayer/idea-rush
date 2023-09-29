@@ -5,7 +5,7 @@ import com.bid.idearush.domain.idea.type.Category;
 
 import java.time.LocalDateTime;
 
-public record IdeaOneResponse(
+public record IdeaResponse(
         Long id,
         String writer,
         String title,

@@ -1,8 +1,8 @@
 package com.bid.idearush.domain.idea.service;
 
 import com.bid.idearush.domain.idea.entity.Idea;
-import com.bid.idearush.domain.idea.controller.reponse.IdeaListResponse;
-import com.bid.idearush.domain.idea.controller.reponse.IdeaOneResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeasResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.controller.request.IdeaRequest;
 import com.bid.idearush.domain.idea.repository.IdeaRepository;
 import com.bid.idearush.domain.idea.type.Category;
@@ -40,7 +40,7 @@ public class IdeaService {
     private final RedisUtil redisUtil;
 
     @Transactional(readOnly = true)
-    public IdeaOneResponse findOneIdea(Long ideaId) {
+    public IdeaResponse findOneIdea(Long ideaId) {
         return ideaRepository.findIdeaOne(ideaId)
                 .orElseThrow(() -> {
                     throw new IdeaFindException(IdeaFindErrorCode.IDEA_EMPTY);
@@ -48,13 +48,13 @@ public class IdeaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<IdeaListResponse> findAllIdea(String keyword, Category category, Integer page) {
+    public Page<IdeasResponse> findAllIdea(String keyword, Category category, Integer page) {
 
         if (StringUtils.hasText(keyword) && !Objects.isNull(category)) {
             throw new IdeaFindException(IdeaFindErrorCode.KEYWORD_CATEGORY_SAME);
         }
 
-        Page<IdeaListResponse> findList;
+        Page<IdeasResponse> findList;
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(page, 10, sort);
 

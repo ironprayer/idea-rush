@@ -2,8 +2,8 @@ package com.bid.idearush.domain.idea.repository;
 
 import com.bid.idearush.domain.idea.entity.Idea;
 import com.bid.idearush.domain.idea.entity.QBid;
-import com.bid.idearush.domain.idea.controller.reponse.IdeaListResponse;
-import com.bid.idearush.domain.idea.controller.reponse.IdeaOneResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeasResponse;
+import com.bid.idearush.domain.idea.controller.reponse.IdeaResponse;
 import com.bid.idearush.domain.idea.entity.QIdea;
 import com.bid.idearush.domain.idea.type.Category;
 import com.bid.idearush.domain.user.entity.QUsers;
@@ -42,12 +42,12 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Optional<IdeaOneResponse> findIdeaOne(Long ideaId) {
+    public Optional<IdeaResponse> findIdeaOne(Long ideaId) {
         Expression<Long> maxBidPriceSubquery = JPAExpressions
                 .select(qBid.bidPrice.max())
                 .from(qBid)
                 .where(qBid.idea.id.eq(ideaId));
-        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaOneResponse.class,
+        return Optional.ofNullable(queryFactory.select(Projections.constructor(IdeaResponse.class,
                         qUsers.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
@@ -67,8 +67,8 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<IdeaListResponse> findIdeaAll(Pageable pageable, long count) {
-        List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
+    public Page<IdeasResponse> findIdeaAll(Pageable pageable, long count) {
+        List<IdeasResponse> results = queryFactory.select(Projections.constructor(IdeasResponse.class,
                         qIdea.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
@@ -89,8 +89,8 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<IdeaListResponse> findCategory(Pageable pageable, Category category, long count) {
-        List<IdeaListResponse> results = queryFactory.select(Projections.constructor(IdeaListResponse.class,
+    public Page<IdeasResponse> findCategory(Pageable pageable, Category category, long count) {
+        List<IdeasResponse> results = queryFactory.select(Projections.constructor(IdeasResponse.class,
                         qIdea.id,
                         qUsers.nickname.as("writer"),
                         qIdea.title,
@@ -112,7 +112,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<IdeaListResponse> findTitle(Pageable pageable, String keyword) {
+    public Page<IdeasResponse> findTitle(Pageable pageable, String keyword) {
 
         String sql = "SELECT * FROM idea WHERE to_tsvector('english', title) @@ to_tsquery('english', ?1) ORDER BY created_at DESC OFFSET ?2 ROWS FETCH FIRST ?3 ROWS ONLY";
         Query nativeQuery = entityManager.createNativeQuery(sql, Idea.class);
@@ -122,7 +122,7 @@ public class IdeaRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         List<Idea> responses = nativeQuery.getResultList();
 
         return new PageImpl<>(responses.stream()
-                .map(idea -> new IdeaListResponse(
+                .map(idea -> new IdeasResponse(
                         idea.getId(),
                         idea.getUsers().getNickname(),
                         idea.getTitle(),
